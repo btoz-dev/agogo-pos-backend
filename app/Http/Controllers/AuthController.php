@@ -18,12 +18,12 @@ class AuthController extends Controller
     public function signup(Request $request)
     {
         $request->validate([
-            'name' => 'required|string',
+            'username' => 'required|string',
             'email' => 'required|string|email|unique:users',
             'password' => 'required|string|confirmed'
         ]);
         $user = new User([
-            'name' => $request->name,
+            'username' => $request->name,
             'email' => $request->email,
             'password' => bcrypt($request->password)
         ]);
@@ -46,11 +46,11 @@ class AuthController extends Controller
     public function login(Request $request)
     {
         $request->validate([
-            'email' => 'required|string|email',
+            'username' => 'required|string',
             'password' => 'required|string',
             'remember_me' => 'boolean'
         ]);
-        $credentials = request(['email', 'password']);
+        $credentials = request(['username', 'password']);
         if(!Auth::attempt($credentials))
             return response()->json([
                 'message' => 'Unauthorized'
