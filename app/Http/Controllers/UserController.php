@@ -24,29 +24,29 @@ class UserController extends Controller
 
     public function create()
     {
-        $role = Role::orderBy('name', 'ASC')->get();
+        $role = Role::orderBy('username', 'ASC')->get();
         return view('users.create', compact('role'));
     }
 
     public function store(Request $request)
     {
         $this->validate($request, [
-            'name' => 'required|string|max:100',
+            'username' => 'required|string|max:100',
             'email' => 'required|email|unique:users',
             'password' => 'required|min:6',
-            'role' => 'required|string|exists:roles,name'
+            'role' => 'required|string|exists:roles,username'
         ]);
 
         $user = User::firstOrCreate([
             'email' => $request->email
         ], [
-            'name' => $request->name,
+            'username' => $request->username,
             'password' => bcrypt($request->password),
             'status' => true
         ]);
 
         $user->assignRole($request->role);
-        return redirect(route('users.index'))->with(['success' => 'User: <strong>' . $user->name . '</strong> Ditambahkan']);
+        return redirect(route('users.index'))->with(['success' => 'User: <strong>' . $user->username . '</strong> Ditambahkan']);
     }
 
     public function edit($id)
@@ -58,7 +58,7 @@ class UserController extends Controller
     public function update(Request $request, $id)
     {
         $this->validate($request, [
-            'name' => 'required|string|max:100',
+            'username' => 'required|string|max:100',
             'email' => 'required|email|exists:users,email',
             'password' => 'nullable|min:6',
         ]);
@@ -66,23 +66,23 @@ class UserController extends Controller
         $user = User::findOrFail($id);
         $password = !empty($request->password) ? bcrypt($request->password):$user->password;
         $user->update([
-            'name' => $request->name,
+            'username' => $request->username,
             'password' => $password
         ]);
-        return redirect(route('users.index'))->with(['success' => 'User: <strong>' . $user->name . '</strong> Diperbaharui']);
+        return redirect(route('users.index'))->with(['success' => 'User: <strong>' . $user->username . '</strong> Diperbaharui']);
     }
 
     public function destroy($id)
     {
         $user = User::findOrFail($id);
         $user->delete();
-        return redirect()->back()->with(['success' => 'User: <strong>' . $user->name . '</strong> Dihapus']);
+        return redirect()->back()->with(['success' => 'User: <strong>' . $user->username . '</strong> Dihapus']);
     }
 
     public function roles(Request $request, $id)
     {
         $user = User::findOrFail($id);
-        $roles = Role::all()->pluck('name');
+        $roles = Role::all()->pluck('username');
         return view('users.roles', compact('user', 'roles'));
     }
 
@@ -103,15 +103,15 @@ class UserController extends Controller
         $permissions = null;
         $hasPermission = null;
 
-        $roles = Role::all()->pluck('name');
+        $roles = Role::all()->pluck('username');
 
         if (!empty($role)) {
             $getRole = Role::findByName($role);
             $hasPermission = DB::table('role_has_permissions')
-                ->select('permissions.name')
+                ->select('permissions.username')
                 ->join('permissions', 'role_has_permissions.permission_id', '=', 'permissions.id')
-                ->where('role_id', $getRole->id)->get()->pluck('name')->all();
-            $permissions = Permission::all()->pluck('name');
+                ->where('role_id', $getRole->id)->get()->pluck('username')->all();
+            $permissions = Permission::all()->pluck('username');
         }
         return view('users.role_permission', compact('roles', 'permissions', 'hasPermission'));
     }
@@ -119,11 +119,11 @@ class UserController extends Controller
     public function addPermission(Request $request)
     {
         $this->validate($request, [
-            'name' => 'required|string|unique:permissions'
+            'username' => 'required|string|unique:permissions'
         ]);
 
         $permission = Permission::firstOrCreate([
-            'name' => $request->name
+            'username' => $request->username
         ]);
         return redirect()->back();
     }
