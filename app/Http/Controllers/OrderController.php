@@ -228,4 +228,53 @@ class OrderController extends Controller
     {
         return (new OrderInvoice($invoice))->download('invoice-' . $invoice . '.xlsx');
     }
+
+    public function postOrder(Request $request)
+    {
+
+        DB::beginTransaction();
+        try {
+            // return response($request[0]['user_id']);
+            
+            $order = Order::create(array(
+                'invoice' => $this->generateInvoice(),
+                // 'customer_id' => $customer->id,
+                'user_id' => $request[0]['user_id'],
+                'total'   => $request[0]['total']
+            ));
+            
+            $result = collect($request)->map(function($value) {
+                return [
+                    'product_id'    => $value['product_id'],
+                    'qty'           => $value['qty'],
+                    'price'         => $value['price'],
+                ];
+            })->all();
+            // return response($result);
+             
+            foreach ($result as $key => $row) {
+                $order->order_detail()->create([
+                    'product_id' => $row['product_id'],
+                    'qty' => $row['qty'],
+                    'price' => $row['price']
+                ]);
+            }
+
+            DB::commit();
+
+            return response()->json([
+                'status' => 'success',
+                'message' => $order->invoice,
+            ], 200)->cookie(Cookie::forget('cart'));
+        
+        } catch (Exception $e) {
+            DB::rollback();
+            return response()->json([
+                'status' => 'failed',
+                'message' => $e->getMessage()
+            ], 400);
+        }
+    }
+
+    
 }

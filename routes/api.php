@@ -71,6 +71,10 @@ Route::get('/categories', function () {
 // Route::resource('category', 'CategoryController');
 
 
+//Order API
+Route::post('/orders', 'OrderController@postOrder');
+
+
 // //Route Kategori
 // Route::apiResource('/categories', 'CategoryController');
 // //Route Produk
