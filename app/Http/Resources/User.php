@@ -28,7 +28,10 @@ class User extends Resource
             'id'        => $this->id,
             'username'  => $this->username,
             'email'     => $this->email,
+            'name'      => $this->name,
+            'photo'     => $this->photo,
             'role'      => $role_name,
+
             // 'created_at' => $this->created_at,
             // 'updated_at' => $this->updated_at,
         ];
