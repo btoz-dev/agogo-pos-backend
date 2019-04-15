@@ -255,13 +255,24 @@ class OrderController extends Controller
             // return response($result);
 
             foreach ($result as $key => $row) {
-                $order->order_detail()->create([
-                    'product_id' => $row['product_id'],
-                    'qty' => $row['qty'],
-                    'price' => $row['price']
-                ]);
-                    DB::table('products')->where('id', $row['product_id'])->decrement('stock', $row['qty']);                
+                $getCount = Product::where(['id' => $row['product_id']])->get();
+                
+                if ($getCount[0]['stock'] > $row['qty']) {
+                    $order->order_detail()->create([
+                        'product_id' => $row['product_id'],
+                        'qty' => $row['qty'],
+                        'price' => $row['price']
+                    ]);
+                        DB::table('products')->where('id', $row['product_id'])->decrement('stock', $row['qty']); 
+                }
+                else {
+                    throw new \Exception('Stock ' . $getCount[0]['name'] . ' Tidak Mencukupi');
+                }
+                // return response($row['product_id']);
+                //return response($getCount[0]['stock']);
+                               
             }
+            
 
             DB::commit();
 
