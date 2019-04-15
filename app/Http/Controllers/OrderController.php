@@ -275,4 +275,10 @@ class OrderController extends Controller
             ], 400);
         }
     }
+
+    public function getOrder()
+    {
+        $orders = Order::all();
+        return response()->json($orders, 200);
+    }
 }

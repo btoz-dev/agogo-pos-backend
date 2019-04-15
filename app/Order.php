@@ -8,6 +8,7 @@ class Order extends Model
 {
     protected $guarded = [];
     protected $dates = ['created_at'];
+   protected $visible = ['id', 'invoice','user_id','total'];
     
     public function order_detail()
     {
