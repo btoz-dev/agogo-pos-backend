@@ -73,7 +73,9 @@ Route::get('/categories', function () {
 
 //Order API
 Route::post('/orders', 'OrderController@postOrder');
-Route::get('/orders', 'OrderController@getOrder');
+Route::get('/orders', 'OrderController@getOrders');
+Route::get('/order/{id}', 'OrderController@getOrderDetail');
+
 
 
 // //Route Kategori

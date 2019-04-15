@@ -8,7 +8,7 @@ class Order extends Model
 {
     protected $guarded = [];
     protected $dates = ['created_at'];
-   protected $visible = ['id', 'invoice','user_id','total'];
+    protected $hidden = ['updated_at'];
     
     public function order_detail()
     {

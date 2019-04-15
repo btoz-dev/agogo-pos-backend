@@ -2,16 +2,18 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use App\Exports\OrderInvoice;
-use Carbon\Carbon;
-use App\Customer;
-use App\Product;
-use App\Order;
-use App\User;
-use Cookie;
 use DB;
 use PDF;
+use Cookie;
+use App\User;
+use App\Order;
+use App\Product;
+use App\Customer;
+use Carbon\Carbon;
+use App\Order_detail;
+use Illuminate\Http\Request;
+use App\Exports\OrderInvoice;
+use Illuminate\Http\Response;
 
 class OrderController extends Controller
 {
@@ -276,9 +278,16 @@ class OrderController extends Controller
         }
     }
 
-    public function getOrder()
+    public function getOrders()
     {
         $orders = Order::all();
         return response()->json($orders, 200);
+    }
+
+    public function getOrderDetail($id) {
+
+        $order_detail = Order_detail::where('order_id', $id)->get();
+
+        return response()->json($order_detail, 200);
     }
 }
