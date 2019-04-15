@@ -33,7 +33,7 @@ class OrderController extends Controller
             'product_id' => 'required|exists:products,id',
             'qty' => 'required|integer'
         ]);
-        
+
         $product = Product::findOrFail($request->product_id);
         $getCart = json_decode($request->cookie('cart'), true);
 
@@ -42,7 +42,7 @@ class OrderController extends Controller
                 $getCart[$request->product_id]['qty'] += $request->qty;
                 return response()->json($getCart, 200)
                     ->cookie('cart', json_encode($getCart), 120);
-            } 
+            }
         }
 
         $getCart[$request->product_id] = [
@@ -83,7 +83,7 @@ class OrderController extends Controller
         ]);
 
         $cart = json_decode($request->cookie('cart'), true);
-        $result = collect($cart)->map(function($value) {
+        $result = collect($cart)->map(function ($value) {
             return [
                 'code' => $value['code'],
                 'name' => $value['name'],
@@ -157,7 +157,7 @@ class OrderController extends Controller
         if (!empty($request->user_id)) {
             $orders = $orders->where('user_id', $request->user_id);
         }
-        
+
         if (!empty($request->start_date) && !empty($request->end_date)) {
             $this->validate($request, [
                 'start_date' => 'nullable|date',
@@ -211,7 +211,7 @@ class OrderController extends Controller
                 $val = array_sum($qty);
                 $data += $val;
             }
-        } 
+        }
         return $data;
     }
 
@@ -235,15 +235,15 @@ class OrderController extends Controller
         DB::beginTransaction();
         try {
             // return response($request[0]['user_id']);
-            
+
             $order = Order::create(array(
                 'invoice' => $this->generateInvoice(),
                 // 'customer_id' => $customer->id,
                 'user_id' => $request[0]['user_id'],
                 'total'   => $request[0]['total']
             ));
-            
-            $result = collect($request)->map(function($value) {
+
+            $result = collect($request)->map(function ($value) {
                 return [
                     'product_id'    => $value['product_id'],
                     'qty'           => $value['qty'],
@@ -251,13 +251,14 @@ class OrderController extends Controller
                 ];
             })->all();
             // return response($result);
-             
+
             foreach ($result as $key => $row) {
                 $order->order_detail()->create([
                     'product_id' => $row['product_id'],
                     'qty' => $row['qty'],
                     'price' => $row['price']
                 ]);
+                    DB::table('products')->where('id', $row['product_id'])->decrement('stock', $row['qty']);                
             }
 
             DB::commit();
@@ -266,7 +267,6 @@ class OrderController extends Controller
                 'status' => 'success',
                 'message' => $order->invoice,
             ], 200)->cookie(Cookie::forget('cart'));
-        
         } catch (Exception $e) {
             DB::rollback();
             return response()->json([
@@ -275,6 +275,4 @@ class OrderController extends Controller
             ], 400);
         }
     }
-
-    
 }
