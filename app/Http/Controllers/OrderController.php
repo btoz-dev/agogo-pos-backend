@@ -297,7 +297,12 @@ class OrderController extends Controller
 
     public function getOrderDetail($id) {
 
-        $order_detail = Order_detail::where('order_id', $id)->get();
+        $order_detail = Order_detail::with(array('product'=>function($query){
+            $query->select('name','id');
+        }))->where('order_id', $id)->get();
+        // $product = Product::where('id',$order_detail[0]['product_id'])->get();
+        // $result = compact('order_detail','product');
+        // return response($order_detail[0]['product_id']);
 
         return response()->json($order_detail, 200);
     }
