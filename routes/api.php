@@ -76,6 +76,7 @@ Route::post('/orders', 'OrderController@postOrder');
 Route::get('/orders', 'OrderController@getUnpaidOrders');
 Route::get('/order/{id}', 'OrderController@getOrderDetail');
 Route::post('/keepOrders', 'OrderController@keepOrder');
+Route::delete('/order/{id}', 'OrderController@deleteOrder');
 
 
 

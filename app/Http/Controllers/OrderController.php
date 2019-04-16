@@ -371,4 +371,14 @@ class OrderController extends Controller
             ], 400);
         }
     }
+
+    public function deleteOrder($id)
+    {
+        $order = Order::find($id);
+        $order-> delete();
+        return response()->json([
+            'status' => 'data deleted',
+            'message' => $order->invoice,
+        ], 200);
+    }
 }
