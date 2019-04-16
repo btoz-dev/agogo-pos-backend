@@ -241,8 +241,13 @@ class OrderController extends Controller
             $order = Order::create(array(
                 'invoice' => $this->generateInvoice(),
                 // 'customer_id' => $customer->id,
-                'user_id' => $request[0]['user_id'],
-                'total'   => $request[0]['total']
+                'user_id'       => $request[0]['user_id'],
+                'subtotal'      => $request[0]['subtotal'],
+                'discount'      => $request[0]['diskon'],
+                'total'         => $request[0]['total'],
+                'uang_dibayar'  => $request[0]['dibayar'],
+                'uang_kembali'  => $request[0]['kembali'],
+                'status'        => $request[0]['status']
             ));
 
             $result = collect($request)->map(function ($value) {
@@ -289,9 +294,9 @@ class OrderController extends Controller
         }
     }
 
-    public function getOrders()
+    public function getUnpaidOrders()
     {
-        $orders = Order::all();
+        $orders = Order::where(['status' => 'UNPAID'])->get();
         return response()->json($orders, 200);
     }
 
@@ -305,5 +310,65 @@ class OrderController extends Controller
         // return response($order_detail[0]['product_id']);
 
         return response()->json($order_detail, 200);
+    }
+
+    public function keepOrder(Request $request)
+    {
+        DB::beginTransaction();
+        try {
+            $order = Order::create(array(
+                'invoice' => $this->generateInvoice(),
+                // 'customer_id' => $customer->id,
+                'user_id'       => $request[0]['user_id'],
+                'subtotal'      => $request[0]['subtotal'],
+                'discount'      => $request[0]['diskon'],
+                'total'         => $request[0]['total'],
+                'uang_dibayar'  => $request[0]['dibayar'],
+                'uang_kembali'  => $request[0]['kembali'],
+                'status'        => $request[0]['status']
+            ));
+
+            $result = collect($request)->map(function ($value) {
+                return [
+                    'product_id'    => $value['product_id'],
+                    'qty'           => $value['qty'],
+                    'price'         => $value['price'],
+                ];
+            })->all();
+            // return response($result);
+
+            foreach ($result as $key => $row) {
+                $getCount = Product::where(['id' => $row['product_id']])->get();
+                
+                if ($getCount[0]['stock'] > $row['qty']) {
+                    $order->order_detail()->create([
+                        'product_id' => $row['product_id'],
+                        'qty' => $row['qty'],
+                        'price' => $row['price']
+                    ]);
+                        DB::table('products')->where('id', $row['product_id'])->decrement('stock', $row['qty']); 
+                }
+                else {
+                    throw new \Exception('Stock ' . $getCount[0]['name'] . ' Tidak Mencukupi');
+                }
+                // return response($row['product_id']);
+                //return response($getCount[0]['stock']);
+                               
+            }
+            
+
+            DB::commit();
+
+            return response()->json([
+                'status' => 'success',
+                'message' => $order->invoice,
+            ], 200)->cookie(Cookie::forget('cart'));
+        } catch (Exception $e) {
+            DB::rollback();
+            return response()->json([
+                'status' => 'failed',
+                'message' => $e->getMessage()
+            ], 400);
+        }
     }
 }

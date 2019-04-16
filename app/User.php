@@ -38,4 +38,9 @@ class User extends Authenticatable
     {
         return $this->hasMany(Order::class);
     }
+
+    public function preorder()
+    {
+        return $this->hasMany(Order::class);
+    }
 }
