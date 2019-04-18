@@ -15,4 +15,9 @@ class Preorder extends Model
     {
         return $this->belongsTo(User::class);
     }
+
+    public function refund()
+    {
+        return $this->belongsTo(Refund::class);
+    }
 }

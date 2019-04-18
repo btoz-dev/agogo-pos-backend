@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class AddRelationshipsToPreordersDetailsTable extends Migration
+class AddRelationshipsToRefundDetailsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,9 +13,9 @@ class AddRelationshipsToPreordersDetailsTable extends Migration
      */
     public function up()
     {
-        Schema::table('preorder_details', function(Blueprint $table) {
-            $table->integer('preorder_id')->unsigned()->change();
-            $table->foreign('preorder_id')->references('id')->on('refund')
+        Schema::table('refund_details', function(Blueprint $table) {
+            $table->integer('refund_id')->unsigned()->change();
+            $table->foreign('refund_id')->references('id')->on('refund')
                 ->onUpdate('cascade')
                 ->onDelete('cascade');
             

@@ -14,6 +14,7 @@ use App\Order_detail;
 use Illuminate\Http\Request;
 use App\Exports\OrderInvoice;
 use Illuminate\Http\Response;
+use App\Refund;
 
 class OrderController extends Controller
 {
@@ -144,6 +145,18 @@ class OrderController extends Controller
             return 'INV-' . $count;
         }
         return 'INV-1';
+    }
+
+    public function generateInvoiceRefunds()
+    {
+        $refund = Refund::orderBy('created_at', 'DESC');
+        if ($refund->count() > 0) {
+            $refund = $refund->first();
+            $explode = explode('-', $refund->invoice);
+            $count = $explode[1] + 1;
+            return 'RF-' . $count;
+        }
+        return 'RF-1';
     }
 
     public function index(Request $request)
@@ -380,5 +393,73 @@ class OrderController extends Controller
             'status' => 'data deleted',
             'message' => $order->invoice,
         ], 200);
+    }
+
+    public function postRefunds(Request $request){
+        
+        DB::beginTransaction();
+        try {
+            $refund = Refund::create(array(
+                'invoice'       => $this->generateInvoiceRefunds(),
+                'order_id'      => $request[0]['order_id'],
+                'preorder_id'   => $request[0]['preorder_id'],
+                'total'         => $request[0]['total'],
+            ));
+
+            // $refund = Order::create(array(
+            //     'invoice' => $this->generateInvoice(),
+            //     // 'customer_id' => $customer->id,
+            //     'order_id'      => $request[0]['order_id'],
+            //     'preorder_id'   => $request[0]['preorder_id'],
+            //     'total'         => $request[0]['total']
+            // ));
+            // return response($refund);
+        
+
+            $result = collect($request)->map(function ($value) {
+                return [
+                    'product_id'  => $value['product_id'],
+                    'qty'         => $value['qty'],
+                    'price'       => $value['price'],
+                ];
+            })->all();
+            // return response($result);
+
+            foreach ($result as $key => $row) {  
+                
+                // if ($row['order_id'] != nullOrEmptyString() ) {
+                // DB::table('order_details')->delete()
+                //     ->where('order_id', $row['order_id'])
+                //     ->where('product_id', $row['product_id']);
+                // }
+                // else {
+                // DB::table('preorder_details')->delete()
+                //     ->where('preorder_id', $row['preorder_id'])
+                //     ->where('product_id', $row['product_id']);
+                // }
+                $refund->refund_detail()->create([
+                    'product_id' => $row['product_id'],
+                    'qty'        => $row['qty'],
+                    'price'      => $row['price']
+                ]);
+                DB::table('products')->where('id', $row['product_id'])
+                ->increment('stock', $row['qty']);
+                // return response($row['product_id']);
+                //return response($getCount[0]['stock']);                               
+            }
+
+            DB::commit();
+
+            return response()->json([
+                'status' => 'success',
+                'message' => $refund->invoice,
+            ], 200);
+        } catch (Exception $e) {
+            DB::rollback();
+            return response()->json([
+                'status' => 'failed',
+                'message' => $e->getMessage()
+            ], 400);
+        }
     }
 }
