@@ -13,7 +13,7 @@ class AddRelationshipsToRefundsTable extends Migration
      */
     public function up()
     {
-        Schema::table('refund', function(Blueprint $table) {
+        Schema::table('refunds', function(Blueprint $table) {
             $table->integer('preorder_id')->nullable()->unsigned()->change();
             $table->foreign('preorder_id')->references('id')->on('preorders')
                   ->onUpdate('cascade')

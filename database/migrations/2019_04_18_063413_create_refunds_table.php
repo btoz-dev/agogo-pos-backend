@@ -13,7 +13,7 @@ class CreateRefundsTable extends Migration
      */
     public function up()
     {
-        Schema::create('refund', function (Blueprint $table) {
+        Schema::create('refunds', function (Blueprint $table) {
             $table->increments('id');
             $table->string('invoice');
             $table->integer('order_id');

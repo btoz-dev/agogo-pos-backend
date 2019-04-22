@@ -15,7 +15,7 @@ class AddRelationshipsToRefundDetailsTable extends Migration
     {
         Schema::table('refund_details', function(Blueprint $table) {
             $table->integer('refund_id')->unsigned()->change();
-            $table->foreign('refund_id')->references('id')->on('refund')
+            $table->foreign('refund_id')->references('id')->on('refunds')
                 ->onUpdate('cascade')
                 ->onDelete('cascade');
             

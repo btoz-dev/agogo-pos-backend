@@ -10,7 +10,7 @@ class Refund_details extends Model
     
     public function refund()
     {
-        return $this->belongsTo(Refunds::class);
+        return $this->belongsTo(Refund::class);
     }
 
     public function product()
