@@ -26,6 +26,7 @@ class CreatePreordersTable extends Migration
             $table->integer('discount');            
             $table->integer('add_fee');
             $table->integer('total');
+            $table->integer('uang_muka')->nullable();
             $table->integer('uang_dibayar');
             $table->integer('uang_kembali');
             $table->string('status');

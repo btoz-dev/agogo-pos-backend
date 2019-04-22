@@ -6,6 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class Preorder extends Model
 {
+    protected $guarded = [];
+    
     public function preorder_detail()
     {
         return $this->hasMany(Preorder_detail::class);

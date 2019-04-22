@@ -77,9 +77,18 @@ Route::get('/orders', 'OrderController@getUnpaidOrders');
 Route::get('/order/{id}', 'OrderController@getOrderDetail');
 Route::post('/keepOrders', 'OrderController@keepOrder');
 Route::delete('/order/{id}', 'OrderController@deleteOrder');
-
 //Refund API
 Route::post('/refunds', 'OrderController@postRefunds');
+//Preorder API
+Route::post('/preorders', 'PreorderController@store');
+Route::get('/preorders', 'PreorderController@index');
+Route::get('/preorder/{id}', 'PreorderController@show');
+Route::put('/preorder/{id}', 'PreorderController@payPreorder');
+Route::delete('/preorder/{id}', 'PreorderController@destroy');
+Route::post('/editPreorders', 'PreorderController@editPreorder');
+
+
+
 
 
 
