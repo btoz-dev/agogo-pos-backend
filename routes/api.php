@@ -86,6 +86,8 @@ Route::get('/preorder/{id}', 'PreorderController@show');
 Route::put('/preorder/{id}', 'PreorderController@payPreorder');
 Route::delete('/preorder/{id}', 'PreorderController@destroy');
 Route::post('/editPreorders', 'PreorderController@editPreorder');
+//Productions API
+Route::get('/availProducts', 'ProductionController@getAvailProduct');
 
 
 
