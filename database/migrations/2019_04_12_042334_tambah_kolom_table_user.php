@@ -15,7 +15,7 @@ class TambahKolomTableUser extends Migration
     {
         Schema::table('users', function(Blueprint $table) {
             $table->string('photo')->nullable()->after('status')->default('profile.jpg');
-            $table->string('name')->nullable()->after('email');
+            $table->string('username')->nullable()->after('email');
         });
     }
 

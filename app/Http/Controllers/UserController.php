@@ -32,6 +32,7 @@ class UserController extends Controller
     {
         $this->validate($request, [
             'username' => 'required|string|max:100',
+            'name' => 'string|max:100',
             'email' => 'required|email|unique:users',
             'password' => 'required|min:6',
             'role' => 'required|string|exists:roles,username'
@@ -42,7 +43,8 @@ class UserController extends Controller
         ], [
             'username' => $request->username,
             'password' => bcrypt($request->password),
-            'status' => true
+            'status' => true,
+            'name'  => $request->name
         ]);
 
         $user->assignRole($request->role);
