@@ -15,7 +15,7 @@ class AddRelationshipsToPreordersDetailsTable extends Migration
     {
         Schema::table('preorder_details', function(Blueprint $table) {
             $table->integer('preorder_id')->unsigned()->change();
-            $table->foreign('preorder_id')->references('id')->on('refund')
+            $table->foreign('preorder_id')->references('id')->on('preorders')
                 ->onUpdate('cascade')
                 ->onDelete('cascade');
             
