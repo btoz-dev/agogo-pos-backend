@@ -137,7 +137,7 @@ class OrderController extends Controller
 
     public function generateInvoice()
     {
-        $order = Order::orderBy('created_at', 'DESC');
+        $order = Order::orderBy('id', 'DESC');
         if ($order->count() > 0) {
             $order = $order->first();
             $explode = explode('-', $order->invoice);
@@ -149,7 +149,7 @@ class OrderController extends Controller
 
     public function generateInvoiceRefunds()
     {
-        $refund = Refund::orderBy('created_at', 'DESC');
+        $refund = Refund::orderBy('id', 'DESC');
         if ($refund->count() > 0) {
             $refund = $refund->first();
             $explode = explode('-', $refund->invoice);
