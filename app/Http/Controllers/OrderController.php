@@ -397,6 +397,10 @@ class OrderController extends Controller
     }
 
     public function postRefunds(Request $request){
+
+        // Cek Approver
+        $get_approver = User::role('approver')->where('pass', $request[0]['pin_aprov'])->count();
+        if ($get_approver > 0 ) {
         
         DB::beginTransaction();
         try {
@@ -407,37 +411,42 @@ class OrderController extends Controller
                 'total'         => $request[0]['total'],
             ));
 
-            // $refund = Order::create(array(
-            //     'invoice' => $this->generateInvoice(),
-            //     // 'customer_id' => $customer->id,
-            //     'order_id'      => $request[0]['order_id'],
-            //     'preorder_id'   => $request[0]['preorder_id'],
-            //     'total'         => $request[0]['total']
-            // ));
-            // return response($refund);
-        
-
             $result = collect($request)->map(function ($value) {
                 return [
+                    'order_id'    => $value['order_id'],
+                    'preorder_id' => $value['preorder_id'],
                     'product_id'  => $value['product_id'],
                     'qty'         => $value['qty'],
                     'price'       => $value['price'],
+                    'total'       => $value['total'],
                 ];
             })->all();
             // return response($result);
 
             foreach ($result as $key => $row) {  
-                
-                // if ($row['order_id'] != nullOrEmptyString() ) {
-                // DB::table('order_details')->delete()
-                //     ->where('order_id', $row['order_id'])
-                //     ->where('product_id', $row['product_id']);
-                // }
-                // else {
-                // DB::table('preorder_details')->delete()
-                //     ->where('preorder_id', $row['preorder_id'])
-                //     ->where('product_id', $row['product_id']);
-                // }
+                // Kurangin Total Amount di Summary Order
+                if ($row['order_id'] != null) {
+                DB::table('orders')->where('id', $row['order_id'])
+                    ->decrement('subtotal', $row['total']);
+                DB::table('orders')->where('id', $row['order_id'])
+                    ->decrement('total', $row['total']);
+                // Hapus Produk yg di refun di order_detail
+                DB::table('order_details')
+                    ->where('order_id', $row['order_id'])
+                    ->where('product_id', $row['product_id'])->delete();
+                }
+                else {
+                // Kurangin Total Amount di Summary Preorder
+                DB::table('preorders')->where('id', $row['preorder_id'])
+                    ->decrement('stock', $row['qty']);
+                DB::table('preorders')->where('id', $row['preorder_id'])
+                    ->decrement('subtotal', $row['total']);
+                // Hapus Produk yg di refun di preorder_detail
+                DB::table('preorder_details')
+                    ->where('preorder_id', $row['preorder_id'])
+                    ->where('product_id', $row['product_id'])->delete();
+                }
+
                 $refund->refund_detail()->create([
                     'product_id' => $row['product_id'],
                     'qty'        => $row['qty'],
@@ -445,8 +454,7 @@ class OrderController extends Controller
                 ]);
                 DB::table('products')->where('id', $row['product_id'])
                 ->increment('stock', $row['qty']);
-                // return response($row['product_id']);
-                //return response($getCount[0]['stock']);                               
+                                       
             }
 
             DB::commit();
@@ -455,11 +463,18 @@ class OrderController extends Controller
                 'status' => 'success',
                 'message' => $refund->invoice,
             ], 200);
-        } catch (Exception $e) {
-            DB::rollback();
+            } catch (Exception $e) {
+                DB::rollback();
+                return response()->json([
+                    'status' => 'failed',
+                    'message' => $e->getMessage()
+                ], 400);
+            }
+        }
+        else {
             return response()->json([
                 'status' => 'failed',
-                'message' => $e->getMessage()
+                'message' => 'Invalid PIN'
             ], 400);
         }
     }

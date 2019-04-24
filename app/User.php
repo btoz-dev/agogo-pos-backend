@@ -41,6 +41,11 @@ class User extends Authenticatable
 
     public function preorder()
     {
-        return $this->hasMany(Order::class);
+        return $this->hasMany(Preorder::class);
+    }
+
+    public function kas()
+    {
+        return $this->hasMany(Kas::class);
     }
 }

@@ -92,6 +92,8 @@ Route::get('/notAvailProducts', 'ProductionController@getNotAvailProduct');
 Route::get('/orderByProduct/{id}', 'ProductionController@getOrderByProduct');
 Route::get('/preorderByProduct/{id}', 'ProductionController@getPreorderByProduct');
 Route::post('/postProduction', 'ProductionController@postProduction');
+//Kas API
+Route::post('/postKas', 'KasController@postKas');
 
 
 
