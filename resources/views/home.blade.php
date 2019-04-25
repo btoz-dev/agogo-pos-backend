@@ -55,10 +55,10 @@
                         <div class="small-box bg-warning">
                             <div class="inner">
                                 <h3>{{ $customer }}</h3>
-                                <p>Pelanggan</p>
+                                <p>Order</p>
                             </div>
                             <div class="icon">
-                                <i class="ion ion-person-add"></i>
+                                <i class="ion ion-pie-graph"></i>
                             </div>
                         </div>
                     </div>
@@ -69,14 +69,14 @@
                                 <p>Karyawan</p>
                             </div>
                             <div class="icon">
-                                <i class="ion ion-pie-graph"></i>
+                                <i class="ion ion-person-add"></i>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="row">
+                {{-- <div class="row">
                     <canvas id="dw-chart"></canvas>
-                </div>
+                </div> --}}
             </div>
         </section>
     </div>

@@ -26,16 +26,17 @@
             <div class="container-fluid">
                 <div class="row">
                     <div class="col-md-4">
-                        <!-- @card
-                            @slot('title')
-                            Tambah
-                            @endslot
+                        <div class="card">
+                        <div class="card-header with-border">
+                            <h3 class="card-title">Tambah Data</h3>
+                        </div>
+                        <div class="card-body">
                             
                             @if (session('error'))
-                                @alert(['type' => 'danger'])
+                            <div class="alert alert-danger alert-dismissible">
                                     {!! session('error') !!}
-                                @endalert
-                            @endif -->
+                            </div>
+                            @endif
 
                             <form role="form" action="{{ route('role.store') }}" method="POST">
                             {{ csrf_field() }}
@@ -48,23 +49,24 @@
                                 <div class="card-footer">
                                     <button class="btn btn-primary">Simpan</button>
                                 </div>
-                            @slot('footer')
+                            
                                 
                             </form>
-                            @endslot
-                        <!-- @endcard -->
+                            </div>
+                        </div>
                     </div>
                     <div class="col-md-8">
-                        <!-- @card
-                            @slot('title')
-                            List Role
-                            @endslot
-                            
-                            @if (session('success'))
-                                @alert(['type' => 'success'])
+                            <div class="card">
+                                    <div class="card-header with-border">
+                                        <h3 class="card-title">List Role</h3>
+                                    </div>
+                                    <div class="card-body">
+
+                            @if (session('error'))
+                            <div class="alert alert-success alert-dismissible">
                                     {!! session('success') !!}
-                                @endalert
-                            @endif -->
+                            </div>
+                            @endif
                             
                             <div class="table-responsive">
                                 <table class="table table-hover">
@@ -72,7 +74,7 @@
                                         <tr>
                                             <td>#</td>
                                             <td>Role</td>
-                                            <td>Guard</td>
+                                            {{-- <td>Guard</td> --}}
                                             <td>Created At</td>
                                             <td>Aksi</td>
                                         </tr>
@@ -83,7 +85,7 @@
                                         <tr>
                                             <td>{{ $no++ }}</td>
                                             <td>{{ $row->name }}</td>
-                                            <td>{{ $row->guard_name }}</td>
+                                            {{-- <td>{{ $row->guard_name }}</td> --}}
                                             <td>{{ $row->created_at }}</td>
                                             <td>
                                                 <form action="{{ route('role.destroy', $row->id) }}" method="POST">
@@ -105,10 +107,8 @@
                             <div class="float-right">
                                 {!! $role->links() !!}
                             </div>
-                            @slot('footer')
-
-                            @endslot
-                        <!-- @endcard -->
+                        </div>
+                        </div>
                     </div>
                 </div>
             </div>

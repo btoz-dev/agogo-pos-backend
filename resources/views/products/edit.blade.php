@@ -27,16 +27,15 @@
             <div class="container-fluid">
                 <div class="row">
                     <div class="col-md-12">
-                        {{-- @card --}}
-                            @slot('title')
-                            
-                            @endslot
-                            
-                            @if (session('error'))
-                                @alert(['type' => 'danger'])
-                                    {!! session('error') !!}
-                                @endalert
-                            @endif
+                        <div class="card">
+                        <div class="card-header with-border">
+                        </div>
+                        <div class="card-body">
+                                @if (session('error'))
+                                <div class="alert alert-danger alert-dismissible">
+                                        {!! session('error') !!}
+                                </div>
+                                @endif                           
                             <form action="{{ route('produk.update', $product->id) }}" method="POST" enctype="multipart/form-data">
                                 {{ csrf_field() }}
                                 <input type="hidden" name="_method" value="PUT">
@@ -107,10 +106,7 @@
                                     </button>
                                 </div>
                             </form>
-                            @slot('footer')
-
-                            @endslot
-                        {{-- @endcard --}}
+                        </div>
                     </div>
                 </div>
             </div>

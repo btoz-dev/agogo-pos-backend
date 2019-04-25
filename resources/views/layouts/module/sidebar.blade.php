@@ -19,7 +19,7 @@
                     </a>
                 </li>
 
-                @if (auth()->user()->can('show products') || auth()->user()->can('delete products') || auth()->user()->can('create products'))
+                {{-- @if (auth()->user()->can('show products') || auth()->user()->can('delete products') || auth()->user()->can('create products')) --}}
                 <li class="nav-item has-treeview">
                     <a href="#" class="nav-link">
                         <i class="nav-icon fa fa-server"></i>
@@ -43,9 +43,9 @@
                         </li>
                     </ul>
                 </li>
-                @endif
+                {{-- @endif --}}
 
-                @role('kasir')
+                {{-- @role('kasir')
                 <li class="nav-item">
                     <a href="{{ route('order.transaksi') }}" class="nav-link">
                         <i class="nav-icon fa fa-shopping-cart"></i>
@@ -54,9 +54,9 @@
                         </p>
                     </a>
                 </li>
-                @endrole
+                @endrole --}}
 
-                <li class="nav-item has-treeview">
+                {{-- <li class="nav-item has-treeview">
                     <a href="#" class="nav-link">
                         <i class="nav-icon fa fa-shopping-bag"></i>
                         <p>
@@ -72,9 +72,9 @@
                             </a>
                         </li>
                     </ul>
-                </li>
+                </li> --}}
                 
-                @role('admin')
+                {{-- @role('admin') --}}
                 <li class="nav-item has-treeview">
                     <a href="#" class="nav-link">
                         <i class="nav-icon fa fa-users"></i>
@@ -104,7 +104,7 @@
                         </li>
                     </ul>
                 </li>
-                @endrole
+                {{-- @endrole    --}}
 
                 <li class="nav-item has-treeview">
                     <a class="nav-link" href="{{ route('logout') }}"

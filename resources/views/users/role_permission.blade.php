@@ -35,11 +35,11 @@
             <div class="container-fluid">
                 <div class="row">
                     <div class="col-md-4">
-                        @card
-                            @slot('title')
-                            <h4 class="card-title">Add New Permission</h4>
-                            @endslot
-
+                        <div class="card">
+                        <div class="card-header with-border">
+                            <h3 class="card-title">Add New Permission</h3>
+                        </div>
+                        <div class="card-body">                           
                             <form action="{{ route('users.add_permission') }}" method="post">
                                 {{ csrf_field() }}
                                 <div class="form-group">
@@ -53,17 +53,16 @@
                                     </button>
                                 </div>
                             </form>
-                            @slot('footer')
-
-                            @endslot
-                        @endcard
+                        </div>
+                        </div>
                     </div>
 
                     <div class="col-md-8">
-                        @card
-                            @slot('title')
-                            Set Permission to Role
-                            @endslot
+                            <div class="card">
+                                    <div class="card-header with-border">
+                                        <h3 class="card-title">Set Permission to Role</h3>
+                                    </div>
+                                    <div class="card-body">
 
                             @if (session('success'))
                                 @alert(['type' => 'success'])
@@ -125,10 +124,9 @@
                                     </div>
                                 </form>
                             @endif
-                            @slot('footer')
-                               
-                            @endslot
-                        @endcard
+                                    </div>
+                            </div>
+                        
                     </div>
                 </div>
             </div>

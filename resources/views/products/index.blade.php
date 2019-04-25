@@ -26,25 +26,22 @@
             <div class="container-fluid">
                 <div class="row">
                     <div class="col-md-12">
-                        <!-- @card -->
-                            @slot('title')
-                            <!-- <a href="{{ route('produk.create') }}" 
-                                class="btn btn-primary btn-sm">
-                                <i class="fa fa-edit"></i> Tambah
-                            </a> -->
-                            @endslot
-                            
-                            @if (session('success'))
-                                @alert(['type' => 'success'])
+                        <div class="card">
+                            <div class="card-header with-border">
+                                <h3 class="card-title">List Produk</h3>
+                            </div>
+                            <div class="card-body">
+                           
+                            <div class="alert alert-success alert-dismissible">
                                     {!! session('success') !!}
-                                @endalert
-                            @endif
+                            </div>
                             
                             <div class="table-responsive">
                                 <table class="table table-hover">
                                     <thead>
                                         <tr>
                                             <th>#</th>
+                                            <th>Kode Produk</th>
                                             <th>Nama Produk</th>
                                             <th>Stok</th>
                                             <th>Harga</th>
@@ -65,8 +62,10 @@
                                                 @endif
                                             </td>
                                             <td>
-                                                <sup class="label label-success">({{ $row->code }})</sup>
-                                                <strong>{{ ucfirst($row->name) }}</strong>
+                                                    <strong>{{ $row->code }}</strong>
+                                            </td>
+                                            <td>
+                                                {{ ucfirst($row->name) }}
                                             </td>
                                             <td>{{ $row->stock }}</td>
                                             <td>Rp {{ number_format($row->price) }}</td>
@@ -101,10 +100,8 @@
                             <div class="float-right">
                                 {!! $products->links() !!}
                             </div>
-                            @slot('footer')
-
-                            @endslot
-                        <!-- @endcard -->
+                        </div>
+                    </div>
                     </div>
                 </div>
             </div>

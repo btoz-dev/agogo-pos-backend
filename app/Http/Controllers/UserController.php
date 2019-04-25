@@ -101,6 +101,7 @@ class UserController extends Controller
 
     public function rolePermission(Request $request)
     {
+        
         $role = $request->get('role');
         $permissions = null;
         $hasPermission = null;

@@ -26,16 +26,17 @@
             <div class="container-fluid">
                 <div class="row">
                     <div class="col-md-4">
-                        <!-- @card
-                            @slot('title')
-                            Tambah
-                            @endslot
-                            
+                        <div class="card">
+                            <div class="card-header with-border">
+                                <h3 class="card-title">Tambah</h3>
+                            </div>
+                            <div class="card-body">
+
                             @if (session('error'))
-                                @alert(['type' => 'danger'])
-                                    {!! session('error') !!}
-                                @endalert
-                            @endif -->
+                               <div class="alert alert-{{ $type }} alert-dismissible">
+                                {{ $slot }}
+                            </div>
+                            @endif
 
                             <form role="form" action="{{ route('kategori.store') }}" method="POST">
                                 {{ csrf_field() }}
@@ -49,27 +50,26 @@
                                     <label for="description">Deskripsi</label>
                                     <textarea name="description" id="description" cols="5" rows="5" class="form-control {{ $errors->has('description') ? 'is-invalid':'' }}"></textarea>
                                 </div>
+                            </div>
+                            
                                 <div class="card-footer">
                                     <button class="btn btn-primary">Simpan</button>
                                 </div>
-                            @slot('footer')
-                                <!-- <div class="card-footer">
-                                    <button class="btn btn-primary">Simpan</button>
-                                </div> -->
-                            </form>
-                            @endslot
-                        <!-- @endcard -->
+                            </div>
+                        </form>
+                        
                     </div>
                     <div class="col-md-8">
-                        @card
-                            @slot('title')
-                            List Kategori
-                            @endslot
+                        <div class="card">
+                        <div class="card-header with-border">
+                            <h3 class="card-title">List Kategori</h3>
+                        </div>
+                        <div class="card-body">
                             
                             @if (session('success'))
-                                @alert(['type' => 'success'])
+                            <div class="alert alert-success alert-dismissible">
                                     {!! session('success') !!}
-                                @endalert
+                            </div>
                             @endif
                             
                             <div class="table-responsive">
@@ -106,10 +106,8 @@
                                     </tbody>
                                 </table>
                             </div>
-                            @slot('footer')
-
-                            @endslot
-                        @endcard
+                        </div>
+                    </div>
                     </div>
                 </div>
             </div>
