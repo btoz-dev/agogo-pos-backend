@@ -60,6 +60,8 @@ Route::resource('product', 'ProductController');
 Route::get('/products', function () {
     return new ProductCollection(Product::all());
 });
+Route::get('/productByCat/{id}', 'ProductController@productByCat');
+
 // Route::get('/product/{id}', 'OrderController@getProduct');
 
 
@@ -68,6 +70,8 @@ Route::resource('category', 'CategoryController');
 Route::get('/categories', function () {
     return new CategoryCollection(Category::all());
 });
+
+
 // Route::resource('category', 'CategoryController');
 
 

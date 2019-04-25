@@ -129,4 +129,10 @@ class ProductController extends Controller
                 ->with(['error' => $e->getMessage()]);
         }
     }
+
+    public function productByCat($id)
+    {
+        $products = Product::where('category_id',$id)->get();
+        return response()->json($products, 200);
+    }
 }
