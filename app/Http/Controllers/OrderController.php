@@ -316,7 +316,7 @@ class OrderController extends Controller
     public function getOrderDetail($id) {
 
         $order_detail = Order_detail::with(array('product'=>function($query){
-            $query->select('name','id');
+            $query->select('name','id','price');
         }))->where('order_id', $id)->get();
         // $order_detail = Order_detail::with('product')->where('order_id', $id)->get();
         // $product = Product::where('id',$order_detail[0]['product_id'])->get();

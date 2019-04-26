@@ -12,7 +12,7 @@ class PreorderController extends Controller
 
     public function generateInvoice()
     {
-        $preorder = Preorder::orderBy('created_at', 'DESC');
+        $preorder = Preorder::orderBy('id', 'DESC');
         if ($preorder->count() > 0) {
             $preorder = $preorder->first();
             $explode = explode('-', $preorder->invoice);
@@ -65,6 +65,8 @@ class PreorderController extends Controller
                 'user_id'       => $request[0]['user_id'],
                 'subtotal'      => $request[0]['subtotal'],
                 'discount'      => $request[0]['diskon'],
+                'add_fee'       => $request[0]['add_fee'],
+                'uang_muka'     => $request[0]['uang_muka'],
                 'total'         => $request[0]['total'],
                 'uang_dibayar'  => $request[0]['dibayar'],
                 'uang_kembali'  => $request[0]['kembali'],
@@ -114,7 +116,7 @@ class PreorderController extends Controller
     public function show($id)
     {
         $preorder_detail = Preorder_detail::with(array('product'=>function($query){
-            $query->select('name','id');
+            $query->select('name','id','price');
         }))->where('preorder_id', $id)->get();
         // $product = Product::where('id',$order_detail[0]['product_id'])->get();
         // $result = compact('order_detail','product');
