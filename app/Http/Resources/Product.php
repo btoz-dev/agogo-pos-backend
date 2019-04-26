@@ -3,6 +3,7 @@
 namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\Resource;
+use PhpOffice\PhpSpreadsheet\Calculation\Category;
 
 class Product extends Resource
 {
@@ -14,6 +15,15 @@ class Product extends Resource
      */
     public function toArray($request)
     {
+
+        // $roles = Category::get();
+        // //$get_role_name = $this->getRoleNames();
+        $get_role_name = $this->category->pluck('name');
+        // foreach ($roles as $role) {
+        //     $this->roles->contains($role->id);
+        // }
+        $role_name = $get_role_name;
+
         return [
             'id'            => $this->id,
             'code'          => $this->code,
@@ -22,6 +32,7 @@ class Product extends Resource
             'price'         => $this->price,
             'category_id'   => $this->category_id,
             'photo'         => $this->photo,
+            'cat_name'      => $role_name
         ];
     }
 }

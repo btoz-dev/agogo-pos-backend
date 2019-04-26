@@ -17,6 +17,19 @@ class ProductController extends Controller
         return view('products.index', compact('products'));
     }
 
+    public function getAllProduct() {
+
+        $products = Product::with(array('category'=>function($query){
+            $query->select('id','name');
+        }))->get();
+        // $order_detail = Order_detail::with('product')->where('order_id', $id)->get();
+        // $product = Product::where('id',$order_detail[0]['product_id'])->get();
+        // $result = compact('order_detail','product');
+        // return response($order_detail[0]['product_id']);
+
+        return response()->json($products, 200);
+    }
+
     public function show(Product $product)
     {
         return new ProductResource($product);
