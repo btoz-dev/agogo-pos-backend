@@ -161,13 +161,13 @@ class OrderController extends Controller
 
     public function index(Request $request)
     {
-        $customers = Customer::orderBy('name', 'ASC')->get();
+        // $customers = Customer::orderBy('name', 'ASC')->get();
         $users = User::role('kasir')->orderBy('name', 'ASC')->get();
-        $orders = Order::orderBy('created_at', 'DESC')->with('order_detail', 'customer');
+        $orders = Order_detail::orderBy('created_at', 'DESC')->with('product');
 
-        if (!empty($request->customer_id)) {
-            $orders = $orders->where('customer_id', $request->customer_id);
-        }
+        // if (!empty($request->customer_id)) {
+        //     $orders = $orders->where('customer_id', $request->customer_id);
+        // }
 
         if (!empty($request->user_id)) {
             $orders = $orders->where('user_id', $request->user_id);
@@ -188,10 +188,10 @@ class OrderController extends Controller
 
         return view('orders.index', [
             'orders' => $orders,
-            'sold' => $this->countItem($orders),
-            'total' => $this->countTotal($orders),
-            'total_customer' => $this->countCustomer($orders),
-            'customers' => $customers,
+            // 'sold' => $this->countItem($orders),
+            // 'total' => $this->countTotal($orders),
+            // 'total_customer' => $this->countCustomer($orders),
+            // 'customers' => $customers,
             'users' => $users
         ]);
     }

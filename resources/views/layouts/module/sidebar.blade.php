@@ -56,11 +56,11 @@
                 </li>
                 @endrole --}}
 
-                {{-- <li class="nav-item has-treeview">
+                <li class="nav-item has-treeview">
                     <a href="#" class="nav-link">
                         <i class="nav-icon fa fa-shopping-bag"></i>
                         <p>
-                            Manajemen Order
+                            Laporan
                             <i class="right fa fa-angle-left"></i>
                         </p>
                     </a>
@@ -68,11 +68,11 @@
                         <li class="nav-item">
                             <a href="{{ route('order.index') }}" class="nav-link">
                                 <i class="fa fa-circle-o nav-icon"></i>
-                                <p>Order</p>
+                                <p>Kasir</p>
                             </a>
                         </li>
                     </ul>
-                </li> --}}
+                </li>
                 
                 {{-- @role('admin') --}}
                 <li class="nav-item has-treeview">
