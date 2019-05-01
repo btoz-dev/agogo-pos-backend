@@ -1,0 +1,51 @@
+*API AGOGO* 
+*Security* -> http [*yes*] | https [*no*]
+*IP* -> (*10.254.128.66(ip private)* | *101.255.125.227 (ip publik)* | *10.10.18.18:9090 (ip vpn)*)
+*URL* -> */api/* 
+--------------------------------------------------------------
+
+--------------------- USER -----------------------
+
+-- LOGIN USER --
+URL     => /auth/login
+METHOD  => POST
+BODY    => 
+{
+    "username" : "(username user)",
+    "password" : "(password user)"
+}
+
+-- GET ALL USER --
+URL     => /users
+METHOD  => GET
+
+-- GET SINGLE USER --
+URL     => /user/{id}
+SAMPLE  => /user/3
+METHOD  => GET
+
+
+--------------------- PRODUCT -----------------------
+
+-- GET ALL PRODODUCT --
+URL     => /products
+method  => GET
+
+-- GET SINGLE PRODODUCT --
+URL     => /product/{id}
+sample  => /product/2
+method  => GET
+
+
+--------------------- CATEGORY -----------------------
+
+-- GET ALL CATEGORY --
+URL     => /categories
+method  => GET
+
+-- GET SINGLE CATEGORY --
+URL     => /category/{id}
+sample  => /category/2
+method  => GET
+
+--------------------------------------------- DONE HERE ---------------------------------------------
