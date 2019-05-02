@@ -191,9 +191,20 @@ class OrderController extends Controller
             // 'sold' => $this->countItem($orders),
             // 'total' => $this->countTotal($orders),
             // 'total_customer' => $this->countCustomer($orders),
+            'total_harga' => $this->countTotal_harga($orders),
             // 'customers' => $customers,
             'users' => $users
         ]);
+    }
+
+    private function countTotal_harga($orders)
+    {
+        $total = 0;
+        if ($orders->count() > 0) {
+            $sub_total = $orders->pluck('price')->all();
+            $total = array_sum($sub_total);
+        }
+        return $total;
     }
 
     private function countCustomer($orders)

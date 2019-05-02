@@ -1,7 +1,7 @@
 @extends('layouts.master')
 
 @section('title')
-    <title>Manajemen Order</title>
+    <title>Manajemen PreOrder</title>
 @endsection
 
 @section('content')
@@ -31,7 +31,7 @@
                             </div>
                             <div class="card-body">
 
-                            <form action="{{ route('order.index') }}" method="get">
+                            <form action="{{ route('preorder.index') }}" method="get">
                                 <div class="row">
                                     <div class="col-md-6">
                                         <div class="form-group">
@@ -64,14 +64,15 @@
                     <div class="col-md-12">
                         <div class="card">
                             <div class="card-header with-border">
-                                <h3 class="card-title">Laporan Penjualan By Produk</h3>
+                                <h3 class="card-title">Laporan Pemesanan</h3>
                             </div>
                             <div class="card-body">
                             <div class="table-responsive">
                                 <table id="example2" class="table table-bordered table-hover dataTable">
                                     <thead>
-                                        <tr>
-                                            <th>Kode Menu</th>
+                                        <tr><th>Preorder ID</th>
+                                            <th>Order Status</th>
+                                            <th>Kode Menu</th>                                            
                                             {{-- <th>Pelanggan</th> --}}
                                             <th>Nama Menu</th>
                                             <th>Total Quantity</th>
@@ -81,15 +82,18 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        @forelse ($orders as $row)
+                                        @forelse ($preorders as $row)
                                         <tr>
+                                            <td>{{ $row->preorder_id }}</td>
+                                            <td>{{ $row->preorder->status }}</td>
                                             <td>{{ $row->product_id }}</td>
                                             <td>{{ $row->product->name }}</td>
                                             {{-- <td>{{ $row->customer->name }}</td> --}}
                                             <td>{{ number_format($row->qty) }}</td>
                                             <td>Rp {{ number_format($row->price) }}</td>
                                             {{-- <td>{{ $row->user->name }}</td> --}}
-                                            <td>{{ $row->created_at->format('d-m-Y H:i:s') }}</td>
+                                            {{-- <td>{{ $row->created_at->format('d-m-Y H:i:s') }}</td> --}}
+                                            <td>{{ $row->created_at->format('d-m-Y') }}</td>
                                             {{-- <td>
                                                 <a href="{{ route('order.pdf', $row->invoice) }}" 
                                                     target="_blank"
@@ -111,7 +115,7 @@
                                     </tbody>
                                     <tfoot>
                                         <tr>
-                                            <th colspan="3" style="text-align:right">Grand Total : </th>
+                                            <th colspan="5" style="text-align:right">Grand Total : </th>
                                             <th colspan="3" style="text-align:left">Rp.{{number_format($total_harga)}}</th>
                                         </tr>
                                     </tfoot>

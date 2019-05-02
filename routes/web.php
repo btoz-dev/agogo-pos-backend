@@ -63,5 +63,12 @@ Route::group(['middleware' => 'auth'], function() {
         Route::get('/order/excel/{invoice}', 'OrderController@invoiceExcel')->name('order.excel');
     });
 
+    Route::group(['middleware'], function() {
+
+        Route::get('/preorder', 'PreorderController@laporan_pemesanan')->name('preorder.index');
+        Route::get('/preorder/pdf/{invoice}', 'PreorderController@invoicePdf')->name('preorder.pdf');
+        Route::get('/preorder/excel/{invoice}', 'PreorderController@invoiceExcel')->name('preorder.excel');
+    });
+
     Route::get('/home', 'HomeController@index')->name('home');
 });

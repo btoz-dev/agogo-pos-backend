@@ -68,7 +68,13 @@
                         <li class="nav-item">
                             <a href="{{ route('order.index') }}" class="nav-link">
                                 <i class="fa fa-circle-o nav-icon"></i>
-                                <p>Kasir</p>
+                                <p>Penjualan</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{{ route('preorder.index') }}" class="nav-link">
+                                <i class="fa fa-circle-o nav-icon"></i>
+                                <p>Pemesanan</p>
                             </a>
                         </li>
                     </ul>

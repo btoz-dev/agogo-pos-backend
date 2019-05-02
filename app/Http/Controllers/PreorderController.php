@@ -3,9 +3,10 @@
 namespace App\Http\Controllers;
 
 use DB;
+use App\User;
 use App\Preorder;
-use Illuminate\Http\Request;
 use App\Preorder_detail;
+use Illuminate\Http\Request;
 
 class PreorderController extends Controller
 {
@@ -26,6 +27,56 @@ class PreorderController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+
+    private function countTotal_harga($preorders)
+    {
+        $total = 0;
+        if ($preorders->count() > 0) {
+            $sub_total = $preorders->pluck('price')->all();
+            $total = array_sum($sub_total);
+        }
+        return $total;
+    }
+
+    public function laporan_pemesanan(Request $request)
+    {
+        // $customers = Customer::orderBy('name', 'ASC')->get();
+        $users = User::role('kasir')->orderBy('name', 'ASC')->get();
+        $preorders = Preorder_detail::orderBy('created_at', 'DESC')->with('product');
+
+        // if (!empty($request->customer_id)) {
+        //     $orders = $orders->where('customer_id', $request->customer_id);
+        // }
+
+        if (!empty($request->user_id)) {
+            $preorders = $preorders->where('user_id', $request->user_id);
+        }
+
+        if (!empty($request->start_date) && !empty($request->end_date)) {
+            $this->validate($request, [
+                'start_date' => 'nullable|date',
+                'end_date' => 'nullable|date'
+            ]);
+            $start_date = Carbon::parse($request->start_date)->format('Y-m-d') . ' 00:00:01';
+            $end_date = Carbon::parse($request->end_date)->format('Y-m-d') . ' 23:59:59';
+
+            $preorders = $preorders->whereBetween('created_at', [$start_date, $end_date])->get();
+        } else {
+            $preorders = $preorders->take(10)->skip(0)->get();
+        }
+
+        // return $this->countTotal_harga($preorders);
+
+        return view('preorders.index', [
+            'preorders' => $preorders,
+            // 'sold' => $this->countItem($orders),
+            'total_harga' => $this->countTotal_harga($preorders),
+            // 'total_customer' => $this->countCustomer($orders),
+            // 'customers' => $customers,
+            'users' => $users
+        ]);
+    }
+
     public function index()
     {
         $preorders = Preorder::where(['status' => 'UNPAID'])->get();
