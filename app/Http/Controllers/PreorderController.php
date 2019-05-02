@@ -59,13 +59,12 @@ class PreorderController extends Controller
             ]);
             $start_date = Carbon::parse($request->start_date)->format('Y-m-d') . ' 00:00:01';
             $end_date = Carbon::parse($request->end_date)->format('Y-m-d') . ' 23:59:59';
-
             $preorders = $preorders->whereBetween('created_at', [$start_date, $end_date])->get();
         } else {
             $preorders = $preorders->take(10)->skip(0)->get();
         }
 
-        // return $this->countTotal_harga($preorders);
+        // return $preorders[0]->preorder->status;
 
         return view('preorders.index', [
             'preorders' => $preorders,
