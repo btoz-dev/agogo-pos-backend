@@ -29,7 +29,7 @@ class User extends Resource
             'username'  => $this->username,
             'email'     => $this->email,
             'name'      => $this->name,
-            'photo'     => $this->photo,
+            'photo'         => 'http://101.255.125.227:82/uploads/profile/' . $this->photo,            
             'role'      => $role_name,
 
             // 'created_at' => $this->created_at,

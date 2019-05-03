@@ -26,16 +26,15 @@
             <div class="container-fluid">
                 <div class="row">
                     <div class="col-md-12">
-                        
-                        {{-- @card --}}
-                            @slot('title')
-                            
-                            @endslot
+                        <div class="card">
+                            <div class="card-header with-border">
+                            </div>
+                            <div class="card-body">
                             
                             @if (session('success'))
-                                @alert(['type' => 'success'])
+                            <div class="alert alert-success alert-dismissible">
                                     {!! session('success') !!}
-                                @endalert
+                            </div>
                             @endif
                             
                             <div class="table-responsive">
@@ -88,10 +87,7 @@
                                 </table>
                             </div>
                             <a href="{{ route('users.create') }}" class="btn btn-primary btn-sm">Tambah Baru</a>
-                            @slot('footer')
-
-                            @endslot
-                        {{-- @endcard --}}
+                            </div>  
                     </div>
                 </div>
             </div>

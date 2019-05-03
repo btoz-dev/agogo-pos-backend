@@ -27,24 +27,29 @@
             <div class="container-fluid">
                 <div class="row">
                     <div class="col-md-12">
-                        @card
-                            @slot('title')
-                            
-                            @endslot
+                            <div class="card">
+                                    <div class="card-header with-border">
+                                    </div>
+                                    <div class="card-body">
                             
                             @if (session('error'))
-                                @alert(['type' => 'danger'])
+                            <div class="alert alert-danger alert-dismissible">
                                     {!! session('error') !!}
-                                @endalert
+                            </div>
                             @endif
                             
-                            <form action="{{ route('users.store') }}" method="post">
+                            <form action="{{ route('users.store') }}" method="post" enctype="multipart/form-data">
                                 {{ csrf_field() }}
                                 <div class="form-group">
                                     <label for="">Nama</label>
                                     <input type="text" name="name" class="form-control {{ $errors->has('name') ? 'is-invalid':'' }}" required>
                                     <p class="text-danger">{{ $errors->first('name') }}</p>
                                 </div>
+                                <div class="form-group">
+                                        <label for="">Username</label>
+                                        <input type="text" name="username" class="form-control {{ $errors->has('username') ? 'is-invalid':'' }}" required>
+                                        <p class="text-danger">{{ $errors->first('username') }}</p>
+                                    </div>
                                 <div class="form-group">
                                     <label for="">Email</label>
                                     <input type="email" name="email" class="form-control {{ $errors->has('email') ? 'is-invalid':'' }}" required>
@@ -66,15 +71,17 @@
                                     <p class="text-danger">{{ $errors->first('role') }}</p>
                                 </div>
                                 <div class="form-group">
+                                        <label for="">Foto</label>
+                                        <input type="file" name="photo" class="form-control">
+                                        <p class="text-danger">{{ $errors->first('photo') }}</p>
+                                    </div>
+                                <div class="form-group">
                                     <button class="btn btn-primary btn-sm">
                                         <i class="fa fa-send"></i> Simpan
                                     </button>
                                 </div>
                             </form>
-                            @slot('footer')
-
-                            @endslot
-                        @endcard
+                                    </div>
                     </div>
                 </div>
             </div>
