@@ -31,7 +31,7 @@ class Product extends Resource
             'stock'         => $this->stock,
             'price'         => $this->price,
             'category_id'   => $this->category_id,
-            'photo'         => $this->photo,
+            'photo'         => public_path('uploads/product/').$this->photo,
             'cat_name'      => $role_name
         ];
     }

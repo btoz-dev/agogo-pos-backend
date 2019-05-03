@@ -57,10 +57,10 @@ Route::group([
 
 //Produk API
 Route::resource('product', 'ProductController');
-// Route::get('/products', function () {
-//     return new ProductCollection(Product::all());
-// });
-Route::get('/products', 'ProductController@getAllProduct');
+Route::get('/products', function () {
+    return new ProductCollection(Product::all());
+});
+// Route::get('/products', 'ProductController@getAllProduct');
 Route::get('/productByCat/{id}', 'ProductController@productByCat');
 
 // Route::get('/product/{id}', 'OrderController@getProduct');
