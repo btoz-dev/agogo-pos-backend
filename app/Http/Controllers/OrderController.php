@@ -142,9 +142,9 @@ class OrderController extends Controller
             $order = $order->first();
             $explode = explode('-', $order->invoice);
             $count = $explode[1] + 1;
-            return 'INV-' . $count;
+            return 'TK-' . $count;
         }
-        return 'INV-1';
+        return 'TK-1';
     }
 
     public function generateInvoiceRefunds()
