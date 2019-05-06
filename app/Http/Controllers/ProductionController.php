@@ -43,28 +43,53 @@ class ProductionController extends Controller
     {
         DB::beginTransaction();
         try {
-            $production = Production::create(array(
-                'product_id'            => $request[0]['product_id'],
-                'produksi1'             => $request[0]['produksi1'],
-                'produksi2'             => $request[0]['produksi2'],
-                'produksi3'             => $request[0]['produksi3'],
-                'total_produksi'        => $request[0]['total_produksi'],
-                'penjualan_toko'        => $request[0]['penjualan_toko'],
-                'penjualan_pemesanan'   => $request[0]['penjualan_pemesanan'],
-                'total_penjualan'       => $request[0]['total_penjualan'],
-                'ket_rusak'             => $request[0]['ket_rusak'],
-                'ket_lain'              => $request[0]['ket_lain'],
-                'total_lain'            => $request[0]['total_lain'],
-                'catatan'               => $request[0]['catatan'],
-                'stock_awal'            => $request[0]['stock_awal'],
-                'sisa_stock'            => $request[0]['sisa_stock'],
-            ));
+            $result = collect($request)->map(function ($value) {
+                return [
+                'product_id'            => $value['product_id'],
+                'produksi1'             => $value['produksi1'],
+                'produksi2'             => $value['produksi2'],
+                'produksi3'             => $value['produksi3'],
+                'total_produksi'        => $value['total_produksi'],
+                'penjualan_toko'        => $value['penjualan_toko'],
+                'penjualan_pemesanan'   => $value['penjualan_pemesanan'],
+                'total_penjualan'       => $value['total_penjualan'],
+                'ket_rusak'             => $value['ket_rusak'],
+                'ket_lain'              => $value['ket_lain'],
+                'total_lain'            => $value['total_lain'],
+                'catatan'               => $value['catatan'],
+                'stock_awal'            => $value['stock_awal'],
+                'sisa_stock'            => $value['sisa_stock'],
+                ];
+            })->all();
             // return response($result);
+
+            foreach ($result as $key => $row) {                
+                $production = Production::create([
+                    'product_id'            => $row['product_id'],
+                    'produksi1'             => $row['produksi1'],
+                    'produksi2'             => $row['produksi2'],
+                    'produksi3'             => $row['produksi3'],
+                    'total_produksi'        => $row['total_produksi'],
+                    'penjualan_toko'        => $row['penjualan_toko'],
+                    'penjualan_pemesanan'   => $row['penjualan_pemesanan'],
+                    'total_penjualan'       => $row['total_penjualan'],
+                    'ket_rusak'             => $row['ket_rusak'],
+                    'ket_lain'              => $row['ket_lain'],
+                    'total_lain'            => $row['total_lain'],
+                    'catatan'               => $row['catatan'],
+                    'stock_awal'            => $row['stock_awal'],
+                    'sisa_stock'            => $row['sisa_stock'],
+                    ]);                
+                    // return response($row['product_id']);
+                //return response($getCount[0]['stock']);
+                               
+            }
+
             DB::commit();
 
             return response()->json([
                 'status' => 'success',
-                'message' => $production,
+                'message' => 'Produksi Berhasil',
             ]);
         } catch (Exception $e) {
             DB::rollback();
@@ -73,6 +98,9 @@ class ProductionController extends Controller
                 'message' => $e->getMessage()
             ], 400);
         }
+
+
+
     }
 
 
