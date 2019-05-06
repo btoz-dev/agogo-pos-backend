@@ -27,16 +27,21 @@ class ProductionController extends Controller
         return response()->json($products, 200);
     }
 
-    public function getOrderByProduct($id)
+    public function getTrxByProduct($id)
     {
-        $order = DB::table('order_details')->where('product_id', $id)->count();
-        return response()->json($order, 200);
+        $order = DB::table('order_details')->where('product_id', $id)->sum('qty');
+        $preorder = DB::table('preorder_details')->where('product_id', $id)->sum('qty');
+
+        return response()->json(array(
+            'count_order' => $order,
+            'count_preorder' => $preorder,
+        ),200);
     }
 
     public function getPreorderByProduct($id)
     {
-        $order = DB::table('preorder_details')->where('product_id', $id)->count();
-        return response()->json($order, 200);
+        $preorder = DB::table('preorder_details')->where('product_id', $id)->count();
+        return response()->json($preorder, 200);
     }
 
     public function postProduction(Request $request)

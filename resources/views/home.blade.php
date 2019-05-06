@@ -42,7 +42,7 @@
                     <div class="col-lg-3 col-6">
                         <div class="small-box bg-success">
                             <div class="inner">
-                                <h3>{{ $order }}</h3>
+                                <h3>{{ $preorder }}</h3>
                                 <p>Pesanan</p>
                             </div>
                             <div class="icon">
@@ -54,7 +54,7 @@
                     <div class="col-lg-3 col-6">
                         <div class="small-box bg-warning">
                             <div class="inner">
-                                <h3>{{ $customer }}</h3>
+                                <h3>{{ $order }}</h3>
                                 <p>Order</p>
                             </div>
                             <div class="icon">
@@ -66,7 +66,7 @@
                         <div class="small-box bg-danger">
                             <div class="inner">
                                 <h3>{{ $user }}</h3>
-                                <p>Karyawan</p>
+                                <p>User</p>
                             </div>
                             <div class="icon">
                                 <i class="ion ion-person-add"></i>

@@ -43,6 +43,7 @@
                                         <tr>
                                             <td>#</td>
                                             <td>Nama</td>
+                                            <td>Username</td>
                                             <td>Email</td>
                                             <td>Role</td>
                                             <td>Status</td>
@@ -55,6 +56,7 @@
                                         <tr>
                                             <td>{{ $no++ }}</td>
                                             <td>{{ $row->name }}</td>
+                                            <td>{{ $row->username }}</td>
                                             <td>{{ $row->email }}</td>
                                             <td>
                                                 @foreach ($row->getRoleNames() as $role)

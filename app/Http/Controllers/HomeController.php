@@ -9,6 +9,7 @@ use App\Order;
 use App\User;
 use Carbon\Carbon;
 use DB;
+use App\Preorder;
 
 class HomeController extends Controller
 {
@@ -16,9 +17,9 @@ class HomeController extends Controller
     {
         $product = Product::count();
         $order = Order::count();
-        $customer = Customer::count();
+        $preorder = Preorder::count();
         $user = User::count();
-        return view('home', compact('product', 'order', 'customer', 'user'));
+        return view('home', compact('product', 'order', 'preorder', 'user'));
     }
 
     public function getChart()

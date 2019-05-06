@@ -22,7 +22,8 @@
                     </div>            
                     <div class="col-11">
                 <div class="form-group has-feedback">
-                    <input type="email"
+                    <input 
+                        type="text"
                         name="email" 
                         class="form-control {{ $errors->has('email') ? ' is-invalid' : '' }}" 
                         placeholder="{{ __('Username') }}"
