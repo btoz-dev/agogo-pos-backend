@@ -94,7 +94,7 @@ Route::post('/editPreorders', 'PreorderController@editPreorder');
 //Productions API
 Route::get('/availProducts', 'ProductionController@getAvailProduct');
 Route::get('/notAvailProducts', 'ProductionController@getNotAvailProduct');
-Route::get('/TrxByProduct/{id}', 'ProductionController@getTrxByProduct');
+Route::get('/TrxByProduct', 'ProductionController@getTrxByProduct');
 Route::get('/preorderByProduct/{id}', 'ProductionController@getPreorderByProduct');
 Route::post('/postProduction', 'ProductionController@postProduction');
 Route::put('/updateStock/{id}', 'ProductionController@updateStock');
