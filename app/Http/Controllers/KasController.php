@@ -48,4 +48,35 @@ class KasController extends Controller
         
         
     }
+
+    public function laporan(Request $request)
+    {
+        $kas = Kas::orderBy('created_at', 'DESC')->with('user');
+
+        if (!empty($request->user_id)) {
+            $kas = $kas->where('user_id', $request->user_id);
+        }
+
+        if (!empty($request->start_date) && !empty($request->end_date)) {
+            $this->validate($request, [
+                'start_date' => 'nullable|date',
+                'end_date' => 'nullable|date'
+            ]);
+            $start_date = Carbon::parse($request->start_date)->format('Y-m-d') . ' 00:00:01';
+            $end_date = Carbon::parse($request->end_date)->format('Y-m-d') . ' 23:59:59';
+
+            $kas = $kas->whereBetween('created_at', [$start_date, $end_date])->get();
+        } else {
+            $kas = $kas->take(10)->skip(0)->get();
+        }
+
+        return view('kas.laporan', [
+            'kas' => $kas,
+            // 'sold' => $this->countItem($orders),
+            // 'total' => $this->countTotal($orders),
+            // 'total_customer' => $this->countCustomer($orders),
+            // 'total_harga' => $this->countTotal_transaksi($kas),
+            
+        ]);
+    }
 }

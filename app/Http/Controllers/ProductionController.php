@@ -132,5 +132,32 @@ class ProductionController extends Controller
 
     }
 
+    public function laporan(Request $request)
+    {
+        $stock = Production::orderBy('created_at', 'DESC')->with('product');
+
+        if (!empty($request->start_date) && !empty($request->end_date)) {
+            $this->validate($request, [
+                'start_date' => 'nullable|date',
+                'end_date' => 'nullable|date'
+            ]);
+            $start_date = Carbon::parse($request->start_date)->format('Y-m-d') . ' 00:00:01';
+            $end_date = Carbon::parse($request->end_date)->format('Y-m-d') . ' 23:59:59';
+
+            $stock = $stock->whereBetween('created_at', [$start_date, $end_date])->get();
+        } else {
+            $stock = $stock->take(10)->skip(0)->get();
+        }
+
+        return view('productions.laporan', [
+            'stock' => $stock,
+            // 'sold' => $this->countItem($orders),
+            // 'total' => $this->countTotal($orders),
+            // 'total_customer' => $this->countCustomer($orders),
+            // 'total_harga' => $this->countTotal_transaksi($kas),
+            
+        ]);
+    }
+
 
 }

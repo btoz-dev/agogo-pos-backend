@@ -83,6 +83,18 @@
                                 <p>Pemesanan</p>
                             </a>
                         </li>
+                        <li class="nav-item">
+                            <a href="{{ route('kas.laporan') }}" class="nav-link">
+                                <i class="fa fa-circle-o nav-icon"></i>
+                                <p>Kas</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{{ route('production.laporan') }}" class="nav-link">
+                                <i class="fa fa-circle-o nav-icon"></i>
+                                <p>Stok</p>
+                            </a>
+                        </li>
                     </ul>
                 </li>
                 

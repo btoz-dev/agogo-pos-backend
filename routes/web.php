@@ -66,6 +66,16 @@ Route::group(['middleware' => 'auth'], function() {
 
     Route::group(['middleware'], function() {
 
+        Route::get('/laporan_kas', 'KasController@laporan')->name('kas.laporan');
+    });
+
+    Route::group(['middleware'], function() {
+
+        Route::get('/laporan_produksi', 'ProductionController@laporan')->name('production.laporan');
+    });
+
+    Route::group(['middleware'], function() {
+
         Route::get('/preorder', 'PreorderController@laporan_pemesanan')->name('preorder.index');
         Route::get('/preorder/pdf/{invoice}', 'PreorderController@invoicePdf')->name('preorder.pdf');
         Route::get('/preorder/excel/{invoice}', 'PreorderController@invoiceExcel')->name('preorder.excel');
