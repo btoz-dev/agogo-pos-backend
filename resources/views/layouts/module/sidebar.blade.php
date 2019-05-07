@@ -72,6 +72,12 @@
                             </a>
                         </li>
                         <li class="nav-item">
+                            <a href="{{ route('order.laporan_penjualan') }}" class="nav-link">
+                                <i class="fa fa-circle-o nav-icon"></i>
+                                <p>Penjualan Bulanan</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
                             <a href="{{ route('preorder.index') }}" class="nav-link">
                                 <i class="fa fa-circle-o nav-icon"></i>
                                 <p>Pemesanan</p>

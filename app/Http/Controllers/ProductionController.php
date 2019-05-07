@@ -2,10 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use App\Http\Resources\Product;
-use Illuminate\Support\Facades\DB;
 use App\Production;
+use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
+use App\Http\Resources\Product;
+use DB;
 
 class ProductionController extends Controller
 {
@@ -29,13 +30,36 @@ class ProductionController extends Controller
 
     public function getTrxByProduct($id)
     {
-        $order = DB::table('order_details')->where('product_id', $id)->sum('qty');
-        $preorder = DB::table('preorder_details')->where('product_id', $id)->sum('qty');
+        $order = DB::table('order_details')
+            ->where('product_id', $id)
+            ->where( 'created_at', '>', Carbon::now()->subDays(1))
+            ->sum('qty');
+        $preorder = DB::table('preorder_details')
+            ->where('product_id', $id)
+            ->where( 'created_at', '>', Carbon::now()->subDays(1))
+            ->sum('qty');
+        $getStock = DB::table('products')
+            ->select('stock')
+            ->where('id', $id) 
+            ->get();
+        $stock_awal = $getStock[0]->stock + $preorder + $order;
 
         return response()->json(array(
-            'count_order' => $order,
-            'count_preorder' => $preorder,
+            'count_order'   => $order,
+            'count_preorder'=> $preorder,
+            'stok_kemarin'  => $stock_awal
         ),200);
+    }
+
+    public function updateStock(Request $request,$id)
+    {
+
+        return $request;
+
+        $products = DB::table('products')->where('id', $id)->update(['stock' => 15]);
+        // $products->stock = $request->input('sisa_stock');
+        // $products->save();
+        return response()->json(['status' => 'success'], 200);
     }
 
     public function getPreorderByProduct($id)
