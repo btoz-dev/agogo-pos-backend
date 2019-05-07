@@ -28,18 +28,42 @@ class ProductionController extends Controller
         return response()->json($products, 200);
     }
 
-    public function getTrxByProduct()
+    public function getTrxByProduct($id)
+    {
+        $order = DB::table('order_details')
+            ->where('product_id', $id)
+            ->where( 'created_at', '>', Carbon::now()->subDays(1))
+            ->sum('qty');
+        $preorder = DB::table('preorder_details')
+            ->where('product_id', $id)
+            ->where( 'created_at', '>', Carbon::now()->subDays(1))
+            ->sum('qty');
+        $getStock = DB::table('products')
+            ->select('stock')
+            ->where('id', $id) 
+            ->get();
+        $stock_awal = $getStock[0]->stock + $preorder + $order;
+
+        return response()->json(array(
+            'count_order'   => $order,
+            'count_preorder'=> $preorder,
+            'stok_kemarin'  => $stock_awal
+        ),200);
+    }
+
+    public function getAllTrxByProduct()
     {
 
         $getTrx = DB::table('products')
-        ->join('preorder_details', 'products.id', '=', 'preorder_details.product_id')
-        ->join('order_details', 'products.id', '=', 'order_details.product_id')
+        ->Join('preorder_details', 'products.id', '=', 'preorder_details.product_id')
+        ->Join('order_details', 'products.id', '=', 'order_details.product_id')
         ->select('products.id', 'products.stock',
-                    DB::raw('sum(preorder_details.qty) as total_preorder'),
-                    DB::raw('sum(order_details.qty) as total_order'),
+                    DB::raw('COALESCE(sum(preorder_details.qty),0) as total_preorder'),
+                    DB::raw('COALESCE(sum(order_details.qty),0) as total_order'),
                     DB::raw('products.stock +  sum(order_details.qty) + sum(preorder_details.qty) as stock_awal'))
         ->groupBy('products.id','products.stock')
-        ->where( 'preorder_details.created_at', '>', Carbon::now()->subDays(1))
+        ->where('order_details.created_at', '>', Carbon::now()->subDays(30))
+        ->where('preorder_details.created_at', '>', Carbon::now()->subDays(30))
         ->get();
 
         return response()->json($getTrx,200);
