@@ -14,10 +14,10 @@ class KasController extends Controller
     {
         //Check apakah user punya role 
         $get_role = User::role(['admin', 'kasir'])
-            ->where('username', $request[0]['username_approve'])->count();
+            ->where('username', $request[0]['username_approval'])->count();
 
         //Jika user sudah punya role admin / approver selanjutnya di cek password nya
-        if (auth()->attempt(['username' => $request[0]['username_approve'], 'password' => $request[0]['pin_aprov'], 'status' => 1]) && $get_role > 0) {
+        if (auth()->attempt(['username' => $request[0]['username_approval'], 'password' => $request[0]['pin_approval'], 'status' => 1]) && $get_role > 0) {
             DB::beginTransaction();
         try {
             $kas = Kas::create(array(
