@@ -12,9 +12,12 @@ class KasController extends Controller
 {
     public function postKas(Request $request)
     {
-        
-        $get_approver = User::role('approver')->where('pass', $request[0]['pin_aprov'])->count();
-        if ($get_approver > 0 ) {
+        //Check apakah user punya role 
+        $get_role = User::role(['admin', 'kasir'])
+            ->where('username', $request[0]['username_approve'])->count();
+
+        //Jika user sudah punya role admin / approver selanjutnya di cek password nya
+        if (auth()->attempt(['username' => $request[0]['username_approve'], 'password' => $request[0]['pin_aprov'], 'status' => 1]) && $get_role > 0) {
             DB::beginTransaction();
         try {
             $kas = Kas::create(array(
@@ -41,7 +44,7 @@ class KasController extends Controller
         else {
             return response()->json([
                 'status' => 'failed',
-                'message' => 'Invalid PIN'
+                'message' => 'Invalid Username / PIN'
             ], 400);
         }
         // return $users;
