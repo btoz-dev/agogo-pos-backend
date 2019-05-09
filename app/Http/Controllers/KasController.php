@@ -99,7 +99,7 @@ class KasController extends Controller
         ->sum('total');
 
         $getSaldoAwal = Kas::select('saldo_awal')
-        ->where('created_t', '>', Carbon::today())
+        ->where('created_at', '>', Carbon::today())
         ->get();
 
         // return $getSaldoAwal;
