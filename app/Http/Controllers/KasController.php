@@ -4,6 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Kas;
 use App\User;
+use App\Order;
+use Carbon\Carbon;
+use App\Order_detail;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
@@ -81,5 +84,30 @@ class KasController extends Controller
             // 'total_harga' => $this->countTotal_transaksi($kas),
             
         ]);
+    }
+
+    public function getTrx()
+    {
+
+        $sumOrders = DB::table('orders')
+        ->where('created_at', '>', date('Y-m-d', strtotime("-1 days")))
+        ->sum('total');
+
+        $sumPreorders = DB::table('preorders')
+        ->where('created_at', '>', date('Y-m-d', strtotime("-1 days")))
+        ->sum('total');
+
+        $getSaldoAwal = Kas::select('saldo_awal')
+        ->where('created_at', '>', date('Y-m-d', strtotime("-1 days")))
+        ->get();
+
+        $data = $sumOrders + $sumPreorders;
+
+        return response()->json(array(
+            'total_transaksi' => $data,
+            'saldo_awal' => $getSaldoAwal[0]->saldo_awal,
+        ), 200);
+
+        
     }
 }

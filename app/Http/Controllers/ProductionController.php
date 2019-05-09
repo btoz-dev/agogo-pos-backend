@@ -32,11 +32,11 @@ class ProductionController extends Controller
     {
         $order = DB::table('order_details')
             ->where('product_id', $id)
-            ->where( 'created_at', '>', Carbon::now()->subDays(1))
+            ->where('created_at', '>', date('Y-m-d', strtotime("-1 days")))
             ->sum('qty');
         $preorder = DB::table('preorder_details')
             ->where('product_id', $id)
-            ->where( 'created_at', '>', Carbon::now()->subDays(1))
+            ->where('created_at', '>', date('Y-m-d', strtotime("-1 days")))
             ->sum('qty');
         $getStock = DB::table('products')
             ->select('stock')
