@@ -25,7 +25,7 @@
         <section class="content" id="dw">
             <div class="container-fluid">
                 <div class="row">
-                    {{-- <div class="col-md-12">
+                    <div class="col-md-12">
                         <div class="card">
                             <div class="card-header with-border">
                                 <h3 class="card-title">Filter Transaksi</h3>
@@ -61,11 +61,11 @@
 
                             </div>
                         </div>
-                    </div> --}}
+                    </div>
                     <div class="col-md-12">
                         <div class="card">
                             <div class="card-header with-border">
-                                <h3 class="card-title">Laporan Penjualan Bulanan</h3>
+                                <h3 class="card-title">Laporan Produksi</h3>
                             </div>
                             <div class="card-body">
                             <div class="table-responsive">
@@ -147,7 +147,7 @@
       "autoWidth": true,
       dom: 'Bfrtip',
         buttons: [
-            'copy', 'csv', 'excel', 'pdf', 'print','colvis'
+            'excel', 'pdf', 'print',
         ]
     });
     

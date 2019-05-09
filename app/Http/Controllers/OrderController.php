@@ -147,6 +147,23 @@ class OrderController extends Controller
         return 'TK-1';
     }
 
+    public function checkLastInvoice()
+    {
+        $order = Order::orderBy('id', 'DESC');
+        if ($order->count() > 0) {
+            $order = $order->first();
+            $explode = explode('-', $order->invoice);
+            $count = $explode[1] + 1;
+            $result =  'TK-' . $count;
+            return response()->json(array(
+                'current_invoice' => $result), 200);        
+        }
+        $result = 'TK-1';
+        return response()->json(array(
+            'current_invoice' => $result), 200);
+
+    }
+
     public function generateInvoiceRefunds()
     {
         $refund = Refund::orderBy('id', 'DESC');
