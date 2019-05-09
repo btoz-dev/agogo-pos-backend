@@ -88,18 +88,21 @@ class KasController extends Controller
 
     public function getTrx()
     {
+        $today = 
 
         $sumOrders = DB::table('orders')
-        ->where('created_at', '>', date('Y-m-d', strtotime("-1 days")))
+        ->where('created_at', '>', Carbon::today())
         ->sum('total');
 
         $sumPreorders = DB::table('preorders')
-        ->where('created_at', '>', date('Y-m-d', strtotime("-1 days")))
+        ->where('created_at', '>', Carbon::today())
         ->sum('total');
 
         $getSaldoAwal = Kas::select('saldo_awal')
-        ->where('created_at', '>', date('Y-m-d', strtotime("-1 days")))
+        ->where('created_t', '>', Carbon::today())
         ->get();
+
+        // return $getSaldoAwal;
 
         $data = $sumOrders + $sumPreorders;
 
