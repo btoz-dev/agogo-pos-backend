@@ -100,15 +100,20 @@ class KasController extends Controller
 
         $getSaldoAwal = Kas::select('saldo_awal')
         ->where('created_at', '>', Carbon::today())
-        ->get();
+        ->first();
 
-        // return $getSaldoAwal;
+        if(!empty( $getSaldoAwal[0]->saldo_awal)) {            
+            $saldoResult = $getSaldoAwal[0]->saldo_awal ;
+        }
+        else {
+            $saldoResult = 0;
+        }
 
         $data = $sumOrders + $sumPreorders;
 
         return response()->json(array(
             'total_transaksi' => $data,
-            'saldo_awal' => $getSaldoAwal[0]->saldo_awal,
+            'saldo_awal' => $saldoResult,
         ), 200);
 
         
