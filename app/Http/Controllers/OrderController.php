@@ -483,9 +483,13 @@ class OrderController extends Controller
 
     public function postRefunds(Request $request){
 
-        // Cek Approver
-        $get_approver = User::role('approver')->where('pass', $request[0]['pin_aprov'])->count();
-        if ($get_approver > 0 ) {
+        //Check apakah user punya role 
+        $get_role = User::role(['admin', 'manager'])
+            ->where('username', $request[0]['username_approval'])->count();
+
+        //Jika user sudah punya role admin / approver selanjutnya di cek password nya
+        if (auth()->attempt(['username' => $request[0]['username_approval'], 'password' => $request[0]['pin_approval'], 'status' => 1]) && $get_role > 0) {
+
         
         DB::beginTransaction();
         try {
