@@ -329,8 +329,15 @@ class OrderController extends Controller
         try {
             // return response($request[0]['user_id']);
 
+            if(!empty( $request[0]['invoice']) ){            
+                $setInvoice = $request[0]['invoice'] ;
+            }
+            else {
+                $setInvoice = $this->generateInvoice();
+            }
+
             $order = Order::create(array(
-                'invoice' => $this->generateInvoice(),
+                'invoice'       => $setInvoice,
                 // 'customer_id' => $customer->id,
                 'user_id'       => $request[0]['user_id'],
                 'subtotal'      => $request[0]['subtotal'],
