@@ -1,7 +1,7 @@
 @extends('layouts.master')
 
 @section('title')
-    <title>Laopran Penjualan Bualanan</title>
+    <title>Laopran Produksi</title>
 
 @endsection
 
