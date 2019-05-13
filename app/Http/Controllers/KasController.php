@@ -102,8 +102,10 @@ class KasController extends Controller
         ->where('created_at', '>', Carbon::today())
         ->first();
 
-        if(!empty( $getSaldoAwal[0]->saldo_awal)) {            
-            $saldoResult = $getSaldoAwal[0]->saldo_awal ;
+        // return $getSaldoAwal->saldo_awal;
+
+        if(!empty( $getSaldoAwal->saldo_awal)) {            
+            $saldoResult = $getSaldoAwal->saldo_awal ;
         }
         else {
             $saldoResult = 0;
