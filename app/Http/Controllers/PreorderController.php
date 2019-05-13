@@ -23,6 +23,23 @@ class PreorderController extends Controller
         }
         return 'PS-1';
     }
+
+    public function checkLastInvoice()
+    {
+        $preorder = Preorder::orderBy('id', 'DESC');
+        if ($preorder->count() > 0) {
+            $preorder = $preorder->first();
+            $explode = explode('-', $preorder->invoice);
+            $count = $explode[1] + 1;
+            $result =  'PS-' . $count;
+            return response()->json(array(
+                'current_invoice' => $result), 200);        
+        }
+        $result = 'PS-1';
+        return response()->json(array(
+            'current_invoice' => $result), 200);
+
+    }
     /**
      * Display a listing of the resource.
      *
@@ -43,7 +60,7 @@ class PreorderController extends Controller
     {
         // $customers = Customer::orderBy('name', 'ASC')->get();
         $users = User::role('kasir')->orderBy('name', 'ASC')->get();
-        $preorders = Preorder_detail::orderBy('created_at', 'DESC')->with('product');
+        $preorders = Preorder::orderBy('created_at', 'DESC');
 
         // if (!empty($request->customer_id)) {
         //     $orders = $orders->where('customer_id', $request->customer_id);

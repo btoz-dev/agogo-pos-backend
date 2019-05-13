@@ -71,29 +71,46 @@
                                 <table id="example2" class="table table-bordered table-hover dataTable">
                                     <thead>
                                         <tr><th>Preorder ID</th>
+                                            <th>Nama Pelanggan</th>
+                                            <th>Tanggal Pesan</th>
+                                            <th>Tanggal Selesai</th>
+                                            <th>Jam Selesai</th>
                                             <th>Order Status</th>
-                                            <th>Kode Menu</th>                                            
+                                            <th>Kasir</th>
+
+                                            {{-- <th>Kode Menu</th>                                             --}}
                                             {{-- <th>Pelanggan</th> --}}
-                                            <th>Nama Menu</th>
-                                            <th>Total Quantity</th>
+                                            {{-- <th>Nama Menu</th> --}}
+                                            {{-- <th>Total Quantity</th> --}}
                                             <th>Total Harga</th>
-                                            <th>Tgl Transaksi</th>
+                                            <th>DP</th>
+                                            <th>Sisa</th>
+                                            {{-- <th>Tgl Transaksi</th> --}}
                                             {{-- <th>Aksi</th> --}}
                                         </tr>
                                     </thead>
                                     <tbody>
                                         @forelse ($preorders as $row)
                                         <tr>
-                                            <td>{{ $row->preorder_id }}</td>
-                                            <td>{{ $row->preorder->status }}</td>
-                                            <td>{{ $row->product_id }}</td>
-                                            <td>{{ $row->product->name }}</td>
+                                            <td>{{ $row->invoice }}</td>
+                                            <td>{{ $row->nama }}</td>
+                                            <td>{{ $row->created_at }}</td>
+                                            <td>{{ $row->tgl_selesai }}</td>
+                                            <td>{{ $row->waktu_selesai }}</td>
+                                            <td>{{ $row->status }}</td>
+                                            <td>{{ $row->user->name }}</td>
+                                            <td>{{ $row->total }}</td>
+                                            <td>{{ $row->uang_muka }}</td>
+                                            <td>{{ $row->sisa_harus_bayar }}</td>
+
+
+
                                             {{-- <td>{{ $row->customer->name }}</td> --}}
-                                            <td>{{ number_format($row->qty) }}</td>
-                                            <td>Rp {{ number_format($row->price) }}</td>
+                                            {{-- <td>{{ number_format($row->qty) }}</td> --}}
+                                            {{-- <td>Rp {{ number_format($row->price) }}</td> --}}
                                             {{-- <td>{{ $row->user->name }}</td> --}}
                                             {{-- <td>{{ $row->created_at->format('d-m-Y H:i:s') }}</td> --}}
-                                            <td>{{ $row->created_at->format('d-m-Y') }}</td>
+                                            {{-- <td>{{ $row->created_at->format('d-m-Y') }}</td> --}}
                                             {{-- <td>
                                                 <a href="{{ route('order.pdf', $row->invoice) }}" 
                                                     target="_blank"
@@ -116,7 +133,7 @@
                                     <tfoot>
                                         <tr>
                                             <th colspan="5" style="text-align:right">Grand Total : </th>
-                                            <th colspan="3" style="text-align:left">Rp.{{number_format($total_harga)}}</th>
+                                            <th colspan="5" style="text-align:left">Rp.{{number_format($total_harga)}}</th>
                                         </tr>
                                     </tfoot>
                                 </table>
