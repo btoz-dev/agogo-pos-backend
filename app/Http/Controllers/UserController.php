@@ -89,17 +89,29 @@ class UserController extends Controller
 
     public function update(Request $request, $id)
     {
+        // $user = User::findOrFail($id);
+        // return redirect(route('users.index'))->with(['success' => 'User: <strong>' . $user->username . '</strong> Diperbaharui']);
         $this->validate($request, [
+            'name' => 'required|string|max:100',
             'username' => 'required|string|max:100',
             'email' => 'required|email|exists:users,email',
             'password' => 'nullable|min:6',
+            'photo' => 'nullable|image|mimes:jpg,png,jpeg'
         ]);
 
         $user = User::findOrFail($id);
+        $photo = $user->photo;
+
+            if ($request->hasFile('photo')) {
+                !empty($photo) ? File::delete(public_path('uploads/profile/' . $photo)):null;
+                $photo = $this->saveFile($user->name, $request->file('photo'));
+            }
         $password = !empty($request->password) ? bcrypt($request->password):$user->password;
         $user->update([
+            'name'     => $request->name,
             'username' => $request->username,
-            'password' => $password
+            'password' => $password,
+            'photo' => $photo
         ]);
         return redirect(route('users.index'))->with(['success' => 'User: <strong>' . $user->username . '</strong> Diperbaharui']);
     }

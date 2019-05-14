@@ -27,20 +27,26 @@
             <div class="container-fluid">
                 <div class="row">
                     <div class="col-md-12">
-                        @card
-                            @slot('title')
+                        <div class="card">
+                            <div class="card-header with-border">
+                            </div>
+                            <div class="card-body">
+                                    @if (session('error'))
+                                    <div class="alert alert-danger alert-dismissible">
+                                            {!! session('error') !!}
+                                    </div>
+                                    @endif    
                             
-                            @endslot
-                            
-                            @if (session('error'))
-                                @alert(['type' => 'danger'])
-                                    {!! session('error') !!}
-                                @endalert
-                            @endif
-                            
-                            <form action="{{ route('users.update', $user->id) }}" method="post">
-                                @csrf
+                            <form action="{{ route('users.update', $user->id) }}" method="post" enctype="multipart/form-data">
+                                {{ csrf_field() }}
                                 <input type="hidden" name="_method" value="PUT">
+                                <div class="form-group">
+                                    <label for="">Username</label>
+                                    <input type="text" name="username" 
+                                        value="{{ $user->username }}"
+                                        class="form-control {{ $errors->has('username') ? 'is-invalid':'' }}" required>
+                                    <p class="text-danger">{{ $errors->first('username') }}</p>
+                                </div>
                                 <div class="form-group">
                                     <label for="">Nama</label>
                                     <input type="text" name="name" 
@@ -64,15 +70,23 @@
                                     <p class="text-warning">Biarkan kosong, jika tidak ingin mengganti password</p>
                                 </div>
                                 <div class="form-group">
+                                    <label for="">Foto</label>
+                                    <input type="file" name="photo" class="form-control">
+                                    <p class="text-danger">{{ $errors->first('photo') }}</p>
+                                    @if (!empty($user->photo))
+                                        <hr>
+                                        <img src="{{ asset('uploads/profile/' . $user->photo) }}" 
+                                            alt="{{ $user->name }}"
+                                            width="150px" height="150px">
+                                    @endif
+                                </div>
+                                <div class="form-group">
                                     <button class="btn btn-primary btn-sm">
                                         <i class="fa fa-send"></i> Update
                                     </button>
                                 </div>
                             </form>
-                            @slot('footer')
-
-                            @endslot
-                        @endcard
+                           </div>
                     </div>
                 </div>
             </div>
