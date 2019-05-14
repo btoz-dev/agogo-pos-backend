@@ -43,7 +43,7 @@ class UserController extends Controller
         ]);        
 
         try {
-            $photo = null;
+            $photo = 'profile.png';
             if ($request->hasFile('photo')) {
                 $photo = $this->saveFile($request->name, $request->file('photo'));
             }
