@@ -1,7 +1,7 @@
 @extends('layouts.master')
 
 @section('title')
-    <title>Manajemen PreOrder</title>
+    <title>Laporan Pemesanan</title>
 @endsection
 
 @section('content')
@@ -11,12 +11,12 @@
                 <div class="row mb-2">
                     <div class="col-sm-6">
                     </div>
-                    <div class="col-sm-6">
+                    {{-- <div class="col-sm-6">
                         <ol class="breadcrumb float-sm-right">
                             <li class="breadcrumb-item"><a href="{{ route('home') }}">Home</a></li>
                             <li class="breadcrumb-item active">Order</li>
                         </ol>
-                    </div>
+                    </div> --}}
                 </div>
             </div>
         </div>
@@ -132,8 +132,8 @@
                                     </tbody>
                                     <tfoot>
                                         <tr>
-                                            <th colspan="5" style="text-align:right">Grand Total : </th>
-                                            <th colspan="5" style="text-align:left">Rp.{{number_format($total_harga)}}</th>
+                                            <th colspan="7" style="text-align:right">Grand Total : </th>
+                                            <th colspan="3" style="text-align:left">Rp.{{number_format($total_harga)}}</th>
                                         </tr>
                                     </tfoot>
                                 </table>

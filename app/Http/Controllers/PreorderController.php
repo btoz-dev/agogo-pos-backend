@@ -50,7 +50,7 @@ class PreorderController extends Controller
     {
         $total = 0;
         if ($preorders->count() > 0) {
-            $sub_total = $preorders->pluck('price')->all();
+            $sub_total = $preorders->pluck('total')->all();
             $total = array_sum($sub_total);
         }
         return $total;

@@ -11,23 +11,25 @@
 
             <form method="POST" action="{{ route('login') }}">
                 {{csrf_field()}}
+
                 @if (session('error'))
-                    @alert(['type' => 'danger'])
-                        {{ session('error') }}
-                    @endalert
+                            <div class="alert alert-danger alert-dismissible">
+                                    {!! session('error') !!}
+                            </div>
                 @endif
+                
                 <div class="row">
                     <div class="col-1">
-                <span class="fa fa-envelope form-control-feedback"> {{ $errors->first('email') }}</span> 
+                <span class="fa fa-envelope form-control-feedback"> {{ $errors->first('username') }}</span> 
                     </div>            
                     <div class="col-11">
                 <div class="form-group has-feedback">
                     <input 
                         type="text"
-                        name="email" 
-                        class="form-control {{ $errors->has('email') ? ' is-invalid' : '' }}" 
+                        name="username" 
+                        class="form-control {{ $errors->has('username') ? ' is-invalid' : '' }}" 
                         placeholder="{{ __('Username') }}"
-                        value="{{ old('email') }}">                    
+                        >                    
                 </div>
                     </div>
                 </div>
