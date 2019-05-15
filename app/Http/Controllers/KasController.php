@@ -16,7 +16,7 @@ class KasController extends Controller
     public function postKas(Request $request)
     {
         //Check apakah user punya role 
-        $get_role = User::role(['admin', 'kasir'])
+        $get_role = User::role(['admin', 'manager'])
             ->where('username', $request[0]['username_approval'])->count();
 
         //Jika user sudah punya role admin / approver selanjutnya di cek password nya
