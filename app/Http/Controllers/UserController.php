@@ -81,10 +81,28 @@ class UserController extends Controller
         return $images;
     }
 
+    private function saveAvatarFile($name, $photo)
+    {
+        $images = str_slug($name) . '.' . 'png';
+        $path = public_path('uploads/profile');
+
+        if (!File::isDirectory($path)) {
+            File::makeDirectory($path, 0777, true, true);
+        } 
+        Image::make($photo)->save($path . '/' . $images);
+        return $images;
+    }
+
     public function edit($id)
     {
         $user = User::findOrFail($id);
         return view('users.edit', compact('user'));
+    }
+
+    public function avatar()
+    {
+        $user = User::where('photo', 'profile.png')->first();
+        return view('users.default_avatar', compact('user'));
     }
 
     public function update(Request $request, $id)
@@ -117,6 +135,21 @@ class UserController extends Controller
             'photo' => $photo
         ]);
         return redirect(route('users.index'))->with(['success' => 'User: <strong>' . $user->username . '</strong> Diperbaharui']);
+    }
+    
+    public function setDefaultAvatar(Request $request)
+    {
+        $this->validate($request, [
+
+            'photo' => 'nullable|image|mimes:jpg,png,jpeg'
+        ]);
+
+        if ($request->hasFile('photo')) {
+            !empty($photo) ? File::delete(public_path('uploads/profile/profile.png')):null;
+                $photo = $this->saveAvatarFile('profile', $request->file('photo'));   
+        } 
+       
+        return redirect(route('users.avatar'))->with(['success' => '</strong> Default Avatar Diperbaharui']);
     }
 
     public function destroy($id)

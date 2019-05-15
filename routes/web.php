@@ -37,6 +37,8 @@ Route::group(['middleware' => 'auth'], function() {
     Route::put('roles/{id}', 'UserController@setRole')->name('users.set_role');
     Route::post('permission', 'UserController@addPermission')->name('users.add_permission');
     Route::get('role-permission', 'UserController@rolePermission')->name('users.roles_permission');
+    Route::get('default-avatar', 'UserController@avatar')->name('users.avatar');
+    Route::put('setDefaultAvatar', 'UserController@setDefaultAvatar')->name('users.setDefaultAvatar');
     Route::put('/users/permission/{role}', 'UserController@setRolePermission')->name('users.setRolePermission');
     Route::resource('/kategori', 'CategoryController');
     Route::resource('/produk', 'ProductController');

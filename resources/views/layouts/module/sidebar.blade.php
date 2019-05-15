@@ -120,11 +120,13 @@
                 {{ request()->is('role*') ? 'menu-open' : '' }}
                 {{ request()->is('role-permission*') ? 'menu-open' : '' }}
                 {{ request()->is('users*') ? 'menu-open' : '' }}
+                {{ request()->is('default-avatar') ? 'menu-open' : '' }}
                 ">
                     <a href="#" class="nav-link 
                     {{ request()->is('role*') ? 'active' : '' }}
                     {{ request()->is('role-permission*') ? 'active' : '' }}
                     {{ request()->is('users*') ? 'active' : '' }}
+                    {{ request()->is('default-avatar') ? 'active' : '' }}
                     ">
                         <i class="nav-icon fa fa-users"></i>
                         <p>
@@ -149,6 +151,12 @@
                             <a href="{{ route('users.index') }}" class="nav-link {{ request()->is('users*') ? 'active' : '' }}">
                                 <i class="fa fa-circle-o nav-icon"></i>
                                 <p>Users</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{{ route('users.avatar') }}" class="nav-link {{ request()->is('default-avatar') ? 'active' : '' }}">
+                                <i class="fa fa-circle-o nav-icon"></i>
+                                <p>Set Default Avatar</p>
                             </a>
                         </li>
                     </ul>
