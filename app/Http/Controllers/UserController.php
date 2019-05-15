@@ -102,10 +102,13 @@ class UserController extends Controller
         $user = User::findOrFail($id);
         $photo = $user->photo;
 
-            if ($request->hasFile('photo')) {
-                !empty($photo) ? File::delete(public_path('uploads/profile/' . $photo)):null;
+        if ($request->hasFile('photo') && $photo != 'profile.png') {
+            !empty($photo) ? File::delete(public_path('uploads/profile/' . $photo)):null;
                 $photo = $this->saveFile($user->name, $request->file('photo'));
             }
+        if ($request->hasFile('photo') && $photo = 'profile.png') {
+            $photo = $this->saveFile($user->name, $request->file('photo'));
+        }
         $password = !empty($request->password) ? bcrypt($request->password):$user->password;
         $user->update([
             'name'     => $request->name,
