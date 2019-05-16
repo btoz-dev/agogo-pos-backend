@@ -46,7 +46,7 @@
                                     <p class="text-danger">{{ $errors->first('photo') }}</p>  
                                     <label for="">Default Avatar Sekarang</label>                                
                                         <hr>
-                                        <img src="{{ asset('uploads/profile/profile.png') }}" 
+                                        <img src="{{ asset('uploads/profile/profile.png?t=2342') }}" 
                                             {{-- alt="{{ $user->name }}" --}}
                                             width="150px" height="150px">                                    
                                 </div>
