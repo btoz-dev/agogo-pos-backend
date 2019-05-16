@@ -1,7 +1,7 @@
 @extends('layouts.master')
 
 @section('title')
-    <title>Manajemen Order</title>
+    <title>Laporan Penjualan Produk</title>
 @endsection
 
 @section('content')
@@ -35,7 +35,7 @@
                                 <div class="row">
                                     <div class="col-md-6">
                                         <div class="form-group">
-                                            <label for="">Mulai Tanggal</label>
+                                            <label for="">Pilih Tanggal</label>
                                             <input type="text" name="start_date" 
                                                 class="form-control {{ $errors->has('start_date') ? 'is-invalid':'' }}"
                                                 id="start_date"
@@ -46,7 +46,7 @@
                                             <button class="btn btn-primary btn-sm">Cari</button>
                                         </div>
                                     </div>
-                                    <div class="col-md-6">
+                                    {{-- <div class="col-md-6">
                                         <div class="form-group">
                                             <label for="">Sampai Tanggal</label>
                                             <input type="text" name="end_date" 
@@ -54,7 +54,7 @@
                                                 id="end_date"
                                                 value="{{ request()->get('end_date') }}">
                                         </div>
-                                    </div>
+                                    </div> --}}
                                 </div>
                             </form>
 
@@ -64,7 +64,7 @@
                     <div class="col-md-12">
                         <div class="card">
                             <div class="card-header with-border">
-                                <h3 class="card-title">Laporan Penjualan By Produk</h3>
+                                <h3 class="card-title">Laporan Penjualan By Produk Per Hari</h3>
                             </div>
                             <div class="card-body">
                             <div class="table-responsive">
@@ -76,7 +76,7 @@
                                             <th>Nama Menu</th>
                                             <th>Total Quantity</th>
                                             <th>Total Harga</th>
-                                            <th>Tgl Transaksi</th>
+                                            {{-- <th>Tgl Transaksi</th> --}}
                                             {{-- <th>Aksi</th> --}}
                                         </tr>
                                     </thead>
@@ -89,7 +89,7 @@
                                             <td>{{ number_format($row->qty) }}</td>
                                             <td>Rp {{ number_format($row->price) }}</td>
                                             {{-- <td>{{ $row->user->name }}</td> --}}
-                                            <td>{{ $row->created_at->format('d-m-Y H:i:s') }}</td>
+                                            {{-- <td>{{ $row->created_at->format('d-m-Y H:i:s') }}</td> --}}
                                             {{-- <td>
                                                 <a href="{{ route('order.pdf', $row->invoice) }}" 
                                                     target="_blank"
@@ -148,6 +148,11 @@
       "ordering": true,
       "info": true,
       "autoWidth": true,
+      "bPaginate":true,
+      "sPaginationType":"full_numbers",
+      "bLengthChange": true,
+      "bInfo" : true
+
       dom: 'Bfrtip',
         buttons: [
             'excel', 'pdf', 'print',

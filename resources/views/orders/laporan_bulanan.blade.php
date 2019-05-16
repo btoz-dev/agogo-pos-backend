@@ -80,10 +80,10 @@
                                     <tbody>
                                         @forelse ($orders as $row)
                                         <tr>
-                                            <td>{{ $row->created_at }}</td>
-                                            <td>{{ $row->subtotal }}</td>
+                                            <td>{{ $row->trx_date }}</td>
+                                            <td>Rp {{ number_format($row->subtotal) }}</td>
                                             {{-- <td>{{ $row->customer->name }}</td> --}}
-                                            <td>{{ number_format($row->discount) }}</td>
+                                            <td>Rp {{ number_format($row->discount) }}</td>
                                             <td>Rp {{ number_format($row->total) }}</td>
                             
                                         </tr>
@@ -95,8 +95,10 @@
                                     </tbody>
                                     <tfoot>
                                         <tr>
-                                            <th colspan="3" style="text-align:right">Grand Total : </th>
-                                            <th colspan="3" style="text-align:left">Rp.{{number_format($total_harga)}}</th>
+                                            <th colspan="1" style="text-align:right">Grand Total : </th>
+                                            <th colspan="1" style="text-align:left">Rp {{number_format($total_subtotal)}}</th>
+                                            <th colspan="1" style="text-align:left">Rp {{number_format($total_discount)}}</th>
+                                            <th colspan="1" style="text-align:left">Rp {{number_format($total_harga)}}</th>
                                         </tr>
                                     </tfoot>
                                 </table>

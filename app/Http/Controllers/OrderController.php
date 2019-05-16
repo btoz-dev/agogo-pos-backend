@@ -180,27 +180,34 @@ class OrderController extends Controller
     {
         // $customers = Customer::orderBy('name', 'ASC')->get();
         $users = User::role('kasir')->orderBy('name', 'ASC')->get();
-        $orders = Order_detail::orderBy('created_at', 'DESC')->with('product');
-
-        // if (!empty($request->customer_id)) {
-        //     $orders = $orders->where('customer_id', $request->customer_id);
-        // }
-
+        $orders = Order_detail::join('orders', function ($join) {
+                $join->on('order_details.order_id', '=', 'orders.id')
+                ->where('orders.status','PAID')
+                ->orderBy('created_at', 'DESC')
+                ;
+                })
+                ->select('order_details.product_id', DB::raw('SUM(price) AS price'), DB::raw('SUM(qty) AS qty'))
+                ->groupBy('order_details.product_id' );
+        // $orders = $orders->where('status','PAID')->get();
+       
         if (!empty($request->user_id)) {
             $orders = $orders->where('user_id', $request->user_id);
         }
 
-        if (!empty($request->start_date) && !empty($request->end_date)) {
+        if (!empty($request->start_date)) {
             $this->validate($request, [
                 'start_date' => 'nullable|date',
-                'end_date' => 'nullable|date'
+                // 'end_date' => 'nullable|date'
             ]);
             $start_date = Carbon::parse($request->start_date)->format('Y-m-d') . ' 00:00:01';
-            $end_date = Carbon::parse($request->end_date)->format('Y-m-d') . ' 23:59:59';
+            $end_date = Carbon::parse($request->start_date)->format('Y-m-d') . ' 23:59:59';
 
-            $orders = $orders->whereBetween('created_at', [$start_date, $end_date])->get();
+            $orders = $orders->whereBetween('order_details.created_at', [$start_date, $end_date])->get();
         } else {
-            $orders = $orders->take(10)->skip(0)->get();
+            
+            $start_date = Carbon::now()->toDateString() . ' 00:00:01';
+            $end_date = Carbon::now()->toDateString() . ' 23:59:59';
+            $orders = $orders->get();
         }
 
         return view('orders.index', [
@@ -226,13 +233,15 @@ class OrderController extends Controller
 
     public function laporan_penjualan(Request $request)
     {
-        // $customers = Customer::orderBy('name', 'ASC')->get();
+        
         $users = User::role('kasir')->orderBy('name', 'ASC')->get();
-        $orders = Order::orderBy('created_at', 'DESC');
-
-        // if (!empty($request->customer_id)) {
-        //     $orders = $orders->where('customer_id', $request->customer_id);
-        // }
+        $orders = Order::select(DB::raw("DATE(created_at) as trx_date"),
+                                DB::raw('sum(subtotal) as subtotal'),
+                                DB::raw('sum(total) as total'),
+                                DB::raw('sum(discount) as discount'))
+                        ->where('status', 'PAID')
+                        ->groupBy(DB::raw("DATE(created_at)"))
+                        ->get();
 
         if (!empty($request->user_id)) {
             $orders = $orders->where('user_id', $request->user_id);
@@ -241,23 +250,18 @@ class OrderController extends Controller
         if (!empty($request->start_date) && !empty($request->end_date)) {
             $this->validate($request, [
                 'start_date' => 'nullable|date',
-                'end_date' => 'nullable|date'
+                'end_date'   => 'nullable|date'
             ]);
             $start_date = Carbon::parse($request->start_date)->format('Y-m-d') . ' 00:00:01';
-            $end_date = Carbon::parse($request->end_date)->format('Y-m-d') . ' 23:59:59';
-
-            $orders = $orders->whereBetween('created_at', [$start_date, $end_date])->get();
-        } else {
-            $orders = $orders->take(10)->skip(0)->get();
-        }
+            $end_date   = Carbon::parse($request->end_date)->format('Y-m-d') . ' 23:59:59';
+            $orders     = $orders->whereBetween('created_at', [$start_date, $end_date])->get();
+        } 
 
         return view('orders.laporan_bulanan', [
             'orders' => $orders,
-            // 'sold' => $this->countItem($orders),
-            // 'total' => $this->countTotal($orders),
-            // 'total_customer' => $this->countCustomer($orders),
-            'total_harga' => $this->countTotal_transaksi($orders),
-            // 'customers' => $customers,
+            'total_harga'       => $this->countTotal_transaksi($orders),
+            'total_subtotal'    => $this->countSubTotal_transaksi($orders),
+            'total_discount'    => $this->countDiscount_transaksi($orders),            
             'users' => $users
         ]);
     }
@@ -267,6 +271,26 @@ class OrderController extends Controller
         $total = 0;
         if ($orders->count() > 0) {
             $sub_total = $orders->pluck('total')->all();
+            $total = array_sum($sub_total);
+        }
+        return $total;
+    }
+
+    private function countSubTotal_transaksi($orders)
+    {
+        $total = 0;
+        if ($orders->count() > 0) {
+            $sub_total = $orders->pluck('subtotal')->all();
+            $total = array_sum($sub_total);
+        }
+        return $total;
+    }
+
+    private function countDiscount_transaksi($orders)
+    {
+        $total = 0;
+        if ($orders->count() > 0) {
+            $sub_total = $orders->pluck('discount')->all();
             $total = array_sum($sub_total);
         }
         return $total;
