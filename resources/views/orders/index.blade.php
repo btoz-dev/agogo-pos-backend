@@ -105,7 +105,7 @@
                                         </tr>
                                         @empty
                                         <tr>
-                                            <td class="text-center" colspan="7">Tidak ada data transaksi</td>
+                                            <td class="text-center" colspan="7">Tidak ada data transaksi hari ini</td>
                                         </tr>
                                         @endforelse
                                     </tbody>

@@ -207,7 +207,7 @@ class OrderController extends Controller
             
             $start_date = Carbon::now()->toDateString() . ' 00:00:01';
             $end_date = Carbon::now()->toDateString() . ' 23:59:59';
-            $orders = $orders->get();
+            $orders = $orders->whereBetween('order_details.created_at', [$start_date, $end_date])->get();
         }
 
         return view('orders.index', [

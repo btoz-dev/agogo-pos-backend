@@ -76,7 +76,7 @@
                                             <th>Tanggal Selesai</th>
                                             <th>Jam Selesai</th>
                                             <th>Order Status</th>
-                                            <th>Kasir</th>
+                                            <th>Pencatat</th>
 
                                             {{-- <th>Kode Menu</th>                                             --}}
                                             {{-- <th>Pelanggan</th> --}}
@@ -126,14 +126,17 @@
                                         </tr>
                                         @empty
                                         <tr>
-                                            <td class="text-center" colspan="7">Tidak ada data transaksi</td>
+                                            <td class="text-center" colspan="7">Tidak ada data transaksi Hari ini</td>
                                         </tr>
                                         @endforelse
                                     </tbody>
                                     <tfoot>
                                         <tr>
                                             <th colspan="7" style="text-align:right">Grand Total : </th>
-                                            <th colspan="3" style="text-align:left">Rp.{{number_format($total_harga)}}</th>
+                                            <th colspan="1" style="text-align:left">Rp {{number_format($total_harga)}}</th>
+                                            <th colspan="1" style="text-align:left">Rp {{number_format($total_harga)}}</th>
+                                            <th colspan="1" style="text-align:left">Rp {{number_format($total_harga)}}</th>
+
                                         </tr>
                                     </tfoot>
                                 </table>

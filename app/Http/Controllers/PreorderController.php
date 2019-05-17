@@ -60,7 +60,8 @@ class PreorderController extends Controller
     {
         // $customers = Customer::orderBy('name', 'ASC')->get();
         $users = User::role('kasir')->orderBy('name', 'ASC')->get();
-        $preorders = Preorder::orderBy('created_at', 'DESC');
+        $preorders = Preorder::orderBy('created_at', 'DESC')
+                    ->where('status','PAID');
 
         // if (!empty($request->customer_id)) {
         //     $orders = $orders->where('customer_id', $request->customer_id);
@@ -79,7 +80,9 @@ class PreorderController extends Controller
             $end_date = Carbon::parse($request->end_date)->format('Y-m-d') . ' 23:59:59';
             $preorders = $preorders->whereBetween('created_at', [$start_date, $end_date])->get();
         } else {
-            $preorders = $preorders->take(10)->skip(0)->get();
+            $start_date = Carbon::now()->toDateString() . ' 00:00:01';
+            $end_date = Carbon::now()->toDateString() . ' 23:59:59';
+            $preorders = $preorders->whereBetween('created_at', [$start_date, $end_date])->get();
         }
 
         // return $preorders[0]->preorder->status;
