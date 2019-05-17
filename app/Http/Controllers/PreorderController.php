@@ -130,7 +130,7 @@ class PreorderController extends Controller
                 // 'customer_id' => $customer->id,
                 'nama'          => $request[0]['nama'],
                 'tgl_selesai'   => $request[0]['tgl_selesai'],
-                'waktu_selesai' => $request[0]['tgl_selesai'],
+                'waktu_selesai' => $request[0]['waktu_selesai'],
                 'alamat'        => $request[0]['alamat'],
                 'telepon'       => $request[0]['telepon'],
                 'catatan'       => $request[0]['catatan'],
