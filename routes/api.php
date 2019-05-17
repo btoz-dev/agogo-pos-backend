@@ -106,6 +106,7 @@ Route::put('/updateStock/{id}', 'ProductionController@updateStock');
 //Kas API
 Route::post('/postKas', 'KasController@postKas');
 Route::get('/getTrx', 'KasController@getTrx');
+Route::get('/cekKas', 'KasController@cekKas');
 
 
 

@@ -13,8 +13,27 @@ use Illuminate\Support\Facades\Hash;
 
 class KasController extends Controller
 {
+
+    public function cekKas()
+    {
+        $cek_kas = Kas::where('created_at', '>', Carbon::today())->count();
+        if ($cek_kas > 0) {
+            return response()->json([
+                'status' => 'failed',
+                'message' => 'Kas hari ini sudah di INPUT'
+            ], 400);
+        }
+        else {
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Kas Masih Kosong'
+            ], 200);            
+        }
+    }
+
     public function postKas(Request $request)
     {
+
         //Check apakah user punya role 
         $get_role = User::role(['admin', 'manager'])
             ->where('username', $request[0]['username_approval'])->count();
@@ -92,10 +111,12 @@ class KasController extends Controller
 
         $sumOrders = DB::table('orders')
         ->where('created_at', '>', Carbon::today())
+        ->where('status','PAID')
         ->sum('total');
 
         $sumPreorders = DB::table('preorders')
         ->where('created_at', '>', Carbon::today())
+        ->where('status','PAID')
         ->sum('total');
 
         $getSaldoAwal = Kas::select('saldo_awal')
