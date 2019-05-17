@@ -56,6 +56,26 @@ class PreorderController extends Controller
         return $total;
     }
 
+    private function countUangMuka_transaksi($orders)
+    {
+        $total = 0;
+        if ($orders->count() > 0) {
+            $sub_total = $orders->pluck('uang_muka')->all();
+            $total = array_sum($sub_total);
+        }
+        return $total;
+    }
+
+    private function countSisaHarusBayar_transaksi($orders)
+    {
+        $total = 0;
+        if ($orders->count() > 0) {
+            $sub_total = $orders->pluck('sisa_harus_bayar')->all();
+            $total = array_sum($sub_total);
+        }
+        return $total;
+    }
+
     public function laporan_pemesanan(Request $request)
     {
         // $customers = Customer::orderBy('name', 'ASC')->get();
@@ -91,7 +111,8 @@ class PreorderController extends Controller
             'preorders' => $preorders,
             // 'sold' => $this->countItem($orders),
             'total_harga' => $this->countTotal_harga($preorders),
-            // 'total_customer' => $this->countCustomer($orders),
+            'total_uang_muka' => $this->countUangMuka_transaksi($preorders),
+            'total_harus_bayar' => $this->countSisaHarusBayar_transaksi($preorders),
             // 'customers' => $customers,
             'users' => $users
         ]);
@@ -130,7 +151,7 @@ class PreorderController extends Controller
                 // 'customer_id' => $customer->id,
                 'nama'          => $request[0]['nama'],
                 'tgl_selesai'   => $request[0]['tgl_selesai'],
-                'waktu_selesai' => $request[0]['waktu_selesai'],
+                'waktu_selesai' => $request[0]['tgl_selesai'],
                 'alamat'        => $request[0]['alamat'],
                 'telepon'       => $request[0]['telepon'],
                 'catatan'       => $request[0]['catatan'],
@@ -229,12 +250,16 @@ class PreorderController extends Controller
      */
     public function destroy($id)
     {
+        // $preorder = Preorder::find($id);
+        // $preorder-> delete();
+        // return response()->json([
+        //     'status' => 'data deleted',
+        //     'message' => $preorder->invoice,
+        // ], 200);
         $preorder = Preorder::find($id);
-        $preorder-> delete();
-        return response()->json([
-            'status' => 'data deleted',
-            'message' => $preorder->invoice,
-        ], 200);
+        $preorder->status = 'CANCEL';
+        $preorder->save();
+        return response()->json($preorder, 200);
     }
 
     public function payPreorder($id)
@@ -259,17 +284,13 @@ class PreorderController extends Controller
                 'invoice'       => $request[0]['invoice'],
                 'nama'          => $request[0]['nama'],
                 'tgl_selesai'   => $request[0]['tgl_selesai'],
-                'waktu_selesai' => $request[0]['waktu_selesai'],
                 'alamat'        => $request[0]['alamat'],
                 'telepon'       => $request[0]['telepon'],
                 'catatan'       => $request[0]['catatan'],
                 'user_id'       => $request[0]['user_id'],
                 'subtotal'      => $request[0]['subtotal'],
                 'discount'      => $request[0]['diskon'],
-                'add_fee'       => $request[0]['add_fee'],
-                'uang_muka'     => $request[0]['uang_muka'],
                 'total'         => $request[0]['total'],
-                'sisa_harus_bayar'  => $request[0]['sisa_harus_bayar'],
                 'uang_dibayar'  => $request[0]['dibayar'],
                 'uang_kembali'  => $request[0]['kembali'],
                 'status'        => $request[0]['status']

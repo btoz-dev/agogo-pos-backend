@@ -134,8 +134,8 @@
                                         <tr>
                                             <th colspan="7" style="text-align:right">Grand Total : </th>
                                             <th colspan="1" style="text-align:left">Rp {{number_format($total_harga)}}</th>
-                                            <th colspan="1" style="text-align:left">Rp {{number_format($total_harga)}}</th>
-                                            <th colspan="1" style="text-align:left">Rp {{number_format($total_harga)}}</th>
+                                            <th colspan="1" style="text-align:left">Rp {{number_format($total_uang_muka)}}</th>
+                                            <th colspan="1" style="text-align:left">Rp {{number_format($total_harus_bayar)}}</th>
 
                                         </tr>
                                     </tfoot>
