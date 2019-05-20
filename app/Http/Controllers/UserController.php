@@ -36,7 +36,7 @@ class UserController extends Controller
             'username' => 'required|string|max:100',
             'name' => 'string|max:100',
             'email' => 'required|email|unique:users',
-            'password' => 'required|min:6',
+            'password' => 'required|min:6|numeric',
             'role' => 'required|string|exists:roles,name',
             'photo' => 'nullable|image|mimes:jpg,png,jpeg'
 

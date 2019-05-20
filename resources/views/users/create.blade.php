@@ -57,7 +57,7 @@
                                 </div>
                                 <div class="form-group">
                                     <label for="">Password</label>
-                                    <input type="password" name="password" class="form-control {{ $errors->has('password') ? 'is-invalid':'' }}" required>
+                                    <input type="number" name="password" placeholder="Hanya bisa angka" class="form-control {{ $errors->has('password') ? 'is-invalid':'' }}" required>
                                     <p class="text-danger">{{ $errors->first('password') }}</p>
                                 </div>
                                 <div class="form-group">
