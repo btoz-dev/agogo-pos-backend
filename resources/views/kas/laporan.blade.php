@@ -24,18 +24,18 @@
         <section class="content" id="dw">
             <div class="container-fluid">
                 <div class="row">
-                    {{-- <div class="col-md-12">
+                    <div class="col-md-12">
                         <div class="card">
                             <div class="card-header with-border">
                                 <h3 class="card-title">Filter Transaksi</h3>
                             </div>
                             <div class="card-body">
 
-                            <form action="{{ route('order.index') }}" method="get">
+                            <form action="{{ route('kas.laporan') }}" method="get">
                                 <div class="row">
                                     <div class="col-md-6">
                                         <div class="form-group">
-                                            <label for="">Mulai Tanggal</label>
+                                            <label for="">Pilih Tanggal</label>
                                             <input type="text" name="start_date" 
                                                 class="form-control {{ $errors->has('start_date') ? 'is-invalid':'' }}"
                                                 id="start_date"
@@ -46,42 +46,30 @@
                                             <button class="btn btn-primary btn-sm">Cari</button>
                                         </div>
                                     </div>
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label for="">Sampai Tanggal</label>
-                                            <input type="text" name="end_date" 
-                                                class="form-control {{ $errors->has('end_date') ? 'is-invalid':'' }}"
-                                                id="end_date"
-                                                value="{{ request()->get('end_date') }}">
-                                        </div>
-                                    </div>
+                                    
                                 </div>
                             </form>
 
                             </div>
                         </div>
-                    </div> --}}
-                    <div class="col-md-12">
+                    </div>
+                    <div class="col-md-7">
                         <div class="card">
                             <div class="card-header with-border">
-                                <h3 class="card-title">Laporan Kas</h3>
+                                <h3 class="card-title">Laporan Pendapatan Kasir</h3>
                             </div>
                             <div class="card-body">
                             <div class="table-responsive">
-                                <table id="example2" class="table table-bordered table-hover dataTable">
+                                <table id="example2" class="table table-hover dataTable">
                                     <thead>
                                         <tr>
-                                            <th>Nama Kasir</th>
-                                            <th>Tanggal Transaksi</th>
-                                            <th>Saldo Awal</th>
-                                            <th>Pendapatan</th>
-                                            <th>Total Refund</th>
-                                            <th>Total Pendapatan</th>
-                                            <th>Total Kas Tersedia</th>
+                                            <th>Kasir : {{ $kas[0]->user->name }}</th>
+                                            <th style="text-align: right;">Per Tanggal : {{date('d-m-Y', strtotime($kas[0]->created_at)) }}</th>
+                                            
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        @forelse ($kas as $row)
+                                        {{-- @forelse ($kas as $row)
                                         <tr>
                                             <td>{{ $row->user->name }}</td>
                                             <td>{{ $row->created_at }}</td>
@@ -89,21 +77,125 @@
                                             <td>Rp {{ number_format($row->transaksi) }}</td>
                                             <td>Rp {{ number_format($row->total_refund) }}</td>
                                             <td>Rp {{ number_format($row->saldo_akhir) }}</td>
-                                            <td>Rp {{ number_format($row->saldo_akhir) }}</td>
-
-                            
+                                            <td>Rp {{ number_format($row->saldo_akhir) }}</td>                            
                                         </tr>
                                         @empty
                                         <tr>
                                             <td class="text-center" colspan="7">Tidak ada data transaksi</td>
                                         </tr>
-                                        @endforelse
+                                        @endforelse --}}
+                                        <tr>
+                                            <td>Saldo Awal</td>      
+                                            <td style="text-align: right;">Rp {{ number_format($kas[0]->saldo_awal) }} </td>                                                                                        
+                                        </tr>
+                                        <tr>
+                                            <td>Pendapatan </td>      
+                                            <td style="text-align: right;">Rp {{ number_format($kas[0]->transaksi) }} </td>                                                                                                                                                                                                                                                                                                                                             
+                                        </tr>
+                                        <tr>
+                                            <td>Refund </td>      
+                                            <td style="text-align: right;">Rp {{ number_format($kas[0]->total_refund) }} </td>                                                                                                                                                                                                                                                                                                                                             
+                                        </tr>
                                     </tbody>
                                     <tfoot>
+                                        <tr>
+                                            <th>Total Pendapatan </th>      
+                                            <th style="text-align: right;">Rp {{ number_format($kas[0]->transaksi - $kas[0]->total_refund) }} </th>                                                                                                                                                                                                                                                                                                                                             
+                                        </tr>
+                                        <tr>
+                                            <th>Total Kas Tersedia </th>      
+                                            <th style="text-align: right;">Rp {{ number_format($kas[0]->saldo_akhir) }} </th>                                                                                                                                                                                                                                                                                                                                             
+                                        </tr>
                                         {{-- <tr>
                                             <th colspan="3" style="text-align:right">Grand Total : </th>
                                             <th colspan="3" style="text-align:left">Rp.{{number_format($total_harga)}}</th>
                                         </tr> --}}
+                                    </tfoot>
+                                </table>
+                            </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-5">
+                        <div class="card">
+                            
+                            <div class="card-body">
+                            <div class="table-responsive">
+                                <table id="example2" class="table table-bordered table-hover dataTable">
+                                    <thead>
+                                        <tr>
+                                            <th>Penerimaan Uang</th>
+                                            <th style="text-align: Center;">Jumlah</th>
+                                            
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {{-- @forelse ($kas as $row)
+                                        <tr>
+                                            <td>{{ $row->user->name }}</td>
+                                            <td>{{ $row->created_at }}</td>
+                                            <td>Rp {{ number_format($row->saldo_awal) }}</td>
+                                            <td>Rp {{ number_format($row->transaksi) }}</td>
+                                            <td>Rp {{ number_format($row->total_refund) }}</td>
+                                            <td>Rp {{ number_format($row->saldo_akhir) }}</td>
+                                            <td>Rp {{ number_format($row->saldo_akhir) }}</td>                            
+                                        </tr>
+                                        @empty
+                                        <tr>
+                                            <td class="text-center" colspan="7">Tidak ada data transaksi</td>
+                                        </tr>
+                                        @endforelse --}}
+                                        <tr>
+                                            <td>100.000</td>      
+                                            <td style="text-align: right;"></td>                                                                                        
+                                        </tr>
+                                        <tr>
+                                            <td>50.000</td>      
+                                            <td style="text-align: right;"></td>                                                                                                                                                                                                                                                                                                                                                                                                                                     
+                                        </tr>
+                                        <tr>
+                                            <td>20.000</td>      
+                                            <td style="text-align: right;"></td>                                                                                            
+                                        </tr>
+                                        <tr>
+                                            <td>10.000</td>      
+                                            <td style="text-align: right;"></td>                                                                                            
+                                        </tr>
+                                        <tr>
+                                            <td>5000</td>      
+                                            <td style="text-align: right;"></td>                                                                                            
+                                        </tr>
+                                        <tr>
+                                            <td>2000</td>      
+                                            <td style="text-align: right;"></td>                                                                                            
+                                        </tr>
+                                        <tr>
+                                            <td>1000</td>      
+                                            <td style="text-align: right;"></td>                                                                                            
+                                        </tr>
+                                        <tr>
+                                            <td>500</td>      
+                                            <td style="text-align: right;"></td>                                                                                            
+                                        </tr>
+                                        <tr>
+                                            <td>200</td>      
+                                            <td style="text-align: right;"></td>                                                                                            
+                                        </tr>
+                                        <tr>
+                                            <td>100</td>      
+                                            <td style="text-align: right;"></td>                                                                                            
+                                        </tr>
+                                        <tr>
+                                            <td>10</td>      
+                                            <td style="text-align: right;"></td>                                                                                            
+                                        </tr>
+                                    </tbody>
+                                    <tfoot>
+                                        <tr>
+                                            <th>Total Kas Selisih </th>      
+                                            <th style="text-align: right;"></th>                                                                                                                                                                                                                                                                                                                                             
+                                        </tr>
+                                        
                                     </tfoot>
                                 </table>
                             </div>
@@ -132,11 +224,11 @@
   $(function () {
     $("#example1").DataTable();
     $('#example2').DataTable({
-      "paging": true,
+      "paging": false,
       "lengthChange": false,
-      "searching": true,
-      "ordering": true,
-      "info": true,
+      "searching": false,
+      "ordering": false,
+      "info": false,
       "autoWidth": true,
       dom: 'Bfrtip',
         buttons: [

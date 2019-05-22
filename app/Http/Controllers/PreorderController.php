@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use DB;
+use PDF;
 use App\User;
 use App\Preorder;
 use Carbon\Carbon;
@@ -83,6 +84,8 @@ class PreorderController extends Controller
         $preorders = Preorder::orderBy('created_at', 'DESC')
                     ->where('status','PAID');
 
+        $cancel_preorders = Preorder::orderBy('created_at', 'DESC')
+                    ->where('status','CANCEL');
         // if (!empty($request->customer_id)) {
         //     $orders = $orders->where('customer_id', $request->customer_id);
         // }
@@ -98,22 +101,29 @@ class PreorderController extends Controller
             ]);
             $start_date = Carbon::parse($request->start_date)->format('Y-m-d') . ' 00:00:01';
             $end_date = Carbon::parse($request->end_date)->format('Y-m-d') . ' 23:59:59';
+            
             $preorders = $preorders->whereBetween('created_at', [$start_date, $end_date])->get();
+            $cancel_preorders = $cancel_preorders->whereBetween('created_at', [$start_date, $end_date])->get();
         } else {
             $start_date = Carbon::now()->toDateString() . ' 00:00:01';
             $end_date = Carbon::now()->toDateString() . ' 23:59:59';
+
             $preorders = $preorders->whereBetween('created_at', [$start_date, $end_date])->get();
+            $cancel_preorders = $cancel_preorders->whereBetween('created_at', [$start_date, $end_date])->get();
         }
 
         // return $preorders[0]->preorder->status;
 
         return view('preorders.index', [
             'preorders' => $preorders,
+            'cancel_preorders' => $cancel_preorders,
             // 'sold' => $this->countItem($orders),
             'total_harga' => $this->countTotal_harga($preorders),
             'total_uang_muka' => $this->countUangMuka_transaksi($preorders),
             'total_harus_bayar' => $this->countSisaHarusBayar_transaksi($preorders),
             // 'customers' => $customers,
+            'total_harga_cancel' => $this->countTotal_harga($cancel_preorders),
+            'total_uang_muka_cancel' => $this->countUangMuka_transaksi($cancel_preorders),            
             'users' => $users
         ]);
     }
@@ -151,7 +161,7 @@ class PreorderController extends Controller
                 // 'customer_id' => $customer->id,
                 'nama'          => $request[0]['nama'],
                 'tgl_selesai'   => $request[0]['tgl_selesai'],
-                'waktu_selesai' => $request[0]['tgl_selesai'],
+                'waktu_selesai' => $request[0]['waktu_selesai'],
                 'alamat'        => $request[0]['alamat'],
                 'telepon'       => $request[0]['telepon'],
                 'catatan'       => $request[0]['catatan'],
@@ -284,13 +294,17 @@ class PreorderController extends Controller
                 'invoice'       => $request[0]['invoice'],
                 'nama'          => $request[0]['nama'],
                 'tgl_selesai'   => $request[0]['tgl_selesai'],
+                'waktu_selesai' => $request[0]['waktu_selesai'],
                 'alamat'        => $request[0]['alamat'],
                 'telepon'       => $request[0]['telepon'],
                 'catatan'       => $request[0]['catatan'],
                 'user_id'       => $request[0]['user_id'],
                 'subtotal'      => $request[0]['subtotal'],
                 'discount'      => $request[0]['diskon'],
+                'add_fee'       => $request[0]['add_fee'],
+                'uang_muka'     => $request[0]['uang_muka'],
                 'total'         => $request[0]['total'],
+                'sisa_harus_bayar'  => $request[0]['sisa_harus_bayar'],
                 'uang_dibayar'  => $request[0]['dibayar'],
                 'uang_kembali'  => $request[0]['kembali'],
                 'status'        => $request[0]['status']
@@ -328,5 +342,23 @@ class PreorderController extends Controller
                 'message' => $e->getMessage()
             ], 400);
         }
+    }
+
+    public function invoicePdf()
+    {
+        $preorders = Preorder::where('status', 'PAID')->get();
+        $cancel_preorders = Preorder::orderBy('created_at', 'DESC')->where('status','CANCEL');
+        $total_harga = $this->countTotal_harga($preorders);
+        $total_uang_muka = $this->countUangMuka_transaksi($preorders);
+        $total_harus_bayar = $this->countSisaHarusBayar_transaksi($preorders);
+            // 'customers' => $customers,
+        $total_harga_cancel = $this->countTotal_harga($cancel_preorders);
+        $total_uang_muka_cancel = $this->countUangMuka_transaksi($cancel_preorders);
+        
+        // return $order;
+        $pdf = PDF::setOptions(['dpi' => 150, 'defaultFont' => 'sans-serif'])->loadView('preorders.report.invoice', compact('preorders','total_harga','total_uang_muka','total_harus_bayar','total_harga_cancel','total_uang_muka_cancel'));
+
+        
+        return $pdf->stream();
     }
 }

@@ -62,7 +62,7 @@ Route::group(['middleware' => 'auth'], function() {
 
         Route::get('/order', 'OrderController@index')->name('order.index');
         Route::get('/laporan_penjualan', 'OrderController@laporan_penjualan')->name('order.laporan_penjualan');
-        Route::get('/order/pdf/{invoice}', 'OrderController@invoicePdf')->name('order.pdf');
+        Route::get('/order/pdf', 'OrderController@invoicePdf')->name('order.pdf');
         Route::get('/order/excel/{invoice}', 'OrderController@invoiceExcel')->name('order.excel');
     });
 
@@ -79,7 +79,7 @@ Route::group(['middleware' => 'auth'], function() {
     Route::group(['middleware'], function() {
 
         Route::get('/preorder', 'PreorderController@laporan_pemesanan')->name('preorder.index');
-        Route::get('/preorder/pdf/{invoice}', 'PreorderController@invoicePdf')->name('preorder.pdf');
+        Route::get('/preorder/pdf', 'PreorderController@invoicePdf')->name('preorder.pdf');
         Route::get('/preorder/excel/{invoice}', 'PreorderController@invoiceExcel')->name('preorder.excel');
     });
 

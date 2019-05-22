@@ -66,7 +66,16 @@
                             <div class="card-header with-border">
                                 <h3 class="card-title">Laporan Pemesanan</h3>
                             </div>
+                            
                             <div class="card-body">
+                                
+                                    <a href="{{ route('preorder.pdf')}}"
+                                            {{-- <a href="{{ route('order.pdf'}}"  --}}
+                                            target="_blank"
+                                            class="btn btn-primary btn-sm">
+                                            <i class="fa fa-print"></i> Export Data
+                                        </a>
+                                <h4 style="text-align: center;">Pemesanan Berhasil</h4> 
                             <div class="table-responsive">
                                 <table id="example2" class="table table-bordered table-hover dataTable">
                                     <thead>
@@ -77,16 +86,10 @@
                                             <th>Jam Selesai</th>
                                             <th>Order Status</th>
                                             <th>Pencatat</th>
-
-                                            {{-- <th>Kode Menu</th>                                             --}}
-                                            {{-- <th>Pelanggan</th> --}}
-                                            {{-- <th>Nama Menu</th> --}}
-                                            {{-- <th>Total Quantity</th> --}}
                                             <th>Total Harga</th>
                                             <th>DP</th>
                                             <th>Sisa</th>
-                                            {{-- <th>Tgl Transaksi</th> --}}
-                                            {{-- <th>Aksi</th> --}}
+                                            
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -99,30 +102,9 @@
                                             <td>{{ $row->waktu_selesai }}</td>
                                             <td>{{ $row->status }}</td>
                                             <td>{{ $row->user->name }}</td>
-                                            <td>{{ $row->total }}</td>
-                                            <td>{{ $row->uang_muka }}</td>
-                                            <td>{{ $row->sisa_harus_bayar }}</td>
-
-
-
-                                            {{-- <td>{{ $row->customer->name }}</td> --}}
-                                            {{-- <td>{{ number_format($row->qty) }}</td> --}}
-                                            {{-- <td>Rp {{ number_format($row->price) }}</td> --}}
-                                            {{-- <td>{{ $row->user->name }}</td> --}}
-                                            {{-- <td>{{ $row->created_at->format('d-m-Y H:i:s') }}</td> --}}
-                                            {{-- <td>{{ $row->created_at->format('d-m-Y') }}</td> --}}
-                                            {{-- <td>
-                                                <a href="{{ route('order.pdf', $row->invoice) }}" 
-                                                    target="_blank"
-                                                    class="btn btn-primary btn-sm">
-                                                    <i class="fa fa-print"></i>
-                                                </a>
-                                                <a href="{{ route('order.excel', $row->invoice) }}" 
-                                                    target="_blank"
-                                                    class="btn btn-info btn-sm">
-                                                    <i class="fa fa-file-excel-o"></i>
-                                                </a>
-                                            </td> --}}
+                                            <td>Rp {{ number_format($row->total) }}</td>
+                                            <td>Rp {{ number_format($row->uang_muka) }}</td>
+                                            <td>Rp {{ number_format($row->sisa_harus_bayar) }}</td>
                                         </tr>
                                         @empty
                                         <tr>
@@ -132,15 +114,29 @@
                                     </tbody>
                                     <tfoot>
                                         <tr>
-                                            <th colspan="7" style="text-align:right">Grand Total : </th>
+                                            <th colspan="6" style="text-align:right"></th>                
+                                            <th colspan="1" style="text-align:right">Grand Total : </th>
                                             <th colspan="1" style="text-align:left">Rp {{number_format($total_harga)}}</th>
                                             <th colspan="1" style="text-align:left">Rp {{number_format($total_uang_muka)}}</th>
                                             <th colspan="1" style="text-align:left">Rp {{number_format($total_harus_bayar)}}</th>
 
                                         </tr>
+                                        <tr>
+                                                <th colspan="6" style="text-align:right"></th>
+                                                <th colspan="1" style="text-align:right">Pembatalan Transaksi : </th>
+                                                <th colspan="1" style="text-align:left">Rp {{number_format($total_harga_cancel)}}</th>
+                                                <th colspan="1" style="text-align:left">Rp {{number_format($total_uang_muka_cancel)}}</th>
+                                                <th colspan="1" style="text-align:right"></th>
+                                            </tr>
+                                            <tr>
+                                                    <th colspan="6" style="text-align:right"></th>
+                                                    <th colspan="1" style="text-align:right">Total Transaksi : </th>
+                                                    <th colspan="1" style="text-align:left">Rp {{number_format($total_harga - $total_harga_cancel)}}</th>
+                                                    <th colspan="1" style="text-align:left">Rp {{number_format($total_uang_muka - $total_uang_muka_cancel)}}</th>
+                                                    <th colspan="1" style="text-align:right"></th>
+                                                </tr>
                                     </tfoot>
-                                </table>
-                            </div>
+                                </table>                            
                             </div>
                         </div>
                     </div>
@@ -166,16 +162,20 @@
   $(function () {
     $("#example1").DataTable();
     $('#example2').DataTable({
-      "paging": true,
+      "paging": false,
       "lengthChange": false,
       "searching": true,
       "ordering": true,
       "info": true,
       "autoWidth": true,
-      dom: 'Bfrtip',
-        buttons: [
-            'excel', 'pdf', 'print',
-        ]
+    //   dom: 'Bfrtip',
+    //     buttons: [
+    //         { extend: 'copy', footer: true },
+    //         { extend: 'excel', footer: true },
+    //         { extend: 'csv', footer: true },
+    //         { extend: 'pdf', footer: true },
+            
+    //     ]
     });
   });
 </script>

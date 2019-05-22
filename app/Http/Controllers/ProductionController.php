@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use App\Http\Resources\Product;
 use DB;
+use Symfony\Component\Process\ProcessBuilder;
 
 class ProductionController extends Controller
 {
@@ -30,6 +31,10 @@ class ProductionController extends Controller
 
     public function getTrxByProduct($id)
     {
+        $production = DB::table('productions')
+            ->where('product_id', $id)
+            // ->where('created_at', '>', Carbon::today())
+            ->orderBy('created_at','DESC')->first();
         $order = DB::table('order_details')
             ->where('product_id', $id)
             ->where('created_at', '>', date('Y-m-d', strtotime("-1 days")))
@@ -47,7 +52,9 @@ class ProductionController extends Controller
         return response()->json(array(
             'count_order'   => $order,
             'count_preorder'=> $preorder,
-            'stok_kemarin'  => $stock_awal
+            'stok_kemarin'  => $stock_awal,
+            'production'  => $production,
+
         ),200);
     }
 
@@ -72,7 +79,7 @@ class ProductionController extends Controller
     public function updateStock(Request $request,$id)
     {
 
-        return $request;
+        return $request->sisa_stock;
 
         $products = DB::table('products')->where('id', $id)->update(['stock' => 15]);
         // $products->stock = $request->input('sisa_stock');
@@ -164,7 +171,7 @@ class ProductionController extends Controller
 
             $stock = $stock->whereBetween('created_at', [$start_date, $end_date])->get();
         } else {
-            $stock = $stock->take(10)->skip(0)->get();
+            $stock = $stock->get();
         }
 
         return view('productions.laporan', [
@@ -175,6 +182,12 @@ class ProductionController extends Controller
             // 'total_harga' => $this->countTotal_transaksi($kas),
             
         ]);
+    }
+
+    public function GetLastDate()
+    {
+        $date = Production::select('created_at')->orderBy('created_at','DESC')->first();
+        return $date;
     }
 
 

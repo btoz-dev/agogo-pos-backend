@@ -103,6 +103,8 @@ Route::get('/AllTrxByProduct', 'ProductionController@getAllTrxByProduct');
 Route::get('/preorderByProduct/{id}', 'ProductionController@getPreorderByProduct');
 Route::post('/postProduction', 'ProductionController@postProduction');
 Route::put('/updateStock/{id}', 'ProductionController@updateStock');
+Route::get('/GetLastDate', 'ProductionController@GetLastDate');
+
 //Kas API
 Route::post('/postKas', 'KasController@postKas');
 Route::get('/getTrx', 'KasController@getTrx');
