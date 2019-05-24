@@ -99,6 +99,7 @@ Route::get('/cekPOInvoice', 'PreorderController@checkLastInvoice');
 Route::get('/availProducts', 'ProductionController@getAvailProduct');
 Route::get('/notAvailProducts', 'ProductionController@getNotAvailProduct');
 Route::get('/TrxByProduct/{id}', 'ProductionController@getTrxByProduct');
+Route::get('/AllTrx', 'ProductionController@getAllTrx');
 Route::get('/AllTrxByProduct', 'ProductionController@getAllTrxByProduct');
 Route::get('/preorderByProduct/{id}', 'ProductionController@getPreorderByProduct');
 Route::post('/postProduction', 'ProductionController@postProduction');

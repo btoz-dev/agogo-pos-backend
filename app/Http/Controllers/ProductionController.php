@@ -33,15 +33,108 @@ class ProductionController extends Controller
     {
         $production = DB::table('productions')
             ->where('product_id', $id)
-            // ->where('created_at', '>', Carbon::today())
+            ->where('created_at', '>', Carbon::today())
             ->orderBy('created_at','DESC')->first();
+
+        if ($production == null ) {
+
+            $date_order = DB::table('order_details')
+            ->select('created_at')
+            ->where('product_id', $id)
+            ->orderBy('created_at', 'DESC')->first();
+
+            $start_date = Carbon::parse($date_order->created_at)->format('Y-m-d') . ' 00:00:01';
+            $end_date = Carbon::parse($date_order->created_at)->format('Y-m-d') . ' 23:59:59';
+
+            $order = DB::table('order_details')
+            ->join('orders','order_details.order_id', '=', 'orders.id')
+            ->where('order_details.product_id', $id)
+            ->whereBetween('order_details.created_at', [$start_date, $end_date])
+            ->where('orders.status','PAID')
+            // ->get();
+            ->sum('qty');
+
+            $preorder = DB::table('preorder_details')
+            ->join('preorders','preorder_details.preorder_id', '=', 'preorders.id')
+            ->where('product_id', $id)
+            ->whereBetween('preorder_details.created_at', [$start_date, $end_date])
+            ->where('preorders.status','PAID')            
+            // ->where('status','PAID')
+            ->sum('qty');
+
+            $getStock = DB::table('products')
+            ->select('stock')
+            ->where('id', $id) 
+            ->get();
+            $stock_awal = $getStock[0]->stock + $preorder + $order;
+
+            return response()->json(array(
+                'last_trx_date'      =>  $date_order->created_at,
+                'count_order'   => $order,
+                'count_preorder'=> $preorder,
+                'stok_kemarin'  => $stock_awal,
+                'production'  => $production,
+    
+            ),200);
+
+            // dd($date_order);
+            // return $preorder;
+
+        }else {
+
+            $curent_date = Carbon::now()->format('Y-m-d');
+            
+            // $curent_date = Carbon::now();
+
+            $start_date = Carbon::parse($curent_date)->format('Y-m-d') . ' 00:00:01';
+            $end_date = Carbon::parse($curent_date)->format('Y-m-d') . ' 23:59:59';
+
+            $order = DB::table('order_details')
+            ->join('orders','order_details.order_id', '=', 'orders.id')
+            ->where('order_details.product_id', $id)
+            ->whereBetween('order_details.created_at', [$start_date, $end_date])
+            ->where('orders.status','PAID')
+            // ->get();
+            ->sum('qty');
+
+            $preorder = DB::table('preorder_details')
+            ->join('preorders','preorder_details.preorder_id', '=', 'preorders.id')
+            ->where('product_id', $id)
+            ->whereBetween('preorder_details.created_at', [$start_date, $end_date])
+            ->where('preorders.status','PAID')            
+            // ->where('status','PAID')
+            ->sum('qty');
+
+            $getStock = DB::table('products')
+            ->select('stock')
+            ->where('id', $id) 
+            ->get();
+            $stock_awal = $getStock[0]->stock + $preorder + $order;
+
+            // dd($curent_date);
+
+
+            return response()->json(array(
+                'last_trx_date' => $curent_date,
+                'count_order'   => $order,
+                'count_preorder'=> $preorder,
+                'stok_kemarin'  => $stock_awal,
+                'production'    => $production,
+    
+            ),200);
+            
+        }
+        // $production = DB::table('productions')->rightJoin('products','productions.product_id', '=', 'products.id')->distinct()->get();
+        // $production = $production->unique('product_id');
         $order = DB::table('order_details')
             ->where('product_id', $id)
             ->where('created_at', '>', date('Y-m-d', strtotime("-1 days")))
+            // ->where('status','PAID')
             ->sum('qty');
         $preorder = DB::table('preorder_details')
             ->where('product_id', $id)
             ->where('created_at', '>', date('Y-m-d', strtotime("-1 days")))
+            // ->where('status','PAID')
             ->sum('qty');
         $getStock = DB::table('products')
             ->select('stock')
@@ -56,6 +149,37 @@ class ProductionController extends Controller
             'production'  => $production,
 
         ),200);
+    }
+
+    public function getAllTrx()
+    {
+        $production = DB::table('products')->leftJoin('productions','productions.product_id', '=', 'products.id')
+        ->distinct()
+        ->get();
+            // ->where('product_id', $id)
+            // ->where('created_at', '>', Carbon::today())
+        // $order = DB::table('order_details')
+        //     // ->where('product_id', $id)
+        //     ->where('created_at', '>', date('Y-m-d', strtotime("-1 days")))
+        //     ->sum('qty');
+        // $preorder = DB::table('preorder_details')
+        //     // ->where('product_id', $id)
+        //     ->where('created_at', '>', date('Y-m-d', strtotime("-1 days")))
+        //     ->sum('qty');
+        // $getStock = DB::table('products')
+        //     ->select('stock')
+        //     // ->where('id', $id) 
+        //     ->get();
+        // $stock_awal = $getStock[0]->stock + $preorder + $order;
+
+        return response()->json(
+            // 'count_order'   => $order,
+            // 'count_preorder'=> $preorder,
+            // 'stok_kemarin'  => $stock_awal,
+            // 'production'  => 
+            $production
+
+        ,200);
     }
 
     public function getAllTrxByProduct()
@@ -79,9 +203,10 @@ class ProductionController extends Controller
     public function updateStock(Request $request,$id)
     {
 
-        return $request->sisa_stock;
+        // return $request[0]['sisa_stock'];
+        $sisa_stock = $request[0]['sisa_stock'];
 
-        $products = DB::table('products')->where('id', $id)->update(['stock' => 15]);
+        $products = DB::table('products')->where('id', $id)->update(['stock' => $sisa_stock]);
         // $products->stock = $request->input('sisa_stock');
         // $products->save();
         return response()->json(['status' => 'success'], 200);
@@ -187,7 +312,12 @@ class ProductionController extends Controller
     public function GetLastDate()
     {
         $date = Production::select('created_at')->orderBy('created_at','DESC')->first();
-        return $date;
+        if ($date == null) {
+            $date = 'no production';
+        }
+        return response()->json([            
+            'date'   => $date
+        ], 200);
     }
 
 

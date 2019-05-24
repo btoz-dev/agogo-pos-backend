@@ -6,6 +6,7 @@ use DB;
 use PDF;
 use App\User;
 use App\Preorder;
+use App\Product;
 use Carbon\Carbon;
 use App\Preorder_detail;
 use Illuminate\Http\Request;
@@ -310,6 +311,8 @@ class PreorderController extends Controller
                 'status'        => $request[0]['status']
             ));
 
+
+
             $result = collect($request)->map(function ($value) {
                 return [
                     'product_id'    => $value['product_id'],
@@ -320,11 +323,21 @@ class PreorderController extends Controller
             // return response($result);
 
             foreach ($result as $key => $row) {
+
+                $getCount = Product::where(['id' => $row['product_id']])->get();
+                
+                if ($getCount[0]['stock'] > $row['qty']) {
                     $preorder->preorder_detail()->create([
                         'product_id' => $row['product_id'],
                         'qty' => $row['qty'],
                         'price' => $row['price']
                     ]);                
+
+                    DB::table('products')->where('id', $row['product_id'])->decrement('stock', $row['qty']); 
+                }
+                else {
+                    throw new \Exception('Stock ' . $getCount[0]['name'] . ' Tidak Mencukupi');
+                }
                 // return response($row['product_id']);
                 //return response($getCount[0]['stock']);                               
             }
