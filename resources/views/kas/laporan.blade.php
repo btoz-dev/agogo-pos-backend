@@ -20,7 +20,8 @@
                 </div>
             </div>
         </div>
-
+        {{-- @if (is_null($kas[0]->user->name)) --}}
+        @if(count($kas) > 0)
         <section class="content" id="dw">
             <div class="container-fluid">
                 <div class="row">
@@ -59,6 +60,12 @@
                                 <h3 class="card-title">Laporan Pendapatan Kasir</h3>
                             </div>
                             <div class="card-body">
+                                    <a href="{{ route('kas.pdf')}}"
+                                    {{-- <a href="{{ route('order.pdf'}}"  --}}
+                                    target="_blank"
+                                    class="btn btn-primary btn-sm">
+                                    <i class="fa fa-print"></i> Export Data
+                                </a>
                             <div class="table-responsive">
                                 <table id="example2" class="table table-hover dataTable">
                                     <thead>
@@ -205,6 +212,152 @@
                 </div>
             </div>
         </section>
+        // your if code
+        @else
+        <section class="content" id="dw">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="card">
+                                <div class="card-header with-border">
+                                    <h3 class="card-title">Filter Transaksi</h3>
+                                </div>
+                                <div class="card-body">
+    
+                                <form action="{{ route('kas.laporan') }}" method="get">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label for="">Pilih Tanggal</label>
+                                                <input type="text" name="start_date" 
+                                                    class="form-control {{ $errors->has('start_date') ? 'is-invalid':'' }}"
+                                                    id="start_date"
+                                                    value="{{ request()->get('start_date') }}"
+                                                    >
+                                            </div>
+                                            <div class="form-group">
+                                                <button class="btn btn-primary btn-sm">Cari</button>
+                                            </div>
+                                        </div>
+                                        
+                                    </div>
+                                </form>
+    
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-7">
+                            <div class="card">
+                                <div class="card-header with-border">
+                                    <h3 class="card-title">Laporan Pendapatan Kasir</h3>
+                                </div>
+                                <div class="card-body">
+                                <div class="table-responsive">
+                                    <table id="example2" class="table table-hover dataTable">
+                                        <thead>
+                                            
+                                        </thead>
+                                        <tbody>
+                                            <p>Laporan Kas Hari ini masih kosong</p>
+                                        </tbody>
+                                        <tfoot>
+                                           
+                                        </tfoot>
+                                    </table>
+                                </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-5">
+                            <div class="card">
+                                
+                                <div class="card-body">
+                                <div class="table-responsive">
+                                    <table id="example2" class="table table-bordered table-hover dataTable">
+                                        <thead>
+                                            <tr>
+                                                <th>Penerimaan Uang</th>
+                                                <th style="text-align: Center;">Jumlah</th>
+                                                
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {{-- @forelse ($kas as $row)
+                                            <tr>
+                                                <td>{{ $row->user->name }}</td>
+                                                <td>{{ $row->created_at }}</td>
+                                                <td>Rp {{ number_format($row->saldo_awal) }}</td>
+                                                <td>Rp {{ number_format($row->transaksi) }}</td>
+                                                <td>Rp {{ number_format($row->total_refund) }}</td>
+                                                <td>Rp {{ number_format($row->saldo_akhir) }}</td>
+                                                <td>Rp {{ number_format($row->saldo_akhir) }}</td>                            
+                                            </tr>
+                                            @empty
+                                            <tr>
+                                                <td class="text-center" colspan="7">Tidak ada data transaksi</td>
+                                            </tr>
+                                            @endforelse --}}
+                                            <tr>
+                                                <td>100.000</td>      
+                                                <td style="text-align: right;"></td>                                                                                        
+                                            </tr>
+                                            <tr>
+                                                <td>50.000</td>      
+                                                <td style="text-align: right;"></td>                                                                                                                                                                                                                                                                                                                                                                                                                                     
+                                            </tr>
+                                            <tr>
+                                                <td>20.000</td>      
+                                                <td style="text-align: right;"></td>                                                                                            
+                                            </tr>
+                                            <tr>
+                                                <td>10.000</td>      
+                                                <td style="text-align: right;"></td>                                                                                            
+                                            </tr>
+                                            <tr>
+                                                <td>5000</td>      
+                                                <td style="text-align: right;"></td>                                                                                            
+                                            </tr>
+                                            <tr>
+                                                <td>2000</td>      
+                                                <td style="text-align: right;"></td>                                                                                            
+                                            </tr>
+                                            <tr>
+                                                <td>1000</td>      
+                                                <td style="text-align: right;"></td>                                                                                            
+                                            </tr>
+                                            <tr>
+                                                <td>500</td>      
+                                                <td style="text-align: right;"></td>                                                                                            
+                                            </tr>
+                                            <tr>
+                                                <td>200</td>      
+                                                <td style="text-align: right;"></td>                                                                                            
+                                            </tr>
+                                            <tr>
+                                                <td>100</td>      
+                                                <td style="text-align: right;"></td>                                                                                            
+                                            </tr>
+                                            <tr>
+                                                <td>10</td>      
+                                                <td style="text-align: right;"></td>                                                                                            
+                                            </tr>
+                                        </tbody>
+                                        <tfoot>
+                                            <tr>
+                                                <th>Total Kas Selisih </th>      
+                                                <th style="text-align: right;"></th>                                                                                                                                                                                                                                                                                                                                             
+                                            </tr>
+                                            
+                                        </tfoot>
+                                    </table>
+                                </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        @endif
     </div>
 @endsection
 
@@ -230,10 +383,10 @@
       "ordering": false,
       "info": false,
       "autoWidth": true,
-      dom: 'Bfrtip',
-        buttons: [
-            'excel', 'pdf', 'print',
-        ]
+    //   dom: 'Bfrtip',
+    //     buttons: [
+    //         'excel', 'pdf', 'print',
+    //     ]
     });
   });
 </script>

@@ -69,6 +69,7 @@ Route::group(['middleware' => 'auth'], function() {
     Route::group(['middleware'], function() {
 
         Route::get('/laporan_kas', 'KasController@laporan')->name('kas.laporan');
+        Route::get('/kas/pdf', 'KasController@invoicePdf')->name('kas.pdf');
     });
 
     Route::group(['middleware'], function() {

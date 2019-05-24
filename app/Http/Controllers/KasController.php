@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Kas;
+use Session;
 use App\User;
 use App\Order;
 use Carbon\Carbon;
@@ -76,24 +77,41 @@ class KasController extends Controller
 
     public function laporan(Request $request)
     {
-        $kas = Kas::orderBy('created_at', 'DESC')->with('user');
+        $kas = Kas::orderBy('created_at', 'DESC')
+                // ->where('created_at', '>', Carbon::today())
+                ->with('user');
 
         if (!empty($request->user_id)) {
             $kas = $kas->where('user_id', $request->user_id);
         }
 
-        if (!empty($request->start_date) && !empty($request->end_date)) {
+        if (!empty($request->start_date)) {
             $this->validate($request, [
                 'start_date' => 'nullable|date',
                 'end_date' => 'nullable|date'
             ]);
             $start_date = Carbon::parse($request->start_date)->format('Y-m-d') . ' 00:00:01';
-            $end_date = Carbon::parse($request->end_date)->format('Y-m-d') . ' 23:59:59';
+            $end_date = Carbon::parse($request->start_date)->format('Y-m-d') . ' 23:59:59';
 
+            Session::put('kas_start_date', $start_date);
+            Session::put('kas_end_date', $end_date);
+            
             $kas = $kas->whereBetween('created_at', [$start_date, $end_date])->get();
         } else {
-            $kas = $kas->take(10)->skip(0)->get();
+            $kas = $kas->take(1)->skip(0)->get();
         }
+
+        
+        
+
+        // return $kas;
+
+        // if (count($kas) > 0) {
+        //     return 'hehe';
+        // }
+        // else{
+        //     return 'hoho';
+        // }
 
         return view('kas.laporan', [
             'kas' => $kas,
@@ -103,6 +121,37 @@ class KasController extends Controller
             // 'total_harga' => $this->countTotal_transaksi($kas),
             
         ]);
+    }
+
+    public function invoicePdf()
+    {
+        $start_date = Session::get('kas_start_date');
+        $end_date = Session::get('kas_end_date');
+        // return $start_date;
+        //  
+         $kas = Kas::orderBy('created_at', 'DESC')
+                // ->where('created_at', '>', Carbon::today())
+                ->with('user');
+
+       
+
+        if (!empty($start_date)) {            
+            $start = Carbon::parse($start_date)->format('Y-m-d') . ' 00:00:01';
+            $end = Carbon::parse($start_date)->format('Y-m-d') . ' 23:59:59';
+
+            $kas = $kas->whereBetween('created_at', [$start, $end])
+            ->orderBy('created_at', 'DESC')        
+            ->first();
+        } else {
+            $kas = $kas->take(1)->skip(0)->get();
+        }
+
+        return $kas;
+
+        $pdf = PDF::setOptions(['dpi' => 150, 'defaultFont' => 'sans-serif'])->loadView('preorders.report.invoice', compact('kas'));
+
+        
+        return $pdf->stream();
     }
 
     public function getTrx()

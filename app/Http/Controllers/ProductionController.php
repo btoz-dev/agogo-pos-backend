@@ -38,47 +38,82 @@ class ProductionController extends Controller
 
         if ($production == null ) {
 
+            
             $date_order = DB::table('order_details')
             ->select('created_at')
             ->where('product_id', $id)
             ->orderBy('created_at', 'DESC')->first();
 
-            $start_date = Carbon::parse($date_order->created_at)->format('Y-m-d') . ' 00:00:01';
-            $end_date = Carbon::parse($date_order->created_at)->format('Y-m-d') . ' 23:59:59';
-
-            $order = DB::table('order_details')
-            ->join('orders','order_details.order_id', '=', 'orders.id')
-            ->where('order_details.product_id', $id)
-            ->whereBetween('order_details.created_at', [$start_date, $end_date])
-            ->where('orders.status','PAID')
-            // ->get();
-            ->sum('qty');
-
-            $preorder = DB::table('preorder_details')
-            ->join('preorders','preorder_details.preorder_id', '=', 'preorders.id')
+            $date_preorder = DB::table('preorder_details')
+            ->select('created_at')
             ->where('product_id', $id)
-            ->whereBetween('preorder_details.created_at', [$start_date, $end_date])
-            ->where('preorders.status','PAID')            
-            // ->where('status','PAID')
-            ->sum('qty');
+            ->orderBy('created_at', 'DESC')->first();
 
-            $getStock = DB::table('products')
-            ->select('stock')
-            ->where('id', $id) 
-            ->get();
-            $stock_awal = $getStock[0]->stock + $preorder + $order;
 
-            return response()->json(array(
-                'last_trx_date'      =>  $date_order->created_at,
-                'count_order'   => $order,
-                'count_preorder'=> $preorder,
-                'stok_kemarin'  => $stock_awal,
-                'production'  => $production,
-    
-            ),200);
+            //Cek apakah ada trx atau engga
+            if ($date_order == null) {
+                $start_date = Carbon::today()->format('Y-m-d') . ' 00:00:01';
+                $end_date = Carbon::today()->format('Y-m-d') . ' 23:59:59';
+                $order = DB::table('order_details')
+                ->join('orders','order_details.order_id', '=', 'orders.id')
+                ->where('order_details.product_id', $id)
+                ->whereBetween('order_details.created_at', [$start_date, $end_date])
+                ->where('orders.status','PAID')
+                // ->get();
+                ->sum('qty');
+                }    
+                else {
+                
+                $start_date = Carbon::parse($date_order->created_at)->format('Y-m-d') . ' 00:00:01';
+                $end_date = Carbon::parse($date_order->created_at)->format('Y-m-d') . ' 23:59:59';
+                $order = DB::table('order_details')
+                ->join('orders','order_details.order_id', '=', 'orders.id')
+                ->where('order_details.product_id', $id)
+                ->whereBetween('order_details.created_at', [$start_date, $end_date])
+                ->where('orders.status','PAID')
+                // ->get();
+                ->sum('qty');
+                }
+            
+            if ($date_preorder == null) {
+                $start_date = Carbon::today()->format('Y-m-d') . ' 00:00:01';
+                $end_date = Carbon::today()->format('Y-m-d') . ' 23:59:59';
+                $preorder = DB::table('preorder_details')
+                ->join('preorders','preorder_details.preorder_id', '=', 'preorders.id')
+                ->where('product_id', $id)
+                ->whereBetween('preorder_details.created_at', [$start_date, $end_date])
+                ->where('preorders.status','PAID')            
+                // ->where('status','PAID')
+                ->sum('qty');
+                }
+                else {
+                    $start_date = Carbon::parse($date_preorder->created_at)->format('Y-m-d') . ' 00:00:01';
+                    $end_date = Carbon::parse($date_preorder->created_at)->format('Y-m-d') . ' 23:59:59';
+                    $preorder = DB::table('preorder_details')
+                    ->join('preorders','preorder_details.preorder_id', '=', 'preorders.id')
+                    ->where('product_id', $id)
+                    ->whereBetween('preorder_details.created_at', [$start_date, $end_date])
+                    ->where('preorders.status','PAID')            
+                    // ->where('status','PAID')
+                    ->sum('qty');
+                }
+                
 
-            // dd($date_order);
-            // return $preorder;
+                $getStock = DB::table('products')
+                ->select('stock')
+                ->where('id', $id) 
+                ->get();
+                $stock_awal = $getStock[0]->stock + $preorder + $order;
+
+                
+                return response()->json(array(
+                    'last_trx_date' =>  null,
+                    'count_order'   => $order,
+                    'count_preorder'=> $preorder,
+                    'stok_awal'     => $stock_awal,
+                    'production'    => $production,
+        
+                ),200);            
 
         }else {
 
@@ -105,11 +140,13 @@ class ProductionController extends Controller
             // ->where('status','PAID')
             ->sum('qty');
 
-            $getStock = DB::table('products')
-            ->select('stock')
-            ->where('id', $id) 
-            ->get();
-            $stock_awal = $getStock[0]->stock + $preorder + $order;
+            //Abil stok awal dari table prosuksi jika data produksi sudah ada
+            $getStock = DB::table('productions')
+            ->select('stock_awal')            
+            ->where('product_id', $id) 
+            ->orderBy('created_at', 'DESC')
+            ->first();
+            $stock_awal = $getStock->stock_awal + $preorder + $order;
 
             // dd($curent_date);
 
@@ -118,37 +155,13 @@ class ProductionController extends Controller
                 'last_trx_date' => $curent_date,
                 'count_order'   => $order,
                 'count_preorder'=> $preorder,
-                'stok_kemarin'  => $stock_awal,
+                'stok_awal'     => $stock_awal,
                 'production'    => $production,
     
             ),200);
             
         }
-        // $production = DB::table('productions')->rightJoin('products','productions.product_id', '=', 'products.id')->distinct()->get();
-        // $production = $production->unique('product_id');
-        $order = DB::table('order_details')
-            ->where('product_id', $id)
-            ->where('created_at', '>', date('Y-m-d', strtotime("-1 days")))
-            // ->where('status','PAID')
-            ->sum('qty');
-        $preorder = DB::table('preorder_details')
-            ->where('product_id', $id)
-            ->where('created_at', '>', date('Y-m-d', strtotime("-1 days")))
-            // ->where('status','PAID')
-            ->sum('qty');
-        $getStock = DB::table('products')
-            ->select('stock')
-            ->where('id', $id) 
-            ->get();
-        $stock_awal = $getStock[0]->stock + $preorder + $order;
-
-        return response()->json(array(
-            'count_order'   => $order,
-            'count_preorder'=> $preorder,
-            'stok_kemarin'  => $stock_awal,
-            'production'  => $production,
-
-        ),200);
+        
     }
 
     public function getAllTrx()
