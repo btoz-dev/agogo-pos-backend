@@ -8,6 +8,7 @@ use App\User;
 use App\Order;
 use Carbon\Carbon;
 use App\Order_detail;
+use PDF;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
@@ -77,6 +78,8 @@ class KasController extends Controller
 
     public function laporan(Request $request)
     {
+        Session::put('kas_start_date', null);
+        Session::put('kas_end_date', null);
         $kas = Kas::orderBy('created_at', 'DESC')
                 // ->where('created_at', '>', Carbon::today())
                 ->with('user');
@@ -133,6 +136,7 @@ class KasController extends Controller
                 // ->where('created_at', '>', Carbon::today())
                 ->with('user');
 
+                // $kas;
        
 
         if (!empty($start_date)) {            
@@ -143,12 +147,13 @@ class KasController extends Controller
             ->orderBy('created_at', 'DESC')        
             ->first();
         } else {
-            $kas = $kas->take(1)->skip(0)->get();
+            $kas = $kas->orderBy('created_at', 'DESC')        
+            ->first();
         }
 
-        return $kas;
+        // return $kas[0]->user->name;
 
-        $pdf = PDF::setOptions(['dpi' => 150, 'defaultFont' => 'sans-serif'])->loadView('preorders.report.invoice', compact('kas'));
+        $pdf = PDF::setOptions(['dpi' => 150, 'defaultFont' => 'sans-serif','isRemoteEnabled' => true])->loadView('kas.report.invoice', compact('kas'));
 
         
         return $pdf->stream();

@@ -153,6 +153,11 @@ class PreorderController extends Controller
      */
     public function store(Request $request)
     {
+        $get_role = User::role(['admin', 'manager'])
+        ->where('username', $request[0]['username_approval'])->count();
+
+        //Jika user sudah punya role admin / approver selanjutnya di cek password nya
+        if (auth()->attempt(['username' => $request[0]['username_approval'], 'password' => $request[0]['pin_approval'], 'status' => 1]) && $get_role > 0) {        
         DB::beginTransaction();
         try {
             // return response($request[0]['user_id']);
@@ -173,8 +178,8 @@ class PreorderController extends Controller
                 'uang_muka'     => $request[0]['uang_muka'],
                 'total'         => $request[0]['total'],
                 'sisa_harus_bayar'  => $request[0]['sisa_harus_bayar'],
-                'uang_dibayar'  => $request[0]['dibayar'],
-                'uang_kembali'  => $request[0]['kembali'],
+                'uang_dibayar'  => $request[0]['uang_dibayar'],
+                'uang_kembali'  => $request[0]['uang_kembali'],
                 'status'        => $request[0]['status']
             ));
 
@@ -208,6 +213,13 @@ class PreorderController extends Controller
             return response()->json([
                 'status' => 'failed',
                 'message' => $e->getMessage()
+            ], 400);
+        }
+        }
+        else {
+            return response()->json([
+                'status' => 'failed',
+                'message' => 'Invalid Username / PIN'
             ], 400);
         }
     }
@@ -273,6 +285,29 @@ class PreorderController extends Controller
         return response()->json($preorder, 200);
     }
 
+    public function cancelPreorder(Request $request,$id)
+    {
+
+        // return $request[0]['sisa_stock'];
+        // $sisa_stock = $request[0]['sisa_stock'];
+        $get_role = User::role(['admin', 'manager'])
+        ->where('username', $request[0]['username_approval'])->count();
+
+        //Jika user sudah punya role admin / approver selanjutnya di cek password nya
+        if (auth()->attempt(['username' => $request[0]['username_approval'], 'password' => $request[0]['pin_approval'], 'status' => 1]) && $get_role > 0) {        
+        $preorder = DB::table('preorders')->where('id', $id)->update(['status' => 'CANCEL']);
+        // $products->stock = $request->input('sisa_stock');
+        // $products->save();
+        return response()->json(['status' => 'success'], 200);
+        }
+        else {
+            return response()->json([
+                'status' => 'failed',
+                'message' => 'Invalid Username / PIN'
+            ], 400);
+        }
+    }
+
     public function payPreorder($id)
     {
         $preorder = Preorder::find($id);
@@ -283,7 +318,11 @@ class PreorderController extends Controller
 
     public function editPreorder(Request $request)
     {
-       
+        $get_role = User::role(['admin', 'manager'])
+        ->where('username', $request[0]['username_approval'])->count();
+
+    //Jika user sudah punya role admin / approver selanjutnya di cek password nya
+        if (auth()->attempt(['username' => $request[0]['username_approval'], 'password' => $request[0]['pin_approval'], 'status' => 1]) && $get_role > 0) {        
         DB::beginTransaction();
         try {
 
@@ -306,8 +345,8 @@ class PreorderController extends Controller
                 'uang_muka'     => $request[0]['uang_muka'],
                 'total'         => $request[0]['total'],
                 'sisa_harus_bayar'  => $request[0]['sisa_harus_bayar'],
-                'uang_dibayar'  => $request[0]['dibayar'],
-                'uang_kembali'  => $request[0]['kembali'],
+                'uang_dibayar'  => $request[0]['uang_dibayar'],
+                'uang_kembali'  => $request[0]['uang_kembali'],
                 'status'        => $request[0]['status']
             ));
 
@@ -353,6 +392,13 @@ class PreorderController extends Controller
             return response()->json([
                 'status' => 'failed',
                 'message' => $e->getMessage()
+            ], 400);
+        }
+        }
+        else {
+            return response()->json([
+                'status' => 'failed',
+                'message' => 'Invalid Username / PIN'
             ], 400);
         }
     }

@@ -2,11 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use DB;
+use App\User;
 use App\Production;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use App\Http\Resources\Product;
-use DB;
 use Symfony\Component\Process\ProcessBuilder;
 
 class ProductionController extends Controller
@@ -75,7 +76,7 @@ class ProductionController extends Controller
                 ->sum('qty');
                 }
             
-            if ($date_preorder == null) {
+                if ($date_preorder == null) {
                 $start_date = Carbon::today()->format('Y-m-d') . ' 00:00:01';
                 $end_date = Carbon::today()->format('Y-m-d') . ' 23:59:59';
                 $preorder = DB::table('preorder_details')
@@ -96,6 +97,7 @@ class ProductionController extends Controller
                     ->where('preorders.status','PAID')            
                     // ->where('status','PAID')
                     ->sum('qty');
+                    
                 }
                 
 
@@ -233,6 +235,12 @@ class ProductionController extends Controller
 
     public function postProduction(Request $request)
     {
+        $get_role = User::role(['admin', 'manager'])
+        ->where('username', $request[0]['username_approval'])->count();
+
+        //Jika user sudah punya role admin / approver selanjutnya di cek password nya
+        if (auth()->attempt(['username' => $request[0]['username_approval'], 'password' => $request[0]['pin_approval'], 'status' => 1]) && $get_role > 0) {        
+        
         DB::beginTransaction();
         try {
             $result = collect($request)->map(function ($value) {
@@ -290,7 +298,13 @@ class ProductionController extends Controller
                 'message' => $e->getMessage()
             ], 400);
         }
-
+        }
+        else {
+            return response()->json([
+                'status' => 'failed',
+                'message' => 'Invalid Username / PIN'
+            ], 400);
+        }
 
 
     }

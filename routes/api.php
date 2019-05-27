@@ -91,7 +91,8 @@ Route::post('/preorders', 'PreorderController@store');
 Route::get('/preorders', 'PreorderController@index');
 Route::get('/preorder/{id}', 'PreorderController@show');
 Route::put('/preorder/{id}', 'PreorderController@payPreorder');
-Route::delete('/preorder/{id}', 'PreorderController@destroy');
+// Route::delete('/preorder/{id}', 'PreorderController@destroy');
+Route::put('/cancelPreorder/{id}', 'PreorderController@cancelPreorder');
 Route::post('/editPreorders', 'PreorderController@editPreorder');
 Route::get('/cekPOInvoice', 'PreorderController@checkLastInvoice');
 

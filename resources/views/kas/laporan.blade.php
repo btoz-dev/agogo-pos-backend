@@ -212,7 +212,7 @@
                 </div>
             </div>
         </section>
-        // your if code
+        
         @else
         <section class="content" id="dw">
                 <div class="container-fluid">
