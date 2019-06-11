@@ -50,6 +50,10 @@ class ProductionController extends Controller
             ->where('product_id', $id)
             ->orderBy('created_at', 'DESC')->first();
 
+            // return dd($date_order);            
+
+            
+
 
             //Cek apakah ada trx atau engga
             if ($date_order == null) {
@@ -67,6 +71,16 @@ class ProductionController extends Controller
                 
                 $start_date = Carbon::parse($date_order->created_at)->format('Y-m-d') . ' 00:00:01';
                 $end_date = Carbon::parse($date_order->created_at)->format('Y-m-d') . ' 23:59:59';
+
+                // return $start_date;
+
+                $production = DB::table('productions')
+                ->where('product_id', $id)
+                ->whereBetween('created_at', [$start_date, $end_date])
+                ->orderBy('created_at','DESC')->first();
+
+                //  dd($production);
+
                 $order = DB::table('order_details')
                 ->join('orders','order_details.order_id', '=', 'orders.id')
                 ->where('order_details.product_id', $id)
@@ -76,9 +90,15 @@ class ProductionController extends Controller
                 ->sum('qty');
                 }
             
-                if ($date_preorder == null) {
+            if ($date_preorder == null) {
                 $start_date = Carbon::today()->format('Y-m-d') . ' 00:00:01';
                 $end_date = Carbon::today()->format('Y-m-d') . ' 23:59:59';
+
+                // $production = DB::table('productions')
+                // ->where('product_id', $id)
+                // ->whereBetween('created_at', [$start_date, $end_date])
+                // ->orderBy('created_at','DESC')->first();
+
                 $preorder = DB::table('preorder_details')
                 ->join('preorders','preorder_details.preorder_id', '=', 'preorders.id')
                 ->where('product_id', $id)
@@ -157,7 +177,7 @@ class ProductionController extends Controller
                 'last_trx_date' => $curent_date,
                 'count_order'   => $order,
                 'count_preorder'=> $preorder,
-                'stok_awal'     => $stock_awal,
+                // 'stok_awal'     => $stock_awal,
                 'production'    => $production,
     
             ),200);

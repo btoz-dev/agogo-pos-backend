@@ -208,6 +208,7 @@ class OrderController extends Controller
             $start_date = Carbon::now()->toDateString() . ' 00:00:01';
             $end_date = Carbon::now()->toDateString() . ' 23:59:59';
             $orders = $orders->whereBetween('order_details.created_at', [$start_date, $end_date])->get();
+
         }
 
         return view('orders.index', [
@@ -240,6 +241,7 @@ class OrderController extends Controller
                                 DB::raw('sum(total) as total'),
                                 DB::raw('sum(discount) as discount'))
                         ->where('status', 'PAID')
+                        ->whereMonth('created_at', Carbon::now()->month)
                         ->groupBy(DB::raw("DATE(created_at)"))
                         ->get();
 
@@ -248,14 +250,28 @@ class OrderController extends Controller
         }
 
         if (!empty($request->start_date) && !empty($request->end_date)) {
+            // return $orders;
             $this->validate($request, [
                 'start_date' => 'nullable|date',
                 'end_date'   => 'nullable|date'
             ]);
             $start_date = Carbon::parse($request->start_date)->format('Y-m-d') . ' 00:00:01';
             $end_date   = Carbon::parse($request->end_date)->format('Y-m-d') . ' 23:59:59';
-            $orders     = $orders->whereBetween('created_at', [$start_date, $end_date])->get();
+            // $orders     = $orders->whereBetween('created_at', [$start_date, $end_date])->get();
+            // $orders = $orders->where('created_at', '>=', $start_date)->where('created_at', '<', $end_date);
+            $orders = Order::select(DB::raw("DATE(created_at) as trx_date"),
+                                DB::raw('sum(subtotal) as subtotal'),
+                                DB::raw('sum(total) as total'),
+                                DB::raw('sum(discount) as discount'))
+                        ->where('status', 'PAID')
+                        ->where('created_at', '>=', $start_date)
+                        ->where('created_at', '<', $end_date)
+                        ->groupBy(DB::raw("DATE(created_at)"))
+                        ->get();
+            // $orders     = $orders->where('created_at', '>=', $start_date)->where('created_at', '<', $end_date)->get();
         } 
+
+        
 
         return view('orders.laporan_bulanan', [
             'orders' => $orders,
@@ -384,7 +400,7 @@ class OrderController extends Controller
             foreach ($result as $key => $row) {
                 $getCount = Product::where(['id' => $row['product_id']])->get();
                 
-                if ($getCount[0]['stock'] > $row['qty']) {
+                if ($getCount[0]['stock'] >= $row['qty']) {
                     $order->order_detail()->create([
                         'product_id' => $row['product_id'],
                         'qty' => $row['qty'],

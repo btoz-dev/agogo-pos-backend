@@ -31,7 +31,7 @@
                             </div>
                             <div class="card-body">
 
-                            <form action="{{ route('order.index') }}" method="get">
+                            <form action="{{ route('order.laporan_penjualan') }}" method="get">
                                 <div class="row">
                                     <div class="col-md-6">
                                         <div class="form-group">
@@ -89,7 +89,7 @@
                                         </tr>
                                         @empty
                                         <tr>
-                                            <td class="text-center" colspan="7">Tidak ada data transaksi</td>
+                                            <td class="text-center" colspan="7">Tidak ada data penjualan bulan ini</td>
                                         </tr>
                                         @endforelse
                                     </tbody>

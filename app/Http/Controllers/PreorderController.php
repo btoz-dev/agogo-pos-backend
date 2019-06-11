@@ -365,7 +365,7 @@ class PreorderController extends Controller
 
                 $getCount = Product::where(['id' => $row['product_id']])->get();
                 
-                if ($getCount[0]['stock'] > $row['qty']) {
+                if ($getCount[0]['stock'] >= $row['qty']) {
                     $preorder->preorder_detail()->create([
                         'product_id' => $row['product_id'],
                         'qty' => $row['qty'],
