@@ -438,6 +438,12 @@ class OrderController extends Controller
         return response()->json($orders, 200);
     }
 
+    public function getPaidOrders()
+    {
+        $orders = Order::where(['status' => 'PAID'])->get();
+        return response()->json($orders, 200);
+    }
+
     public function getOrderDetail($id) {
 
         $order_detail = Order_detail::with(array('product'=>function($query){
