@@ -35,7 +35,13 @@ Route::get('/chart', 'HomeController@getChart');
 //User API
 Route::resource('user', 'UserController');
 Route::get('/users', function () {
-    return new UserCollection(User::all());
+
+    return new UserCollection(
+        User::whereHas('roles', function ($query) {
+            $query->where('name', '!=', 'admin')->where('name', '!=', 'manager');
+        })->get()
+    );
+
 });
 
 //Auth API
