@@ -1,7 +1,7 @@
 @extends('layouts.master')
 
 @section('title')
-    <title>Laporan Penjualan Produk</title>
+    <title>Laopran Penjualan Harian</title>
 @endsection
 
 @section('content')
@@ -64,7 +64,7 @@
                     <div class="col-md-12">
                         <div class="card">
                             <div class="card-header with-border">
-                                <h3 class="card-title">Laporan Penjualan By Produk Per Hari</h3>
+                                <h3 class="card-title">Laporan Penjualan Bulanan</h3>
                             </div>
                             <div class="card-body">
                             <div class="table-responsive">
@@ -111,7 +111,8 @@
                                     </tbody>
                                     <tfoot>
                                         <tr>
-                                            <th colspan="3" style="text-align:right">Grand Total : </th>
+                                            <th colspan="2" style="text-align:left"></th>
+                                            <th style="text-align:right">Grand Total : </th>
                                             <th colspan="3" style="text-align:left">Rp.{{number_format($total_harga)}}</th>
                                         </tr>
                                     </tfoot>
@@ -148,14 +149,9 @@
       "ordering": true,
       "info": true,
       "autoWidth": true,
-      "bPaginate":true,
-      "sPaginationType":"full_numbers",
-      "bLengthChange": true,
-      "bInfo" : true
-
       dom: 'Bfrtip',
         buttons: [
-            'excel', 'pdf', 'print',
+            { extend: 'pdfHtml5', footer: true }
         ]
     });
   });

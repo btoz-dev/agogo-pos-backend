@@ -59,7 +59,7 @@ Route::group(['middleware' => 'auth'], function() {
 
     // Route::group(['middleware' => ['role:admin,kasir']], function() {
     Route::group(['middleware'], function() {
-
+        Route::get('/paid_order', 'OrderController@paid_order')->name('order.paid_order');
         Route::get('/order', 'OrderController@index')->name('order.index');
         Route::get('/laporan_penjualan', 'OrderController@laporan_penjualan')->name('order.laporan_penjualan');
         Route::get('/order/pdf', 'OrderController@invoicePdf')->name('order.pdf');

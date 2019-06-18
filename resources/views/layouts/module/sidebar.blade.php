@@ -63,6 +63,7 @@
 
                 <li class="nav-item has-treeview
                 {{ request()->is('order*') ? 'menu-open' : '' }}
+                {{ request()->is('paid_order*') ? 'menu-open' : '' }}
                 {{ request()->is('laporan_penjualan*') ? 'menu-open' : '' }}
                 {{ request()->is('preorder*') ? 'menu-open' : '' }}
                 {{ request()->is('laporan_kas*') ? 'menu-open' : '' }}
@@ -70,6 +71,7 @@
                 ">
                     <a href="#" class="nav-link
                     {{ request()->is('order*') ? 'active' : '' }}
+                    {{ request()->is('paid_order*') ? 'active' : '' }}
                     {{ request()->is('laporan_penjualan*') ? 'active' : '' }}
                     {{ request()->is('preorder*') ? 'active' : '' }}
                     {{ request()->is('laporan_kas*') ? 'active' : '' }}
@@ -83,9 +85,15 @@
                     </a>
                     <ul class="nav nav-treeview">
                         <li class="nav-item">
+                                    <a href="{{ route('order.paid_order') }}" class="nav-link {{ request()->is('paid_order*') ? 'active' : '' }}">
+                                        <i class="fa fa-circle-o nav-icon"></i>
+                                        <p>Penjualan Terbayar</p>
+                                    </a>
+                        </li>
+                        <li class="nav-item">
                             <a href="{{ route('order.index') }}" class="nav-link {{ request()->is('order*') ? 'active' : '' }}">
                                 <i class="fa fa-circle-o nav-icon"></i>
-                                <p>Penjualan</p>
+                                <p>Penjualan Harian</p>
                             </a>
                         </li>
                         <li class="nav-item">

@@ -31,7 +31,7 @@
                             </div>
                             <div class="card-body">
 
-                            <form action="{{ route('order.laporan_penjualan') }}" method="get">
+                            <form action="{{ route('order.paid_order') }}" method="get">
                                 <div class="row">
                                     <div class="col-md-6">
                                         <div class="form-group">
@@ -64,42 +64,51 @@
                     <div class="col-md-12">
                         <div class="card">
                             <div class="card-header with-border">
-                                <h3 class="card-title">Laporan Penjualan Bulanan</h3>
+                                <h3 class="card-title">Laporan Penjualan Terbayar</h3>
                             </div>
                             <div class="card-body">
                             <div class="table-responsive">
                                 <table id="example2" class="table table-bordered table-hover dataTable">
                                     <thead>
                                         <tr>
-                                            <th>Tanggal Transaksi</th>
-                                            <th>Transaksi</th>
-                                            <th>Discount</th>
-                                            <th>Total Transaksi</th>
+                                            <th>Invoice</th>
+                                            {{-- <th>Pelanggan</th> --}}
+                                            <th>Subtotal</th>
+                                            <th>Diskon</th>
+                                            <th>Uang Tambahan</th>
+                                            <th>Total</th>
+                                            <th>Uang Dibayar</th>
+                                            <th>Uang Kembali</th>
+                                            <th>Status</th>
+                                            <th>Tgl Transaksi</th>
+                                            {{-- <th>Tgl Transaksi</th> --}}
+                                            {{-- <th>Aksi</th> --}}
                                         </tr>
                                     </thead>
                                     <tbody>
                                         @forelse ($orders as $row)
                                         <tr>
-                                            <td>{{ $row->trx_date }}</td>
+                                            <td>{{ $row->invoice }}</td>
                                             <td>Rp {{ number_format($row->subtotal) }}</td>
-                                            {{-- <td>{{ $row->customer->name }}</td> --}}
                                             <td>Rp {{ number_format($row->discount) }}</td>
+                                            <td>Rp {{ number_format($row->add_fee) }}</td>
                                             <td>Rp {{ number_format($row->total) }}</td>
-                            
+                                            <td>Rp {{ number_format($row->uang_dibayar) }}</td>
+                                            <td>Rp {{ number_format($row->uang_kembali) }}</td>
+                                            <td>{{ $row->status }}</td>
+                                            <td>{{ $row->created_at }}</td>
                                         </tr>
                                         @empty
                                         <tr>
-                                            <td class="text-center" colspan="7">Tidak ada data penjualan bulan ini</td>
+                                            <td class="text-center" colspan="7">Tidak ada data transaksi hari ini</td>
                                         </tr>
                                         @endforelse
                                     </tbody>
                                     <tfoot>
-                                        <tr>
-                                            <th colspan="1" style="text-align:right">Grand Total : </th>
-                                            <th colspan="1" style="text-align:left">Rp {{number_format($total_subtotal)}}</th>
-                                            <th colspan="1" style="text-align:left">Rp {{number_format($total_discount)}}</th>
-                                            <th colspan="1" style="text-align:left">Rp {{number_format($total_harga)}}</th>
-                                        </tr>
+                                        {{-- <tr>
+                                            <th colspan="3" style="text-align:right">Grand Total : </th>
+                                            <th colspan="3" style="text-align:left">Rp.{{number_format($total_harga)}}</th>
+                                        </tr> --}}
                                     </tfoot>
                                 </table>
                             </div>

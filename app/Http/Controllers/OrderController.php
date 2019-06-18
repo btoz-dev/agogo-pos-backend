@@ -222,6 +222,49 @@ class OrderController extends Controller
         ]);
     }
 
+    public function paid_order(Request $request)
+    {
+        // $customers = Customer::orderBy('name', 'ASC')->get();
+        $users = User::role('kasir')->orderBy('name', 'ASC')->get();
+        $orders = Order::where(['status' => 'PAID'])->get();
+        // $orders = $orders->where('status','PAID')->get();
+        // return $orders;
+       
+        if (!empty($request->user_id)) {
+            $orders = $orders->where('user_id', $request->user_id);
+        }
+
+        if (!empty($request->start_date)) {
+            $this->validate($request, [
+                'start_date' => 'nullable|date',
+                // 'end_date' => 'nullable|date'
+            ]);
+            $start_date = Carbon::parse($request->start_date)->format('Y-m-d') . ' 00:00:01';
+            $end_date = Carbon::parse($request->start_date)->format('Y-m-d') . ' 23:59:59';
+
+            $orders = $orders->whereBetween('orders.created_at', [$start_date, $end_date])->get();
+        } else {
+            
+            $start_date = Carbon::now()->toDateString() . ' 00:00:01';
+            $end_date = Carbon::now()->toDateString() . ' 23:59:59';
+            // $orders = $orders->whereBetween('orders.created_at', [$start_date, $end_date])->get();
+            $orders = $orders->where('created_at', '>=', $start_date)->where('created_at', '<', $end_date);
+
+        }
+
+        // return $orders;
+
+        return view('orders.paid_order', [
+            'orders' => $orders,
+            // 'sold' => $this->countItem($orders),
+            // 'total' => $this->countTotal($orders),
+            // 'total_customer' => $this->countCustomer($orders),
+            'total_harga' => $this->countTotal_harga($orders),
+            // 'customers' => $customers,
+            'users' => $users
+        ]);
+    }
+
     private function countTotal_harga($orders)
     {
         $total = 0;
