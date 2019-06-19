@@ -96,11 +96,13 @@ Route::post('/refunds', 'OrderController@postRefunds');
 //Preorder API
 Route::post('/preorders', 'PreorderController@store');
 Route::get('/preorders', 'PreorderController@index');
+Route::get('/paid_preorders', 'PreorderController@paid_preorder');
 Route::get('/preorder/{id}', 'PreorderController@show');
 Route::put('/preorder/{id}', 'PreorderController@payPreorder');
 // Route::delete('/preorder/{id}', 'PreorderController@destroy');
 Route::put('/cancelPreorder/{id}', 'PreorderController@cancelPreorder');
 Route::post('/editPreorders', 'PreorderController@editPreorder');
+Route::post('/bayarPreorder', 'PreorderController@bayarPreorder');
 Route::get('/cekPOInvoice', 'PreorderController@checkLastInvoice');
 
 //Productions API

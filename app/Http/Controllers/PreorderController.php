@@ -135,6 +135,12 @@ class PreorderController extends Controller
         return response()->json($preorders, 200);
     }
 
+    public function paid_preorder()
+    {
+        $preorders = Preorder::where(['status' => 'PAID'])->get();
+        return response()->json($preorders, 200);
+    }
+
     /**
      * Show the form for creating a new resource.
      *
@@ -402,6 +408,78 @@ class PreorderController extends Controller
             ], 400);
         }
     }
+
+    public function bayarPreorder(Request $request)
+    {        
+
+    //Jika user sudah punya role admin / approver selanjutnya di cek password nya
+        
+
+            $delPreorder = Preorder::find($request[0]['preorder_id']);
+            $delPreorder-> delete();
+
+            $preorder = Preorder::create(array(
+                'id'            => $request[0]['preorder_id'],
+                'invoice'       => $request[0]['invoice'],
+                'nama'          => $request[0]['nama'],
+                'tgl_selesai'   => $request[0]['tgl_selesai'],
+                'waktu_selesai' => $request[0]['waktu_selesai'],
+                'alamat'        => $request[0]['alamat'],
+                'telepon'       => $request[0]['telepon'],
+                'catatan'       => $request[0]['catatan'],
+                'user_id'       => $request[0]['user_id'],
+                'subtotal'      => $request[0]['subtotal'],
+                'discount'      => $request[0]['diskon'],
+                'add_fee'       => $request[0]['add_fee'],
+                'uang_muka'     => $request[0]['uang_muka'],
+                'total'         => $request[0]['total'],
+                'sisa_harus_bayar'  => $request[0]['sisa_harus_bayar'],
+                'uang_dibayar'  => $request[0]['uang_dibayar'],
+                'uang_kembali'  => $request[0]['uang_kembali'],
+                'status'        => $request[0]['status']
+            ));
+
+
+
+            $result = collect($request)->map(function ($value) {
+                return [
+                    'product_id'    => $value['product_id'],
+                    'qty'           => $value['qty'],
+                    'price'         => $value['price'],
+                ];
+            })->all();
+            // return response($result);
+
+            foreach ($result as $key => $row) {
+
+                $getCount = Product::where(['id' => $row['product_id']])->get();
+                
+                if ($getCount[0]['stock'] >= $row['qty']) {
+                    $preorder->preorder_detail()->create([
+                        'product_id' => $row['product_id'],
+                        'qty' => $row['qty'],
+                        'price' => $row['price']
+                    ]);                
+
+                    DB::table('products')->where('id', $row['product_id'])->decrement('stock', $row['qty']); 
+                }
+                else {
+                    throw new \Exception('Stock ' . $getCount[0]['name'] . ' Tidak Mencukupi');
+                }
+                // return response($row['product_id']);
+                //return response($getCount[0]['stock']);                               
+            }
+
+            DB::commit();
+
+            return response()->json([
+                'status' => 'success',
+                'message' => $preorder->invoice,
+            ], 200);
+        
+    }
+        
+    
 
     public function invoicePdf()
     {
