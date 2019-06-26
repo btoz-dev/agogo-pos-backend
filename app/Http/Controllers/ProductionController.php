@@ -30,7 +30,7 @@ class ProductionController extends Controller
         return response()->json($products, 200);
     }
 
-    public function getTrxByProduct($id)
+    public function getTrxByProductOld($id)
     {
         $production = DB::table('productions')
             ->where('product_id', $id)
@@ -39,7 +39,7 @@ class ProductionController extends Controller
 
         if ($production == null ) {
 
-            
+            // Ambill tanggal terakhir transaksi
             $date_order = DB::table('order_details')
             ->select('created_at')
             ->where('product_id', $id)
@@ -57,6 +57,7 @@ class ProductionController extends Controller
 
             //Cek apakah ada trx atau engga
             if ($date_order == null) {
+                // Jika tidak ada maka tanggal di set hari ini
                 $start_date = Carbon::today()->format('Y-m-d') . ' 00:00:01';
                 $end_date = Carbon::today()->format('Y-m-d') . ' 23:59:59';
                 $order = DB::table('order_details')
@@ -68,7 +69,7 @@ class ProductionController extends Controller
                 ->sum('qty');
                 }    
                 else {
-                
+                // JIka ada transaksi maka menggunakan tanggal yg sudah didapatkan tadi
                 $start_date = Carbon::parse($date_order->created_at)->format('Y-m-d') . ' 00:00:01';
                 $end_date = Carbon::parse($date_order->created_at)->format('Y-m-d') . ' 23:59:59';
 
@@ -186,6 +187,133 @@ class ProductionController extends Controller
         
     }
 
+    public function getTrxByProduct($id)
+    {
+        $production = DB::table('productions')
+            ->where('product_id', $id)
+            ->where('created_at', '>', Carbon::today())
+            ->orderBy('created_at','DESC')->first();
+
+        if ($production == null ) {
+
+            $date_produksi = DB::table('productions')
+            ->select('created_at')
+            ->where('product_id', $id)
+            ->orderBy('created_at', 'DESC')->first();
+         
+
+            //Cek apakah ada initial produksi / tidak
+            if ($date_produksi == null) {            
+                return response()->json(array(
+                'status'    => 'gagal',
+                'message'   => 'belum membuat initial produksi',
+                ),200);
+
+                }    
+                else {
+                // Jika ada tanggal produksi maka menggunakan tanggal produksi yg sudah didapatkan tadi
+                $start_date = Carbon::parse($date_produksi->created_at)->format('Y-m-d') . ' 00:00:01';
+                $end_date = Carbon::parse($date_produksi->created_at)->format('Y-m-d') . ' 23:59:59';
+                
+
+                $production = DB::table('productions')
+                ->where('product_id', $id)
+                ->whereBetween('created_at', [$start_date, $end_date])
+                ->orderBy('created_at','DESC')->first();
+
+                //  dd($production);
+
+                $order = DB::table('order_details')
+                ->join('orders','order_details.order_id', '=', 'orders.id')
+                ->where('order_details.product_id', $id)
+                ->whereBetween('order_details.created_at', [$start_date, $end_date])
+                ->where('orders.status','PAID')
+                // ->get();
+                ->sum('qty');
+
+                $preorder = DB::table('preorder_details')
+                ->join('preorders','preorder_details.preorder_id', '=', 'preorders.id')
+                ->where('product_id', $id)
+                ->whereBetween('preorder_details.created_at', [$start_date, $end_date])
+                ->where('preorders.status','PAID')            
+                // ->where('status','PAID')
+                ->sum('qty');
+                                                      
+
+                // $getStock = DB::table('products')
+                // ->select('stock')
+                // ->where('id', $id) 
+                // ->get();
+                // $stock_awal = $getStock[0]->stock + $preorder + $order;
+
+                $getStock = DB::table('productions')
+                ->select('stock_awal')            
+                ->where('product_id', $id) 
+                ->orderBy('created_at', 'DESC')
+                ->first();
+                $stock_awal = $getStock->stock_awal + $preorder + $order;
+
+                
+                return response()->json(array(
+                    // 'last_trx_date' =>  null,
+                    'count_order'   => $order,
+                    'count_preorder'=> $preorder,
+                    'stok_awal'     => $stock_awal,
+                    'production'    => $production,
+        
+                ),200); 
+            }           
+
+        }else {
+
+            $curent_date = Carbon::now()->format('Y-m-d');
+            
+            // $curent_date = Carbon::now();
+
+            $start_date = Carbon::parse($curent_date)->format('Y-m-d') . ' 00:00:01';
+            $end_date = Carbon::parse($curent_date)->format('Y-m-d') . ' 23:59:59';
+
+            $order = DB::table('order_details')
+            ->join('orders','order_details.order_id', '=', 'orders.id')
+            ->where('order_details.product_id', $id)
+            ->whereBetween('order_details.created_at', [$start_date, $end_date])
+            ->where('orders.status','PAID')
+            // ->get();
+            ->sum('qty');
+
+            $preorder = DB::table('preorder_details')
+            ->join('preorders','preorder_details.preorder_id', '=', 'preorders.id')
+            ->where('product_id', $id)
+            ->whereBetween('preorder_details.created_at', [$start_date, $end_date])
+            ->where('preorders.status','PAID')            
+            // ->where('status','PAID')
+            ->sum('qty');
+
+            //Abil stok awal dari table prosuksi jika data produksi sudah ada
+            $getStock = DB::table('productions')
+            ->select('stock_awal')            
+            ->where('product_id', $id) 
+            ->whereBetween('preorder_details.created_at', [$start_date, $end_date])
+            ->orderBy('created_at', 'ASC')
+            ->first();
+            $stock_awal = $getStock->stock_awal;
+
+            // dd($curent_date);
+
+
+            return response()->json(array(
+                'last_trx_date' => $curent_date,
+                'count_order'   => $order,
+                'count_preorder'=> $preorder,
+                'stok_awal'     => $stock_awal,
+                'production'    => $production,
+    
+            ),200);
+            
+        }
+        
+    }
+
     public function getAllTrx()
     {
         $production = DB::table('products')->leftJoin('productions','productions.product_id', '=', 'products.id')
@@ -262,7 +390,7 @@ class ProductionController extends Controller
         if (auth()->attempt(['username' => $request[0]['username_approval'], 'password' => $request[0]['pin_approval'], 'status' => 1]) && $get_role > 0) {        
         
         DB::beginTransaction();
-        try {
+        try {    
             $result = collect($request)->map(function ($value) {
                 return [
                 'product_id'            => $value['product_id'],
