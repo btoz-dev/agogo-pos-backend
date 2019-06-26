@@ -293,7 +293,7 @@ class ProductionController extends Controller
             $getStock = DB::table('productions')
             ->select('stock_awal')            
             ->where('product_id', $id) 
-            ->whereBetween('preorder_details.created_at', [$start_date, $end_date])
+            ->whereBetween('created_at', [$start_date, $end_date])
             ->orderBy('created_at', 'ASC')
             ->first();
             $stock_awal = $getStock->stock_awal;
