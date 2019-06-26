@@ -404,9 +404,13 @@ class ProductionController extends Controller
             ->orderBy('created_at', 'DESC')->first();
 
             $date_null_production = Carbon::parse($date_produksi->created_at)->format('Y-m-d') . ' 00:00:01';
-            $date_production_not_null = Carbon::parse($date_produksi->created_at)->format('Y-m-d H');
+            $date_production_not_null = Carbon::parse($production->created_at)->format('Y-m-d H');
+            $curent_date = Carbon::now()->format('Y-m-d H');
 
-            if ($production == null) {                
+            if ($date_produksi == null) {
+                $tgl_produksi = $curent_date;                
+            }
+            elseif ($production == null) {                
                 $tgl_produksi = $date_null_production;
             }else {
                 $tgl_produksi = $date_production_not_null;
