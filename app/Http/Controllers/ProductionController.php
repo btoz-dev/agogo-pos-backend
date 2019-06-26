@@ -390,7 +390,27 @@ class ProductionController extends Controller
         if (auth()->attempt(['username' => $request[0]['username_approval'], 'password' => $request[0]['pin_approval'], 'status' => 1]) && $get_role > 0) {        
         
         DB::beginTransaction();
-        try {    
+        try {
+            
+            $production = DB::table('productions')
+            // ->where('product_id', $id)
+            ->where('created_at', '>', Carbon::today())
+            ->orderBy('created_at','DESC')->first();
+
+            $date_produksi = DB::table('productions')
+            ->select('created_at')
+            // ->where('product_id', $id)
+            ->orderBy('created_at', 'DESC')->first();
+
+            $date_null_production = Carbon::parse($date_produksi->created_at)->format('Y-m-d') . ' 00:00:01';
+            $date_production_not_null = Carbon::parse($date_produksi->created_at)->format('Y-m-d H');
+
+            if ($production == null) {                
+                $tgl_produksi = $date_null_production;
+            }else {
+                $tgl_produksi = $date_production_not_null;
+            }
+
             $result = collect($request)->map(function ($value) {
                 return [
                 'product_id'            => $value['product_id'],
@@ -406,7 +426,7 @@ class ProductionController extends Controller
                 'total_lain'            => $value['total_lain'],
                 'catatan'               => $value['catatan'],
                 'stock_awal'            => $value['stock_awal'],
-                'sisa_stock'            => $value['sisa_stock'],
+                'sisa_stock'            => $value['sisa_stock'],            
                 ];
             })->all();
             // return response($result);
@@ -427,6 +447,7 @@ class ProductionController extends Controller
                     'catatan'               => $row['catatan'],
                     'stock_awal'            => $row['stock_awal'],
                     'sisa_stock'            => $row['sisa_stock'],
+                    'created_at'            => $tgl_produksi,
                     ]);                
                     // return response($row['product_id']);
                 //return response($getCount[0]['stock']);
