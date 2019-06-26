@@ -205,9 +205,9 @@ class ProductionController extends Controller
             //Cek apakah ada initial produksi / tidak
             if ($date_produksi == null) {            
                 return response()->json(array(
-                'status'    => 'failed',
-                'message'   => 'production : null',
-                $production
+                'status'        => 'failed',
+                'message'       => 'production : null',
+                'production'    => $production,
                 ),200);
 
                 }    
