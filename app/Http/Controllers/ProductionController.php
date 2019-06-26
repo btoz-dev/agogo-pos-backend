@@ -207,6 +207,7 @@ class ProductionController extends Controller
                 return response()->json(array(
                 'status'    => 'failed',
                 'message'   => 'production : null',
+                $production
                 ),200);
 
                 }    
