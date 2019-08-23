@@ -20,15 +20,15 @@ class CreatePreordersTable extends Migration
             $table->date('tgl_selesai');
             $table->string('alamat');
             $table->string('telepon');
-            $table->string('catatan');            
+            $table->string('catatan')->nullable();            
             $table->integer('user_id');
             $table->integer('subtotal');
-            $table->integer('discount');            
-            $table->integer('add_fee');
+            $table->integer('discount')->nullable();            
+            $table->integer('add_fee')->nullable();
             $table->integer('total');
             $table->integer('uang_muka')->nullable();
-            $table->integer('uang_dibayar');
-            $table->integer('uang_kembali');
+            $table->integer('uang_dibayar')->nullable();
+            $table->integer('uang_kembali')->nullable();
             $table->string('status');
             $table->timestamps();
             
