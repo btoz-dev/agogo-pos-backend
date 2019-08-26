@@ -24,14 +24,14 @@ class KasController extends Controller
 
         if ($cek_kas[0]->saldo_akhir > 0) {
             return response()->json([
-                'status' => 'notcounted',
-                'message' => 'Kas Belum dihitung'
+                'status' => 'counted',
+                'message' => 'Kas Sudah dihitung'
             ], 200);
         }
         else {
             return response()->json([
-                'status' => 'counted',
-                'message' => 'Kas Sudah dihitung'
+                'status' => 'notcounted',
+                'message' => 'Kas Belum dihitung'
             ], 200);            
         }
     }
