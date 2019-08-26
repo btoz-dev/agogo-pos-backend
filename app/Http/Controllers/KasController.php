@@ -182,8 +182,10 @@ class KasController extends Controller
         ->sum('total');
 
         $getSaldoAwal = Kas::select('saldo_awal')
-        ->where('created_at', '>', $cek_kas[0]->created_at)
-        ->first();
+        // ->where('created_at', '>', $cek_kas[0]->created_at)
+        ->orderBy('id', 'desc')
+        ->first();        
+
 
         // return $getSaldoAwal->saldo_awal;
 
