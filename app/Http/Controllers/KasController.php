@@ -18,17 +18,20 @@ class KasController extends Controller
 
     public function cekKas()
     {
-        $cek_kas = Kas::where('created_at', '>', Carbon::today())->count();
-        if ($cek_kas > 0) {
+        // $cek_kas = Kas::where('created_at', '>', Carbon::today())->count();
+        $cek_kas = DB::table('kas')->orderBy('id', 'desc')->take(1)->get();
+        
+
+        if ($cek_kas[0]->saldo_akhir > 0) {
             return response()->json([
-                'status' => 'failed',
-                'message' => 'Kas hari ini sudah di INPUT'
-            ], 400);
+                'status' => 'notcounted',
+                'message' => 'Kas Belum dihitung'
+            ], 200);
         }
         else {
             return response()->json([
-                'status' => 'success',
-                'message' => 'Kas Masih Kosong'
+                'status' => 'counted',
+                'message' => 'Kas Sudah dihitung'
             ], 200);            
         }
     }
