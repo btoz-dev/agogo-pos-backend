@@ -412,7 +412,13 @@ class PreorderController extends Controller
     public function bayarPreorder(Request $request)
     {        
 
+        $get_role = User::role(['admin', 'manager'])
+        ->where('username', $request[0]['username_approval'])->count();
+
     //Jika user sudah punya role admin / approver selanjutnya di cek password nya
+        if (auth()->attempt(['username' => $request[0]['username_approval'], 'password' => $request[0]['pin_approval'], 'status' => 1]) && $get_role > 0) {        
+        DB::beginTransaction();
+        try {
         
 
             $delPreorder = Preorder::find($request[0]['preorder_id']);
@@ -476,6 +482,20 @@ class PreorderController extends Controller
                 'status' => 'success',
                 'message' => $preorder->invoice,
             ], 200);
+        } catch (Exception $e) {
+            DB::rollback();
+            return response()->json([
+                'status' => 'failed',
+                'message' => $e->getMessage()
+            ], 400);
+        }
+        }
+        else {
+            return response()->json([
+                'status' => 'failed',
+                'message' => 'Invalid Username / PIN'
+            ], 400);
+        }
         
     }
         
