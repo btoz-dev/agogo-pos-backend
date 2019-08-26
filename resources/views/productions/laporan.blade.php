@@ -32,12 +32,12 @@
                             </div>
                             <div class="card-body">
 
-                            <form action="{{ route('order.index') }}" method="get">
+                            <form action="{{ route('production.laporan') }}" method="get">
                                 <div class="row">
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             <label for="">Mulai Tanggal</label>
-                                            <input type="text" name="start_date" 
+                                            <input type="date" name="start_date" placeholder="{{$phd_today}}" value="{{$phd_today}}"
                                                 class="form-control {{ $errors->has('start_date') ? 'is-invalid':'' }}"
                                                 id="start_date"
                                                 value="{{ request()->get('start_date') }}"
@@ -50,7 +50,7 @@
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             <label for="">Sampai Tanggal</label>
-                                            <input type="text" name="end_date" 
+                                            <input type="date" name="end_date" placeholder="{{$phd_today}}" value="{{$phd_today}}"
                                                 class="form-control {{ $errors->has('end_date') ? 'is-invalid':'' }}"
                                                 id="end_date"
                                                 value="{{ request()->get('end_date') }}">
@@ -102,7 +102,7 @@
                                         </tr>
                                         @empty
                                         <tr>
-                                            <td class="text-center" colspan="7">Tidak ada data transaksi</td>
+                                            <td class="text-center" colspan="7">Tidak ada data Produksi hari ini</td>
                                         </tr>
                                         @endforelse
                                     </tbody>

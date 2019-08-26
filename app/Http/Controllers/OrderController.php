@@ -211,8 +211,12 @@ class OrderController extends Controller
 
         }
 
+        $phd_today = Carbon::now()->toDateString();
+        // 'phd_today' => $phd_today,
+
         return view('orders.index', [
             'orders' => $orders,
+            'phd_today' => $phd_today,
             // 'sold' => $this->countItem($orders),
             // 'total' => $this->countTotal($orders),
             // 'total_customer' => $this->countCustomer($orders),
@@ -242,7 +246,9 @@ class OrderController extends Controller
             $start_date = Carbon::parse($request->start_date)->format('Y-m-d') . ' 00:00:01';
             $end_date = Carbon::parse($request->start_date)->format('Y-m-d') . ' 23:59:59';
 
-            $orders = $orders->whereBetween('orders.created_at', [$start_date, $end_date])->get();
+            // $orders = $orders->whereBetween('orders.created_at', [$start_date, $end_date])->get();$orders = $orders
+            $orders = $orders->where('created_at', '>=', $start_date)->where('created_at', '<', $end_date);
+
         } else {
             
             $start_date = Carbon::now()->toDateString() . ' 00:00:01';
@@ -252,10 +258,13 @@ class OrderController extends Controller
 
         }
 
-        // return $orders;
+        // return $end_date;
+        $phd_today = Carbon::now()->toDateString();
+        // return $phd_today;
 
         return view('orders.paid_order', [
             'orders' => $orders,
+            'phd_today' => $phd_today,
             // 'sold' => $this->countItem($orders),
             // 'total' => $this->countTotal($orders),
             // 'total_customer' => $this->countCustomer($orders),
@@ -314,10 +323,17 @@ class OrderController extends Controller
             // $orders     = $orders->where('created_at', '>=', $start_date)->where('created_at', '<', $end_date)->get();
         } 
 
+        // $phd_today = Carbon::now()->toDateString();
+        $firstDayofcurMonth = Carbon::now()->startOfMonth()->toDateString();
+        $lastDayofCurMonth = Carbon::now()->endOfMonth()->toDateString();
+        // return $lastDayofPreviousMonth;
+        // 'phd_today' => $phd_today,
         
 
         return view('orders.laporan_bulanan', [
             'orders' => $orders,
+            'firstDayofcurMonth'=> $firstDayofcurMonth,
+            'lastDayofCurMonth' => $lastDayofCurMonth,
             'total_harga'       => $this->countTotal_transaksi($orders),
             'total_subtotal'    => $this->countSubTotal_transaksi($orders),
             'total_discount'    => $this->countDiscount_transaksi($orders),            
@@ -419,17 +435,35 @@ class OrderController extends Controller
                 $setInvoice = $this->generateInvoice();
             }
 
-            $order = Order::create(array(
-                'invoice'       => $setInvoice,
-                // 'customer_id' => $customer->id,
-                'user_id'       => $request[0]['user_id'],
-                'subtotal'      => $request[0]['subtotal'],
-                'discount'      => $request[0]['diskon'],
-                'total'         => $request[0]['total'],
-                'uang_dibayar'  => $request[0]['dibayar'],
-                'uang_kembali'  => $request[0]['kembali'],
-                'status'        => $request[0]['status']
-            ));
+            if(!empty( $request[0]['id']) ){            
+                $order = Order::create(array(
+                    'id'            => $request[0]['id'],
+                    'invoice'       => $setInvoice,
+                    // 'customer_id' => $customer->id,
+                    'user_id'       => $request[0]['user_id'],
+                    'subtotal'      => $request[0]['subtotal'],
+                    'discount'      => $request[0]['diskon'],
+                    'total'         => $request[0]['total'],
+                    'uang_dibayar'  => $request[0]['dibayar'],
+                    'uang_kembali'  => $request[0]['kembali'],
+                    'status'        => $request[0]['status']
+                ));
+            }
+            else {
+                $order = Order::create(array(
+                    'invoice'       => $setInvoice,
+                    // 'customer_id' => $customer->id,
+                    'user_id'       => $request[0]['user_id'],
+                    'subtotal'      => $request[0]['subtotal'],
+                    'discount'      => $request[0]['diskon'],
+                    'total'         => $request[0]['total'],
+                    'uang_dibayar'  => $request[0]['dibayar'],
+                    'uang_kembali'  => $request[0]['kembali'],
+                    'status'        => $request[0]['status']
+                ));
+            }
+
+            
 
             $result = collect($request)->map(function ($value) {
                 return [
@@ -534,7 +568,7 @@ class OrderController extends Controller
                         'qty' => $row['qty'],
                         'price' => $row['price']
                     ]);
-                        DB::table('products')->where('id', $row['product_id'])->decrement('stock', $row['qty']); 
+                        // DB::table('products')->where('id', $row['product_id'])->decrement('stock', $row['qty']); 
                 }
                 else {
                     throw new \Exception('Stock ' . $getCount[0]['name'] . ' Tidak Mencukupi');

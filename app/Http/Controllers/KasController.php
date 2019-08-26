@@ -104,7 +104,8 @@ class KasController extends Controller
             $kas = $kas->take(1)->skip(0)->get();
         }
 
-        
+        $phd_today = Carbon::now()->toDateString();
+        // 'phd_today' => $phd_today,
         
 
         // return $kas;
@@ -118,6 +119,7 @@ class KasController extends Controller
 
         return view('kas.laporan', [
             'kas' => $kas,
+            'phd_today' => $phd_today,
             // 'sold' => $this->countItem($orders),
             // 'total' => $this->countTotal($orders),
             // 'total_customer' => $this->countCustomer($orders),

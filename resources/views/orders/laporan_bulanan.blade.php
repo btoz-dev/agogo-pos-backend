@@ -36,7 +36,7 @@
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             <label for="">Mulai Tanggal</label>
-                                            <input type="text" name="start_date" 
+                                            <input type="date" name="start_date" placeholder="{{$firstDayofcurMonth}}" value="{{$firstDayofcurMonth}}"
                                                 class="form-control {{ $errors->has('start_date') ? 'is-invalid':'' }}"
                                                 id="start_date"
                                                 value="{{ request()->get('start_date') }}"
@@ -49,7 +49,7 @@
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             <label for="">Sampai Tanggal</label>
-                                            <input type="text" name="end_date" 
+                                            <input type="date" name="end_date" placeholder="{{$lastDayofCurMonth}}" value="{{$lastDayofCurMonth}}"
                                                 class="form-control {{ $errors->has('end_date') ? 'is-invalid':'' }}"
                                                 id="end_date"
                                                 value="{{ request()->get('end_date') }}">

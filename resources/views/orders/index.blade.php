@@ -1,7 +1,7 @@
 @extends('layouts.master')
 
 @section('title')
-    <title>Laopran Penjualan Harian</title>
+    <title>Laporan Penjualan Harian</title>
 @endsection
 
 @section('content')
@@ -36,7 +36,7 @@
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             <label for="">Pilih Tanggal</label>
-                                            <input type="text" name="start_date" 
+                                            <input type="date" name="start_date" placeholder="{{$phd_today}}" value="{{$phd_today}}"
                                                 class="form-control {{ $errors->has('start_date') ? 'is-invalid':'' }}"
                                                 id="start_date"
                                                 value="{{ request()->get('start_date') }}"

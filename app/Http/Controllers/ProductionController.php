@@ -215,6 +215,8 @@ class ProductionController extends Controller
                 // Jika ada tanggal produksi maka menggunakan tanggal produksi yg sudah didapatkan tadi
                 $start_date = Carbon::parse($date_produksi->created_at)->format('Y-m-d') . ' 00:00:01';
                 $end_date = Carbon::parse($date_produksi->created_at)->format('Y-m-d') . ' 23:59:59';
+                // $end_date = Carbon::now()->format('Y-m-d H:i:s');
+                // $tgl_produksi = $date_production_not_null;
                 
 
                 $production = DB::table('productions')
@@ -384,6 +386,10 @@ class ProductionController extends Controller
 
     public function postProduction(Request $request)
     {
+
+        $ubah_tanggal = null;
+        $ubah_tanggal = $request[0]['ubah_tanggal'];
+
         $get_role = User::role(['admin', 'manager'])
         ->where('username', $request[0]['username_approval'])->count();
 
@@ -395,7 +401,7 @@ class ProductionController extends Controller
             
             $production = DB::table('productions')
             // ->where('product_id', $id)
-            ->where('created_at', '>', Carbon::today())
+            ->where('created_at', '>=', Carbon::today())
             ->orderBy('created_at','DESC')->first();
 
             $date_produksi = DB::table('productions')
@@ -403,18 +409,35 @@ class ProductionController extends Controller
             // ->where('product_id', $id)
             ->orderBy('created_at', 'DESC')->first();
 
-            $date_null_production = Carbon::parse($date_produksi->created_at)->format('Y-m-d') . ' 00:00:01';
-            $date_production_not_null = Carbon::parse($production->created_at)->format('Y-m-d H');
-            $curent_date = Carbon::now()->format('Y-m-d H');
+            $tgl_produksi = null;
+            
 
             if ($date_produksi == null) {
+                $curent_date = Carbon::now()->format('Y-m-d');
                 $tgl_produksi = $curent_date;                
             }
-            elseif ($production == null) {                
+            elseif ($production == null && $ubah_tanggal == "no") {            
+                $date_null_production = Carbon::parse($date_produksi->created_at)->format('Y-m-d') . '23:59:59';    
                 $tgl_produksi = $date_null_production;
-            }else {
+            }            
+            // elseif ($production != null && $ubah_tanggal == "yes"){
+            //     $date_production_not_null = Carbon::now()->format('Y-m-d H:i:s');
+            //     $tgl_produksi = $date_production_not_null;
+                
+            // }
+            // elseif ($production != null && $ubah_tanggal == "no" ){
+            //     $date_production_not_null = Carbon::now()->format('Y-m-d H:i:s');
+            //     $tgl_produksi = $date_production_not_null;
+            // }
+            else {
+                $date_production_not_null = Carbon::now()->format('Y-m-d H:i:s');
                 $tgl_produksi = $date_production_not_null;
+                // return $tgl_produksi;
             }
+
+            // return $tgl_produksi;
+            
+            
 
             $result = collect($request)->map(function ($value) {
                 return [
@@ -485,7 +508,9 @@ class ProductionController extends Controller
 
     public function laporan(Request $request)
     {
-        $stock = Production::orderBy('created_at', 'DESC')->with('product');
+        $stock = Production::orderBy('created_at', 'DESC')
+            // ->groupBy('products.id')
+            ->with('product');
 
         if (!empty($request->start_date) && !empty($request->end_date)) {
             $this->validate($request, [
@@ -497,11 +522,30 @@ class ProductionController extends Controller
 
             $stock = $stock->whereBetween('created_at', [$start_date, $end_date])->get();
         } else {
-            $stock = $stock->get();
+            $start_date = Carbon::now()->toDateString() . ' 00:00:01';
+            $end_date = Carbon::now()->toDateString() . ' 23:59:59';
+            $stock = $stock->whereBetween('created_at', [$start_date, $end_date])->get();
+            
+            // $stock = $stock->get();
         }
+
+        // $getTrx = DB::table('products')
+        // ->Join('preorder_details', 'products.id', '=', 'preorder_details.product_id')
+        // ->Join('order_details', 'products.id', '=', 'order_details.product_id')
+        // ->select('products.id', 'products.stock',
+        //             DB::raw('COALESCE(sum(preorder_details.qty),0) as total_preorder'),
+        //             DB::raw('COALESCE(sum(order_details.qty),0) as total_order'),
+        //             DB::raw('products.stock +  sum(order_details.qty) + sum(preorder_details.qty) as stock_awal'))
+        // ->groupBy('products.id','products.stock')
+        // ->where('order_details.created_at', '>', Carbon::now()->subDays(30))
+        // ->where('preorder_details.created_at', '>', Carbon::now()->subDays(30))
+        // ->get();
+        $phd_today = Carbon::now()->toDateString();
+        // 'phd_today' => $phd_today,
 
         return view('productions.laporan', [
             'stock' => $stock,
+            'phd_today' => $phd_today,
             // 'sold' => $this->countItem($orders),
             // 'total' => $this->countTotal($orders),
             // 'total_customer' => $this->countCustomer($orders),

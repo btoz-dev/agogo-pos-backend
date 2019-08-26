@@ -42,6 +42,7 @@
                 <div class="form-group has-feedback">
                     <input type="password" 
                         name="password"
+                        {{-- pattern="[0-9]" --}}
                         class="form-control {{ $errors->has('password') ? ' is-invalid' : '' }} " 
                         placeholder="{{ __('Password') }}">
                     {{-- <span class="fa fa-lock form-control-feedback"> {{ $errors->first('password') }}</span> --}}
