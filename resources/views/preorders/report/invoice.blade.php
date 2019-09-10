@@ -37,7 +37,7 @@
             padding: .2em 0,8em;
         }
 
-        table.display th{ background: #D5E0CC; }
+        table.display th{ background: #fff; }
         table.display td{ background: #fff; }
 
         table.responsive-table{
@@ -61,7 +61,11 @@
 </head>
 <body>
     <div class="header">
-        <h3>LAPORAN PEMESANAN</h3>
+        <img src="http://101.255.125.227:82/uploads/profile/agogo.png" alt="Image"/>        
+        <div style="float:right"><h2>LAPORAN PEMESANAN</h2></div>
+        <hr>
+        {{-- <h4 style="line-height: 0px;">Invoice: #{{ $kas->id }}</h4>
+        <p><small style="opacity: 0.5;">{{ $kas->created_at->format('d-m-Y H:i:s') }}</small></p> --}}
     </div>
     
     <div class="page">
@@ -85,8 +89,8 @@
                                         <tr>
                                             <td>{{ $row->invoice }}</td>
                                             <td>{{ $row->nama }}</td>
-                                            <td>{{ $row->created_at }}</td>
-                                            <td>{{ $row->tgl_selesai }}</td>
+                                            <td>{{ Carbon\Carbon::parse($row->created_at)->format('d/m/Y') }}</td>  
+                                            <td>{{ Carbon\Carbon::parse($row->tgl_selesai)->format('d/m/Y') }}</td>  
                                             <td>{{ $row->waktu_selesai }}</td>
                                             <td>{{ $row->status }}</td>
                                             <td>{{ $row->user->name }}</td>

@@ -1,7 +1,8 @@
 @extends('layouts.master')
 
 @section('title')
-    <title>Laporan Penjualan Harian</title>
+    {{-- <title>Laporan Penjualan Harian</title> --}}
+    <title>Laporan Total Penjualan Per Item</title>
 @endsection
 
 @section('content')
@@ -64,7 +65,8 @@
                     <div class="col-md-12">
                         <div class="card">
                             <div class="card-header with-border">
-                                <h3 class="card-title">Laporan Penjualan Bulanan</h3>
+                                {{-- <h3 class="card-title">Laporan Penjualan Bulanan</h3> --}}
+                                <h3 class="card-title">Laporan Total Penjualan Per Item</h3>
                             </div>
                             <div class="card-body">
                             <div class="table-responsive">

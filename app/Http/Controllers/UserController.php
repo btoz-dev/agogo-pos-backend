@@ -27,7 +27,8 @@ class UserController extends Controller
     public function create()
     {
         $role = Role::orderBy('name', 'ASC')->get();
-        return view('users.create', compact('role'));
+        // $role = Role::pluck('name', 'id');
+        return view('users.create', compact('role','role2'));
     }
 
     public function store(Request $request)
@@ -37,7 +38,8 @@ class UserController extends Controller
             'name' => 'string|max:100',
             'email' => 'required|email|unique:users',
             'password' => 'required|min:6|numeric',
-            'role' => 'required|string|exists:roles,name',
+            // 'role' => 'required|string|exists:roles,name',
+            'role' => 'required|min:1',
             'photo' => 'nullable|image|mimes:jpg,png,jpeg'
 
         ]);        
@@ -163,7 +165,8 @@ class UserController extends Controller
     {
         $user = User::findOrFail($id);
         $roles = Role::all()->pluck('name');
-        return view('users.roles', compact('user', 'roles'));
+        $role = Role::orderBy('name', 'ASC')->get();
+        return view('users.roles', compact('user', 'roles','role'));
     }
 
     public function setRole(Request $request, $id)
@@ -174,7 +177,8 @@ class UserController extends Controller
 
         $user = User::findOrFail($id);
         $user->syncRoles($request->role);
-        return redirect()->back()->with(['success' => 'Role Sudah Di Set']);
+        // $user->assignRole($request->role);
+        return redirect()->route('users.index')->with(['success' => 'Role Sudah Di Set']);
     }
 
     public function rolePermission(Request $request)

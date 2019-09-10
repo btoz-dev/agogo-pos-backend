@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use DB;
+use Session;
 use PDF;
 use App\User;
 use App\Preorder;
@@ -80,10 +81,12 @@ class PreorderController extends Controller
 
     public function laporan_pemesanan(Request $request)
     {
+        Session::put('lap_start_date', null);
+        Session::put('lap_end_date', null);
         // $customers = Customer::orderBy('name', 'ASC')->get();
         $users = User::role('kasir')->orderBy('name', 'ASC')->get();
-        $preorders = Preorder::orderBy('created_at', 'DESC')
-                    ->where('status','PAID');
+        $preorders = Preorder::orderBy('created_at', 'DESC');
+                    // ->where('status','PAID');
 
         $cancel_preorders = Preorder::orderBy('created_at', 'DESC')
                     ->where('status','CANCEL');
@@ -105,6 +108,9 @@ class PreorderController extends Controller
             
             $preorders = $preorders->whereBetween('created_at', [$start_date, $end_date])->get();
             $cancel_preorders = $cancel_preorders->whereBetween('created_at', [$start_date, $end_date])->get();
+
+            Session::put('lap_start_date', $start_date);
+            Session::put('lap_end_date', $end_date);
         } else {
             $start_date = Carbon::now()->toDateString() . ' 00:00:01';
             $end_date = Carbon::now()->toDateString() . ' 23:59:59';
@@ -114,10 +120,12 @@ class PreorderController extends Controller
         }
 
         // return $preorders[0]->preorder->status;
+        $phd_today = Carbon::now()->toDateString();
 
         return view('preorders.index', [
             'preorders' => $preorders,
             'cancel_preorders' => $cancel_preorders,
+            'phd_today' => $phd_today,
             // 'sold' => $this->countItem($orders),
             'total_harga' => $this->countTotal_harga($preorders),
             'total_uang_muka' => $this->countUangMuka_transaksi($preorders),
@@ -503,17 +511,35 @@ class PreorderController extends Controller
 
     public function invoicePdf()
     {
-        $preorders = Preorder::where('status', 'PAID')->get();
+        $start_date = Session::get('lap_start_date');
+        $end_date = Session::get('lap_end_date');
+        // return $end_date;
+        // $preorders = Preorder::where('status', 'PAID')->get();
+        $preorders = Preorder::where('status','!=', 'CANCEL')->get();
         $cancel_preorders = Preorder::orderBy('created_at', 'DESC')->where('status','CANCEL');
-        $total_harga = $this->countTotal_harga($preorders);
-        $total_uang_muka = $this->countUangMuka_transaksi($preorders);
-        $total_harus_bayar = $this->countSisaHarusBayar_transaksi($preorders);
-            // 'customers' => $customers,
-        $total_harga_cancel = $this->countTotal_harga($cancel_preorders);
-        $total_uang_muka_cancel = $this->countUangMuka_transaksi($cancel_preorders);
+        
+
+               
+            $start = Carbon::parse($start_date)->format('Y-m-d') . ' 00:00:01';
+            $end = Carbon::parse($end_date)->format('Y-m-d') . ' 23:59:59';
+
+            $preorders = $preorders->where('created_at','>',$start)
+            ->where('created_at','<',$end);
+
+            $cancel_preorders = $cancel_preorders->where('created_at','>',$start)
+            ->where('created_at','<',$end);
+
+
+            $total_harga = $this->countTotal_harga($preorders);
+            $total_uang_muka = $this->countUangMuka_transaksi($preorders);
+            $total_harus_bayar = $this->countSisaHarusBayar_transaksi($preorders);
+                // 'customers' => $customers,
+            $total_harga_cancel = $this->countTotal_harga($cancel_preorders);
+            $total_uang_muka_cancel = $this->countUangMuka_transaksi($cancel_preorders);
+       
         
         // return $order;
-        $pdf = PDF::setOptions(['dpi' => 150, 'defaultFont' => 'sans-serif'])->loadView('preorders.report.invoice', compact('preorders','total_harga','total_uang_muka','total_harus_bayar','total_harga_cancel','total_uang_muka_cancel'));
+        $pdf = PDF::setOptions(['dpi' => 150, 'defaultFont' => 'sans-serif','isRemoteEnabled' => true])->loadView('preorders.report.invoice', compact('preorders','total_harga','total_uang_muka','total_harus_bayar','total_harga_cancel','total_uang_muka_cancel'));
 
         
         return $pdf->stream();

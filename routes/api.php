@@ -113,6 +113,7 @@ Route::get('/AllTrx', 'ProductionController@getAllTrx');
 Route::get('/AllTrxByProduct', 'ProductionController@getAllTrxByProduct');
 Route::get('/preorderByProduct/{id}', 'ProductionController@getPreorderByProduct');
 Route::post('/postProduction', 'ProductionController@postProduction');
+Route::post('/ubahTanggal', 'ProductionController@ubahTanggal');
 Route::put('/updateStock/{id}', 'ProductionController@updateStock');
 Route::get('/GetLastDate', 'ProductionController@GetLastDate');
 

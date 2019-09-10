@@ -107,7 +107,7 @@
                 {{-- @forelse ($kas as $row)
                 <tr>
                     <td>{{ $row->user->name }}</td>
-                    <td>{{ $row->created_at }}</td>
+                    <td>{{ Carbon\Carbon::parse($row->created_at)->format('d/m/Y H:i:s') }}</td>  
                     <td>Rp {{ number_format($row->saldo_awal) }}</td>
                     <td>Rp {{ number_format($row->transaksi) }}</td>
                     <td>Rp {{ number_format($row->total_refund) }}</td>

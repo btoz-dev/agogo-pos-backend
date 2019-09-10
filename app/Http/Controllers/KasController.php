@@ -81,6 +81,7 @@ class KasController extends Controller
 
     public function laporan(Request $request)
     {
+        
         Session::put('kas_start_date', null);
         Session::put('kas_end_date', null);
         $kas = Kas::orderBy('created_at', 'DESC')
@@ -104,7 +105,8 @@ class KasController extends Controller
             
             $kas = $kas->whereBetween('created_at', [$start_date, $end_date])->get();
         } else {
-            $kas = $kas->take(1)->skip(0)->get();
+            // $kas = $kas->take(1)->skip(0)->get();
+            $kas = $kas->where('created_at', '>', Carbon::today())->take(100)->get();
         }
 
         $phd_today = Carbon::now()->toDateString();
@@ -119,6 +121,7 @@ class KasController extends Controller
         // else{
         //     return 'hoho';
         // }
+        // return $kas;
 
         return view('kas.laporan', [
             'kas' => $kas,

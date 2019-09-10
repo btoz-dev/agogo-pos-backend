@@ -1,7 +1,7 @@
 @extends('layouts.master')
 
 @section('title')
-    <title>Laopran Kas</title>
+    <title>Laporan Kas</title>
 @endsection
 
 @section('content')
@@ -69,29 +69,36 @@
                             <div class="table-responsive">
                                 <table id="example2" class="table table-hover dataTable">
                                     <thead>
-                                        <tr>
+                                        {{-- <tr>
                                             <th>Kasir : {{ $kas[0]->user->name }}</th>
                                             <th style="text-align: right;">Per Tanggal : {{date('d-m-Y', strtotime($kas[0]->created_at)) }}</th>
                                             
+                                        </tr> --}}
+                                        <tr>
+                                            <th>Kasir</th>
+                                            <th>Date</th>
+                                            <th>Saldo Awal</th>
+                                            <th>Total Transaksi</th>
+                                            <th>Total Refund</th>
+                                            <th>Saldo Akhir</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        {{-- @forelse ($kas as $row)
+                                        @forelse ($kas as $row)
                                         <tr>
-                                            <td>{{ $row->user->name }}</td>
-                                            <td>{{ $row->created_at }}</td>
+                                            <td>{{ $row->user->name }}</td>                                            
+                                            <td>{{ Carbon\Carbon::parse($row->created_at)->format('d/m/Y H:i:s') }}</td>  
                                             <td>Rp {{ number_format($row->saldo_awal) }}</td>
                                             <td>Rp {{ number_format($row->transaksi) }}</td>
                                             <td>Rp {{ number_format($row->total_refund) }}</td>
-                                            <td>Rp {{ number_format($row->saldo_akhir) }}</td>
-                                            <td>Rp {{ number_format($row->saldo_akhir) }}</td>                            
+                                            <td>Rp {{ number_format($row->saldo_akhir) }}</td>                                            
                                         </tr>
                                         @empty
                                         <tr>
                                             <td class="text-center" colspan="7">Tidak ada data transaksi</td>
                                         </tr>
-                                        @endforelse --}}
-                                        <tr>
+                                        @endforelse
+                                        {{-- <tr>
                                             <td>Saldo Awal</td>      
                                             <td style="text-align: right;">Rp {{ number_format($kas[0]->saldo_awal) }} </td>                                                                                        
                                         </tr>
@@ -102,17 +109,17 @@
                                         <tr>
                                             <td>Refund </td>      
                                             <td style="text-align: right;">Rp {{ number_format($kas[0]->total_refund) }} </td>                                                                                                                                                                                                                                                                                                                                             
-                                        </tr>
+                                        </tr> --}}
                                     </tbody>
                                     <tfoot>
-                                        <tr>
+                                        {{-- <tr>
                                             <th>Total Pendapatan </th>      
                                             <th style="text-align: right;">Rp {{ number_format($kas[0]->transaksi - $kas[0]->total_refund) }} </th>                                                                                                                                                                                                                                                                                                                                             
                                         </tr>
                                         <tr>
                                             <th>Total Kas Tersedia </th>      
                                             <th style="text-align: right;">Rp {{ number_format($kas[0]->saldo_akhir) }} </th>                                                                                                                                                                                                                                                                                                                                             
-                                        </tr>
+                                        </tr> --}}
                                         {{-- <tr>
                                             <th colspan="3" style="text-align:right">Grand Total : </th>
                                             <th colspan="3" style="text-align:left">Rp.{{number_format($total_harga)}}</th>

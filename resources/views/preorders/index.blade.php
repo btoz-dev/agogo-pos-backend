@@ -36,7 +36,7 @@
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             <label for="">Mulai Tanggal</label>
-                                            <input type="text" name="start_date" 
+                                            <input type="date" name="start_date" placeholder="{{$phd_today}}" value="{{$phd_today}}"
                                                 class="form-control {{ $errors->has('start_date') ? 'is-invalid':'' }}"
                                                 id="start_date"
                                                 value="{{ request()->get('start_date') }}"
@@ -49,7 +49,7 @@
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             <label for="">Sampai Tanggal</label>
-                                            <input type="text" name="end_date" 
+                                            <input type="date" name="end_date" placeholder="{{$phd_today}}" value="{{$phd_today}}"
                                                 class="form-control {{ $errors->has('end_date') ? 'is-invalid':'' }}"
                                                 id="end_date"
                                                 value="{{ request()->get('end_date') }}">
@@ -96,9 +96,9 @@
                                         @forelse ($preorders as $row)
                                         <tr>
                                             <td>{{ $row->invoice }}</td>
-                                            <td>{{ $row->nama }}</td>
-                                            <td>{{ $row->created_at }}</td>
-                                            <td>{{ $row->tgl_selesai }}</td>
+                                            <td>{{ $row->nama }}</td>                                            
+                                            <td>{{ Carbon\Carbon::parse($row->created_at)->format('d/m/Y') }}</td>  
+                                            <td>{{ Carbon\Carbon::parse($row->tgl_selesai)->format('d/m/Y') }}</td>                                              
                                             <td>{{ $row->waktu_selesai }}</td>
                                             <td>{{ $row->status }}</td>
                                             <td>{{ $row->user->name }}</td>

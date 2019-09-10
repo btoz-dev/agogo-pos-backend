@@ -1,7 +1,8 @@
 @extends('layouts.master')
 
 @section('title')
-    <title>Laopran Penjualan Bualanan</title>
+    {{-- <title>Laopran Penjualan Bualanan</title> --}}
+    <title>Laporan Total Pendapatan Harian</title>
 @endsection
 
 @section('content')
@@ -64,7 +65,8 @@
                     <div class="col-md-12">
                         <div class="card">
                             <div class="card-header with-border">
-                                <h3 class="card-title">Laporan Penjualan Bulanan</h3>
+                                {{-- <h3 class="card-title">Laporan Penjualan Bulanan</h3> --}}
+                                <h3 class="card-title">Laporan Total Pendapatan Harian</h3>                                
                             </div>
                             <div class="card-body">
                             <div class="table-responsive">
@@ -80,7 +82,8 @@
                                     <tbody>
                                         @forelse ($orders as $row)
                                         <tr>
-                                            <td>{{ $row->trx_date }}</td>
+                                            {{-- <td>{{ $row->trx_date }}</td> --}}
+                                            <td>{{ Carbon\Carbon::parse($row->trx_date)->format('d/m/Y') }}</td>                                            
                                             <td>Rp {{ number_format($row->subtotal) }}</td>
                                             {{-- <td>{{ $row->customer->name }}</td> --}}
                                             <td>Rp {{ number_format($row->discount) }}</td>

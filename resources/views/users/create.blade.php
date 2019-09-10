@@ -60,16 +60,19 @@
                                     <input type="number" name="password" placeholder="Hanya bisa angka" class="form-control {{ $errors->has('password') ? 'is-invalid':'' }}" required>
                                     <p class="text-danger">{{ $errors->first('password') }}</p>
                                 </div>
+
                                 <div class="form-group">
                                     <label for="">Role</label>
-                                    <select name="role" class="form-control {{ $errors->has('role') ? 'is-invalid':'' }}" required>
-                                        <option value="">Pilih</option>
+                                    <select name="role[]" class="form-control {{ $errors->has('role') ? 'is-invalid':'' }} " multiple required>
+                                        <!-- <option value="">Pilih</option> -->
                                         @foreach ($role as $row)
                                         <option value="{{ $row->name }}">{{ $row->name }}</option>
                                         @endforeach
                                     </select>
                                     <p class="text-danger">{{ $errors->first('role') }}</p>
                                 </div>
+                                
+                            
                                 <div class="form-group">
                                         <label for="">Foto</label>
                                         <input type="file" name="photo" class="form-control">

@@ -565,5 +565,127 @@ class ProductionController extends Controller
         ], 200);
     }
 
+    public function ubahTanggal(Request $request)
+    {
+
+        $ubah_tanggal = null;
+        $ubah_tanggal = $request[0]['ubah_tanggal'];
+
+        // $get_role = User::role(['admin', 'manager'])
+        // ->where('username', $request[0]['username_approval'])->count();
+
+        //Jika user sudah punya role admin / approver selanjutnya di cek password nya
+        // if (auth()->attempt(['username' => $request[0]['username_approval'], 'password' => $request[0]['pin_approval'], 'status' => 1]) && $get_role > 0) {        
+        
+        DB::beginTransaction();
+        try {
+            
+            $production = DB::table('productions')
+            // ->where('product_id', $id)
+            ->where('created_at', '>=', Carbon::today())
+            ->orderBy('created_at','DESC')->first();
+
+            $date_produksi = DB::table('productions')
+            ->select('created_at')
+            // ->where('product_id', $id)
+            ->orderBy('created_at', 'DESC')->first();
+
+            $tgl_produksi = null;
+            
+
+            if ($date_produksi == null) {
+                $curent_date = Carbon::now()->format('Y-m-d');
+                $tgl_produksi = $curent_date;                
+            }
+            elseif ($production == null && $ubah_tanggal == "no") {            
+                $date_null_production = Carbon::parse($date_produksi->created_at)->format('Y-m-d') . '23:59:59';    
+                $tgl_produksi = $date_null_production;
+            }            
+            // elseif ($production != null && $ubah_tanggal == "yes"){
+            //     $date_production_not_null = Carbon::now()->format('Y-m-d H:i:s');
+            //     $tgl_produksi = $date_production_not_null;
+                
+            // }
+            // elseif ($production != null && $ubah_tanggal == "no" ){
+            //     $date_production_not_null = Carbon::now()->format('Y-m-d H:i:s');
+            //     $tgl_produksi = $date_production_not_null;
+            // }
+            else {
+                $date_production_not_null = Carbon::now()->format('Y-m-d H:i:s');
+                $tgl_produksi = $date_production_not_null;
+                // return $tgl_produksi;
+            }
+
+            // return $tgl_produksi;
+            
+            
+
+            $result = collect($request)->map(function ($value) {
+                return [
+                'product_id'            => $value['product_id'],
+                'produksi1'             => $value['produksi1'],
+                'produksi2'             => $value['produksi2'],
+                'produksi3'             => $value['produksi3'],
+                'total_produksi'        => $value['total_produksi'],
+                'penjualan_toko'        => $value['penjualan_toko'],
+                'penjualan_pemesanan'   => $value['penjualan_pemesanan'],
+                'total_penjualan'       => $value['total_penjualan'],
+                'ket_rusak'             => $value['ket_rusak'],
+                'ket_lain'              => $value['ket_lain'],
+                'total_lain'            => $value['total_lain'],
+                'catatan'               => $value['catatan'],
+                'stock_awal'            => $value['stock_awal'],
+                'sisa_stock'            => $value['sisa_stock'],            
+                ];
+            })->all();
+            // return response($result);
+
+            foreach ($result as $key => $row) {                
+                $production = Production::create([
+                    'product_id'            => $row['product_id'],
+                    'produksi1'             => $row['produksi1'],
+                    'produksi2'             => $row['produksi2'],
+                    'produksi3'             => $row['produksi3'],
+                    'total_produksi'        => $row['total_produksi'],
+                    'penjualan_toko'        => $row['penjualan_toko'],
+                    'penjualan_pemesanan'   => $row['penjualan_pemesanan'],
+                    'total_penjualan'       => $row['total_penjualan'],
+                    'ket_rusak'             => $row['ket_rusak'],
+                    'ket_lain'              => $row['ket_lain'],
+                    'total_lain'            => $row['total_lain'],
+                    'catatan'               => $row['catatan'],
+                    'stock_awal'            => $row['stock_awal'],
+                    'sisa_stock'            => $row['sisa_stock'],
+                    'created_at'            => $tgl_produksi,
+                    ]);                
+                    // return response($row['product_id']);
+                //return response($getCount[0]['stock']);
+                               
+            }
+
+            DB::commit();
+
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Produksi Berhasil',
+            ]);
+        } catch (Exception $e) {
+            DB::rollback();
+            return response()->json([
+                'status' => 'failed',
+                'message' => $e->getMessage()
+            ], 400);
+        }
+        }
+        // else {
+        //     return response()->json([
+        //         'status' => 'failed',
+        //         'message' => 'Invalid Username / PIN'
+        //     ], 400);
+        // }
+
+
+    
+
 
 }
