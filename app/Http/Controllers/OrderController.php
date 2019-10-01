@@ -7,6 +7,7 @@ use PDF;
 use Cookie;
 use App\User;
 use App\Order;
+use App\Refund;
 use App\Product;
 use App\Customer;
 use Carbon\Carbon;
@@ -14,7 +15,7 @@ use App\Order_detail;
 use Illuminate\Http\Request;
 use App\Exports\OrderInvoice;
 use Illuminate\Http\Response;
-use App\Refund;
+use Illuminate\Support\Facades\Session;
 
 class OrderController extends Controller
 {
@@ -286,6 +287,9 @@ class OrderController extends Controller
 
     public function laporan_penjualan(Request $request)
     {
+
+        Session::put('lap_bulanan_sd', null);
+        Session::put('lap_bulanan_ed', null);
         
         $users = User::role('kasir')->orderBy('name', 'ASC')->get();
         $orders = Order::select(DB::raw("DATE(created_at) as trx_date"),
@@ -321,6 +325,8 @@ class OrderController extends Controller
                         ->groupBy(DB::raw("DATE(created_at)"))
                         ->get();
             // $orders     = $orders->where('created_at', '>=', $start_date)->where('created_at', '<', $end_date)->get();
+            Session::put('lap_bulanan_sd', $start_date);
+            Session::put('lap_bulanan_ed', $end_date);
         } 
 
         // $phd_today = Carbon::now()->toDateString();
@@ -413,6 +419,38 @@ class OrderController extends Controller
             ->with('customer', 'order_detail', 'order_detail.product')->first();
         $pdf = PDF::setOptions(['dpi' => 150, 'defaultFont' => 'sans-serif'])
             ->loadView('orders.report.invoice', compact('order'));
+        return $pdf->stream();
+    }
+
+    public function invoiceBulananPdf()
+    {
+        $start_date = Session::get('lap_bulanan_sd');
+        $end_date = Session::get('lap_bulanan_ed');
+              
+            $start = Carbon::parse($start_date)->format('Y-m-d') . ' 00:00:01';
+            $end = Carbon::parse($end_date)->format('Y-m-d') . ' 23:59:59';
+
+            $orders = Order::select(DB::raw("DATE(created_at) as trx_date"),
+            DB::raw('sum(subtotal) as subtotal'),
+            DB::raw('sum(total) as total'),
+            DB::raw('sum(discount) as discount'))
+            ->where('status', 'PAID')
+            ->where('created_at', '>=', $start)
+            ->where('created_at', '<', $end)
+            ->groupBy(DB::raw("DATE(created_at)"))
+            ->get();
+
+            $total_harga = $this->countTotal_transaksi($orders);
+            $total_subtotal = $this->countSubTotal_transaksi($orders);
+            $total_discount = $this->countDiscount_transaksi($orders); 
+       
+        
+        // return $order;
+        $pdf = PDF::setOptions(['dpi' => 150, 'defaultFont' => 'sans-serif','isRemoteEnabled' => true]
+        )->loadView('orders.report.invoiceBulanan', 
+        compact('orders','total_harga','total_subtotal','total_discount'));
+
+        
         return $pdf->stream();
     }
 

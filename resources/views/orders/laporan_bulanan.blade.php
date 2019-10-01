@@ -69,6 +69,12 @@
                                 <h3 class="card-title">Laporan Total Pendapatan Harian</h3>                                
                             </div>
                             <div class="card-body">
+                                    <a href="{{ route('order_bulanan.pdf')}}"
+                                    {{-- <a href="{{ route('order.pdf'}}"  --}}
+                                    target="_blank"
+                                    class="btn btn-primary btn-sm">
+                                    <i class="fa fa-print"></i> Export Data
+                                </a>
                             <div class="table-responsive">
                                 <table id="example2" class="table table-bordered table-hover dataTable">
                                     <thead>
@@ -137,10 +143,10 @@
       "ordering": true,
       "info": true,
       "autoWidth": true,
-      dom: 'Bfrtip',
-        buttons: [
-            { extend: 'pdfHtml5', footer: true }
-        ]
+    //   dom: 'Bfrtip',
+    //     buttons: [
+    //         { extend: 'pdfHtml5', footer: true }
+    //     ]
     });
   });
 </script>
