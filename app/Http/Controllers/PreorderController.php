@@ -513,6 +513,7 @@ class PreorderController extends Controller
     {
         $start_date = Session::get('lap_start_date');
         $end_date = Session::get('lap_end_date');
+        $today = Carbon::today()->toDateString();
         // return $end_date;
         // $preorders = Preorder::where('status', 'PAID')->get();
         $preorders = Preorder::where('status','!=', 'CANCEL')->get();
@@ -539,7 +540,7 @@ class PreorderController extends Controller
        
         
         // return $order;
-        $pdf = PDF::setOptions(['dpi' => 150, 'defaultFont' => 'sans-serif','isRemoteEnabled' => true])->loadView('preorders.report.invoice', compact('preorders','total_harga','total_uang_muka','total_harus_bayar','total_harga_cancel','total_uang_muka_cancel'));
+        $pdf = PDF::setOptions(['dpi' => 150, 'defaultFont' => 'sans-serif','isRemoteEnabled' => true])->loadView('preorders.report.invoice', compact('preorders','total_harga','total_uang_muka','total_harus_bayar','total_harga_cancel','total_uang_muka_cancel','today'));
 
         
         return $pdf->stream();

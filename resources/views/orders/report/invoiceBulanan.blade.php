@@ -10,6 +10,7 @@
             margin: 0;
         }
         .page{
+            font-size: 24px !important; 
             max-width: 80em;
             margin: 0 auto;
         }
@@ -33,7 +34,7 @@
         }
         table.display th,
         table.display td{
-            border: 1px solid #B3BFAA;
+            border-bottom: 1px solid black;
             padding: .2em 0,8em;
         }
 
@@ -61,32 +62,40 @@
 </head>
 <body>
     <div class="header">
-        <img src="http://101.255.125.227:82/uploads/profile/agogo.png" alt="Image"/>        
-        <div style="float:right"><h2>Laporan Total Pendapatan Harian</h2></div>
-        <hr>
+        <img src="http://101.255.125.227:82/uploads/profile/agogo.png" alt="Image" height="100px"/>        
+        <div style="float:right;margin-top:-30px">
+            <h2>Laporan Total Pendapatan Harian</h2>
+            <p style="margin-left:250px">Tanggal Cetak : {{ date('d M Y', strtotime($today)) }}</p>
+        </div>            
+        <br>
+        {{-- <hr> --}}
         {{-- <h4 style="line-height: 0px;">Invoice: #{{ $kas->id }}</h4>
         <p><small style="opacity: 0.5;">{{ $kas->created_at->format('d-m-Y H:i:s') }}</small></p> --}}
     </div>
+    <br>
+    <hr>
     
     <div class="page">
     <table class="layout display responsive-table">
                             <thead>
                                 <tr>
-                                    <th>Tanggal Transaksi</th>
-                                    <th>Transaksi</th>
-                                    <th>Discount</th>
-                                    <th>Total Transaksi</th>
+                                    <th>No.</th>
+                                    <th style="text-align:center;">Tanggal Transaksi</th>
+                                    <th style="text-align:right;">Transaksi</th>
+                                    <th style="text-align:right;">Discount</th>
+                                    <th style="text-align:right;">Total Transaksi</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 @forelse ($orders as $row)
                                 <tr>
                                     {{-- <td>{{ $row->trx_date }}</td> --}}
-                                    <td>{{ Carbon\Carbon::parse($row->trx_date)->format('d/m/Y') }}</td>                                            
-                                    <td>Rp {{ number_format($row->subtotal) }}</td>
+                                    <td style="text-align:center;border-bottom:0px">{{$loop->iteration}}</td>
+                                    <td style="text-align:center;border-bottom:0px">{{ Carbon\Carbon::parse($row->trx_date)->format('d M Y') }}</td>                                            
+                                    <td style="text-align:right;border-bottom:0px"> {{ number_format($row->subtotal) }}</td>
                                     {{-- <td>{{ $row->customer->name }}</td> --}}
-                                    <td>Rp {{ number_format($row->discount) }}</td>
-                                    <td>Rp {{ number_format($row->total) }}</td>
+                                    <td style="text-align:right;border-bottom:0px">{{ number_format($row->discount) }}</td>
+                                    <td style="text-align:right;border-bottom:0px">{{ number_format($row->total) }}</td>
 
                                 </tr>
                                 @empty
@@ -97,10 +106,10 @@
                             </tbody>
                             <tfoot>
                                 <tr>
-                                    <th colspan="1" style="text-align:right">Grand Total : </th>
-                                    <th colspan="1" style="">Rp {{number_format($total_subtotal)}}</th>
-                                    <th colspan="1" style="">Rp {{number_format($total_discount)}}</th>
-                                    <th colspan="1" style="">Rp {{number_format($total_harga)}}</th>
+                                    <th colspan="2" style="text-align:right;border-bottom:0px;border-top: 1px solid black;">Grand Total : </th>
+                                    <th colspan="1" style="text-align:right;border-bottom:0px;border-top: 1px solid black;"> {{number_format($total_subtotal)}}</th>
+                                    <th colspan="1" style="text-align:right;border-bottom:0px;border-top: 1px solid black;"> {{number_format($total_discount)}}</th>
+                                    <th colspan="1" style="text-align:right;border-bottom:0px;border-top: 1px solid black;"> {{number_format($total_harga)}}</th>
                                 </tr>
                             </tfoot>
                                 </table>  

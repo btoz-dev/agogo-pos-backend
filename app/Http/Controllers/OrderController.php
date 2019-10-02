@@ -426,6 +426,7 @@ class OrderController extends Controller
     {
         $start_date = Session::get('lap_bulanan_sd');
         $end_date = Session::get('lap_bulanan_ed');
+        $today = Carbon::today()->toDateString();
               
             $start = Carbon::parse($start_date)->format('Y-m-d') . ' 00:00:01';
             $end = Carbon::parse($end_date)->format('Y-m-d') . ' 23:59:59';
@@ -448,7 +449,7 @@ class OrderController extends Controller
         // return $order;
         $pdf = PDF::setOptions(['dpi' => 150, 'defaultFont' => 'sans-serif','isRemoteEnabled' => true]
         )->loadView('orders.report.invoiceBulanan', 
-        compact('orders','total_harga','total_subtotal','total_discount'));
+        compact('orders','total_harga','total_subtotal','total_discount','today'));
 
         
         return $pdf->stream();
