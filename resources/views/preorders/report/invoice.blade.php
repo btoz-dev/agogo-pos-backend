@@ -91,9 +91,9 @@
                                             <th>Status</th>
                                             <th>Pencatat</th>
                                             <th>Pelanggan</th>
-                                            <th>Total Harga</th>
-                                            <th>DP</th>
-                                            <th>Sisa</th>
+                                            <th style="text-align:right;">Total Harga</th>
+                                            <th style="text-align:right;">DP</th>
+                                            <th style="text-align:right;">Sisa</th>
                                             
                                         </tr>
                                     </thead>
