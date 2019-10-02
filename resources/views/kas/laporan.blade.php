@@ -54,7 +54,8 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-md-7">
+                    
+                    <div class="col-md-12">
                         <div class="card">
                             <div class="card-header with-border">
                                 <h3 class="card-title">Laporan Pendapatan Kasir</h3>
@@ -130,6 +131,7 @@
                             </div>
                         </div>
                     </div>
+                    
                     <div class="col-md-5">
                         <div class="card">
                             
@@ -253,7 +255,8 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-md-7">
+                        <div class="row">
+                        <div class="col-md-12">
                             <div class="card">
                                 <div class="card-header with-border">
                                     <h3 class="card-title">Laporan Pendapatan Kasir</h3>
@@ -274,6 +277,7 @@
                                 </div>
                                 </div>
                             </div>
+                        </div>
                         </div>
                         <div class="col-md-5">
                             <div class="card">
@@ -384,10 +388,10 @@
   $(function () {
     $("#example1").DataTable();
     $('#example2').DataTable({
-      "paging": false,
+      "paging": true,
       "lengthChange": false,
-      "searching": false,
-      "ordering": false,
+      "searching": true,
+      "ordering": true,
       "info": false,
       "autoWidth": true,
     //   dom: 'Bfrtip',
