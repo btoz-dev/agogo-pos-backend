@@ -62,7 +62,7 @@ Route::group(['middleware' => 'auth'], function() {
         Route::get('/paid_order', 'OrderController@paid_order')->name('order.paid_order');
         Route::get('/order', 'OrderController@index')->name('order.index');
         Route::get('/laporan_penjualan', 'OrderController@laporan_penjualan')->name('order.laporan_penjualan');
-        Route::get('/order/pdf', 'OrderController@invoicePdf')->name('order.pdf');
+        Route::get('/order/orderPDF', 'OrderController@invoicePdf')->name('order.pdf');
         Route::get('/order/bulanaPDF', 'OrderController@invoiceBulananPdf')->name('order_bulanan.pdf');
         Route::get('/order/excel/{invoice}', 'OrderController@invoiceExcel')->name('order.excel');
     });

@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>LAPORAN TOTAL PENDAPATAN HARIAN</title>
     <style>
         body{
             padding: 0;
@@ -64,8 +65,8 @@
     <div class="header">
         <img src="http://101.255.125.227:82/uploads/profile/agogo.png" alt="Image" height="100px"/>        
         <div style="float:right;margin-top:-30px">
-            <h2>Laporan Total Pendapatan Harian</h2>
-            <p style="margin-left:250px">Tanggal Cetak : {{ date('d M Y', strtotime($today)) }}</p>
+            <h3>LAPORAN TOTAL PENDAPATAN HARIAN</h3>
+            <p style="margin-left:300px">Tanggal Cetak : {{ date('d M Y', strtotime($today)) }}</p>
         </div>            
         <br>
         {{-- <hr> --}}
@@ -82,7 +83,7 @@
                                     <th>No.</th>
                                     <th style="text-align:center;">Tanggal Transaksi</th>
                                     <th style="text-align:right;">Transaksi</th>
-                                    <th style="text-align:right;">Discount</th>
+                                    <th style="text-align:right;">Diskon</th>
                                     <th style="text-align:right;">Total Transaksi</th>
                                 </tr>
                             </thead>

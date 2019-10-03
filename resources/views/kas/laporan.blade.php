@@ -1,7 +1,7 @@
 @extends('layouts.master')
 
 @section('title')
-    <title>Laporan Kas</title>
+    <title>Laporan Pendapatan Kasir</title>
 @endsection
 
 @section('content')

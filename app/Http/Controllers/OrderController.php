@@ -180,6 +180,9 @@ class OrderController extends Controller
     public function index(Request $request)
     {
         // $customers = Customer::orderBy('name', 'ASC')->get();
+        Session::put('lap_order_sd', null);
+        Session::put('lap_order_ed', null);
+
         $users = User::role('kasir')->orderBy('name', 'ASC')->get();
         $orders = Order_detail::join('orders', function ($join) {
                 $join->on('order_details.order_id', '=', 'orders.id')
@@ -204,6 +207,8 @@ class OrderController extends Controller
             $end_date = Carbon::parse($request->start_date)->format('Y-m-d') . ' 23:59:59';
 
             $orders = $orders->whereBetween('order_details.created_at', [$start_date, $end_date])->get();
+            Session::put('lap_order_sd', $start_date);
+            Session::put('lap_order_ed', $end_date);
         } else {
             
             $start_date = Carbon::now()->toDateString() . ' 00:00:01';
@@ -248,8 +253,7 @@ class OrderController extends Controller
             $end_date = Carbon::parse($request->start_date)->format('Y-m-d') . ' 23:59:59';
 
             // $orders = $orders->whereBetween('orders.created_at', [$start_date, $end_date])->get();$orders = $orders
-            $orders = $orders->where('created_at', '>=', $start_date)->where('created_at', '<', $end_date);
-
+            $orders = $orders->where('created_at', '>=', $start_date)->where('created_at', '<', $end_date);            
         } else {
             
             $start_date = Carbon::now()->toDateString() . ' 00:00:01';
@@ -413,12 +417,31 @@ class OrderController extends Controller
         return $data;
     }
 
-    public function invoicePdf($invoice)
+    public function invoicePdf()
     {
-        $order = Order::where('invoice', $invoice)
-            ->with('customer', 'order_detail', 'order_detail.product')->first();
-        $pdf = PDF::setOptions(['dpi' => 150, 'defaultFont' => 'sans-serif'])
-            ->loadView('orders.report.invoice', compact('order'));
+        $start_date = Session::get('lap_order_sd');
+        $end_date = Session::get('lap_order_ed');
+        $today = Carbon::today()->toDateString();
+
+        $start = Carbon::parse($start_date)->format('Y-m-d') . ' 00:00:01';
+        $end = Carbon::parse($end_date)->format('Y-m-d') . ' 23:59:59';
+
+       
+        $orders = Order_detail::join('orders', function ($join) use ($start,$end) {
+            $join->on('order_details.order_id', '=', 'orders.id')
+            ->where('orders.status','PAID')
+            ->whereBetween('order_details.created_at', [$start, $end])
+            ->orderBy('created_at', 'DESC')
+            ;
+            })
+            ->select('order_details.product_id', DB::raw('SUM(price) AS price'), DB::raw('SUM(qty) AS qty'))
+            ->groupBy('order_details.product_id')->get();  
+        
+        $total_harga = $this->countTotal_harga($orders);
+        
+
+        $pdf = PDF::setOptions(['dpi' => 150, 'defaultFont' => 'sans-serif','isRemoteEnabled' => true])
+            ->loadView('orders.report.invoice', compact('orders','today','total_harga'));
         return $pdf->stream();
     }
 
@@ -428,8 +451,8 @@ class OrderController extends Controller
         $end_date = Session::get('lap_bulanan_ed');
         $today = Carbon::today()->toDateString();
               
-            $start = Carbon::parse($start_date)->format('Y-m-d') . ' 00:00:01';
-            $end = Carbon::parse($end_date)->format('Y-m-d') . ' 23:59:59';
+        $start = Carbon::parse($start_date)->format('Y-m-d') . ' 00:00:01';
+        $end = Carbon::parse($end_date)->format('Y-m-d') . ' 23:59:59';
 
             $orders = Order::select(DB::raw("DATE(created_at) as trx_date"),
             DB::raw('sum(subtotal) as subtotal'),

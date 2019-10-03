@@ -69,7 +69,7 @@
                                 <h3 class="card-title">Laporan Total Pendapatan Harian</h3>                                
                             </div>
                             <div class="card-body">
-                                    <a href="{{ route('order_bulanan.pdf')}}"
+                                <a href="{{ route('order_bulanan.pdf')}}"
                                     {{-- <a href="{{ route('order.pdf'}}"  --}}
                                     target="_blank"
                                     class="btn btn-primary btn-sm">
