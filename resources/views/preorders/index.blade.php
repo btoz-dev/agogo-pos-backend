@@ -67,14 +67,13 @@
                                 <h3 class="card-title">Laporan Pemesanan</h3>
                             </div>
                             
-                            <div class="card-body">
-                                
+                            <div class="card-body">                                
                                     <a href="{{ route('preorder.pdf')}}"
                                             {{-- <a href="{{ route('order.pdf'}}"  --}}
                                             target="_blank"
                                             class="btn btn-primary btn-sm">
                                             <i class="fa fa-print"></i> Export Data
-                                        </a>
+                                    </a>
                                 <h4 style="text-align: center;">Pemesanan Berhasil</h4> 
                             <div class="table-responsive">
                                 <table id="example2" class="table table-bordered table-hover dataTable">

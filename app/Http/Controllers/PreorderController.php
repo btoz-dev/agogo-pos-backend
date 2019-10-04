@@ -117,6 +117,8 @@ class PreorderController extends Controller
 
             $preorders = $preorders->whereBetween('created_at', [$start_date, $end_date])->get();
             $cancel_preorders = $cancel_preorders->whereBetween('created_at', [$start_date, $end_date])->get();
+            Session::put('lap_start_date', $start_date);
+            Session::put('lap_end_date', $end_date);
         }
 
         // return $preorders[0]->preorder->status;

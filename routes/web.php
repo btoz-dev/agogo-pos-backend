@@ -76,6 +76,7 @@ Route::group(['middleware' => 'auth'], function() {
     Route::group(['middleware'], function() {
 
         Route::get('/laporan_produksi', 'ProductionController@laporan')->name('production.laporan');
+        Route::get('/produkso/produksiPDF', 'ProductionController@invoicePdf')->name('production.pdf');
     });
 
     Route::group(['middleware'], function() {

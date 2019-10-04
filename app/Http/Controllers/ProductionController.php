@@ -5,9 +5,11 @@ namespace App\Http\Controllers;
 use DB;
 use App\User;
 use App\Production;
+use PDF;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use App\Http\Resources\Product;
+use Illuminate\Support\Facades\Session;
 use Symfony\Component\Process\ProcessBuilder;
 
 class ProductionController extends Controller
@@ -508,6 +510,8 @@ class ProductionController extends Controller
 
     public function laporan(Request $request)
     {
+        Session::put('lap_start_date', null);
+        Session::put('lap_end_date', null);
         $stock = Production::orderBy('created_at', 'DESC')
             // ->groupBy('products.id')
             ->with('product');
@@ -521,12 +525,14 @@ class ProductionController extends Controller
             $end_date = Carbon::parse($request->end_date)->format('Y-m-d') . ' 23:59:59';
 
             $stock = $stock->whereBetween('created_at', [$start_date, $end_date])->get();
+            Session::put('lap_start_date', $start_date);
+            Session::put('lap_end_date', $end_date);
         } else {
             $start_date = Carbon::now()->toDateString() . ' 00:00:01';
             $end_date = Carbon::now()->toDateString() . ' 23:59:59';
-            $stock = $stock->whereBetween('created_at', [$start_date, $end_date])->get();
-            
-            // $stock = $stock->get();
+            $stock = $stock->whereBetween('created_at', [$start_date, $end_date])->get();     
+            Session::put('lap_start_date', $start_date);
+            Session::put('lap_end_date', $end_date);                   
         }
 
         // $getTrx = DB::table('products')
@@ -686,6 +692,27 @@ class ProductionController extends Controller
 
 
     
+        public function invoicePdf()
+        {
+            $start_date = Session::get('lap_start_date');
+            $end_date = Session::get('lap_end_date');
+            $today = Carbon::today()->toDateString();
+            
+            $stock = Production::orderBy('created_at', 'DESC')            
+            ->with('product');                   
+            
+            $start = Carbon::parse($start_date)->format('Y-m-d') . ' 00:00:01';
+            $end = Carbon::parse($end_date)->format('Y-m-d') . ' 23:59:59';
 
+            $stock = $stock->whereBetween('created_at', [$start, $end])->get();
+
+            // return $stock;
+    
+            $pdf = PDF::setOptions(['dpi' => 150, 'defaultFont' => 'sans-serif','isRemoteEnabled' => true])
+            ->loadView('productions.report.invoice', compact('stock','today'));
+    
+            
+            return $pdf->stream();
+        }
 
 }

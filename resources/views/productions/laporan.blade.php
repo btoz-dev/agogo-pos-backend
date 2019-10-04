@@ -71,6 +71,12 @@
                                 <h3 class="card-title">Laporan Pergerakan Stok Produksi</h3>                                
                             </div>
                             <div class="card-body">
+                                <a href="{{ route('production.pdf')}}"
+                                    {{-- <a href="{{ route('order.pdf'}}"  --}}
+                                    target="_blank"
+                                    class="btn btn-primary btn-sm">
+                                    <i class="fa fa-print"></i> Export Data
+                                </a>
                             <div class="table-responsive">
                                 <table id="example2" class="table table-bordered table-hover dataTable">
                                     <thead>
@@ -147,11 +153,7 @@
       "searching": true,
       "ordering": true,
       "info": true,
-      "autoWidth": true,
-      dom: 'Bfrtip',
-        buttons: [
-            'pdf',
-        ]
+      "autoWidth": true,      
     });
     
   });
