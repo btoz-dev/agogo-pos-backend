@@ -84,12 +84,12 @@
                         </p>
                     </a>
                     <ul class="nav nav-treeview">
-                        <li class="nav-item">
+                        {{-- <li class="nav-item">
                                     <a href="{{ route('order.paid_order') }}" class="nav-link {{ request()->is('paid_order*') ? 'active' : '' }}">
                                         <i class="fa fa-circle-o nav-icon"></i>
                                         <p>Penjualan Terbayar</p>
                                     </a>
-                        </li>
+                        </li> --}}
                         <li class="nav-item">
                             <a href="{{ route('order.index') }}" class="nav-link {{ request()->is('order*') ? 'active' : '' }}">
                                 <i class="fa fa-circle-o nav-icon"></i>

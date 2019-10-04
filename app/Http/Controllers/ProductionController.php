@@ -513,8 +513,11 @@ class ProductionController extends Controller
         Session::put('lap_start_date', null);
         Session::put('lap_end_date', null);
         $stock = Production::orderBy('created_at', 'DESC')
-            // ->groupBy('products.id')
-            ->with('product');
+                ->orWhere('produksi1','<>','0')
+                ->orWhere('produksi2','<>','0')
+                ->orWhere('produksi3','<>','0')
+                // ->groupBy('products.id')
+                ->with('product');
 
         if (!empty($request->start_date) && !empty($request->end_date)) {
             $this->validate($request, [
@@ -698,7 +701,10 @@ class ProductionController extends Controller
             $end_date = Session::get('lap_end_date');
             $today = Carbon::today()->toDateString();
             
-            $stock = Production::orderBy('created_at', 'DESC')            
+            $stock = Production::orderBy('created_at', 'DESC')  
+                ->orWhere('produksi1','<>','0')
+                ->orWhere('produksi2','<>','0')
+                ->orWhere('produksi3','<>','0')          
             ->with('product');                   
             
             $start = Carbon::parse($start_date)->format('Y-m-d') . ' 00:00:01';

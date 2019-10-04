@@ -85,7 +85,8 @@ class PreorderController extends Controller
         Session::put('lap_end_date', null);
         // $customers = Customer::orderBy('name', 'ASC')->get();
         $users = User::role('kasir')->orderBy('name', 'ASC')->get();
-        $preorders = Preorder::orderBy('created_at', 'DESC');
+        // $preorders = Preorder::orderBy('created_at', 'DESC');
+        $preorders = Preorder::where('status','!=', 'CANCEL');
                     // ->where('status','PAID');
 
         $cancel_preorders = Preorder::orderBy('created_at', 'DESC')
