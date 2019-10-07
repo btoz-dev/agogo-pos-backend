@@ -36,13 +36,13 @@
                     <ul class="nav nav-treeview">
                         <li class="nav-item">
                             <a href="{{ route('kategori.index') }}" class="nav-link {{ request()->is('kategori*') ? 'active' : '' }}">
-                                <i class="fa fa-circle-o nav-icon"></i>
+                                <i class="fa nav-icon">-</i>
                                 <p>Kategori</p>
                             </a>
                         </li>
                         <li class="nav-item">
                             <a href="{{ route('produk.index') }}" class="nav-link {{request()->is('produk*') ? 'active' : '' }}">
-                                <i class="fa fa-circle-o nav-icon"></i>
+                                <i class="fa nav-icon">-</i>
                                 <p>Produk</p>
                             </a>
                         </li>
@@ -86,39 +86,39 @@
                     <ul class="nav nav-treeview" style="font-size: 14px;">
                         {{-- <li class="nav-item">
                                     <a href="{{ route('order.paid_order') }}" class="nav-link {{ request()->is('paid_order*') ? 'active' : '' }}">
-                                        <i class="fa fa-circle-o nav-icon"></i>
+                                        <i class="fa nav-icon">-</i>
                                         <p>Penjualan Terbayar</p>
                                     </a>
                         </li> --}}
                         <li class="nav-item">
                             <a href="{{ route('order.index') }}" class="nav-link {{ request()->is('order*') ? 'active' : '' }}">
-                                <i class="fa fa-circle-o nav-icon"></i>
+                                <i class="fa  nav-icon">-</i>
                                 {{-- <p>Penjualan Harian</p> --}}
                                 <p>Total Penjualan Per Item</p>
                             </a>
                         </li>
                         <li class="nav-item">
                             <a href="{{ route('order.laporan_penjualan') }}" class="nav-link {{ request()->is('laporan_penjualan*') ? 'active' : '' }}">
-                                <i class="fa fa-circle-o nav-icon"></i>
+                                <i class="fa nav-icon">-</i>
                                 {{-- <p>Penjualan Bulanan</p> --}}
                                 <p>Total Pendapatan Harian</p>
                             </a>
                         </li>
                         <li class="nav-item">
                             <a href="{{ route('preorder.index') }}" class="nav-link {{ request()->is('preorder*') ? 'active' : '' }}">
-                                <i class="fa fa-circle-o nav-icon"></i>
+                                <i class="fa nav-icon">-</i>
                                 <p>Pemesanan</p>
                             </a>
                         </li>
                         <li class="nav-item">
                             <a href="{{ route('kas.laporan') }}" class="nav-link {{ request()->is('laporan_kas*') ? 'active' : '' }}">
-                                <i class="fa fa-circle-o nav-icon"></i>
+                                <i class="fa nav-icon">-</i>
                                 <p>Kas</p>
                             </a>
                         </li>
                         <li class="nav-item">
                             <a href="{{ route('production.laporan') }}" class="nav-link {{ request()->is('laporan_produksi*') ? 'active' : '' }}">
-                                <i class="fa fa-circle-o nav-icon"></i>
+                                <i class="fa nav-icon">-</i>
                                 {{-- <p>Stok</p> --}}
                                 <p>Pergerakan Stok Produksi</p>
                             </a>
@@ -148,25 +148,25 @@
                     <ul class="nav nav-treeview">
                         {{-- <li class="nav-item">
                             <a href="{{ route('role.index') }}" class="nav-link {{ request()->is('role') ? 'active' : '' }}">
-                                <i class="fa fa-circle-o nav-icon"></i>
+                                <i class="fa nav-icon">-</i>
                                 <p>Role</p>
                             </a>
                         </li>
                         <li class="nav-item">
                             <a href="{{ route('users.roles_permission') }}" class="nav-link {{ request()->is('role-permission*') ? 'active' : '' }}">
-                                <i class="fa fa-circle-o nav-icon"></i>
+                                <i class="fa nav-icon">-</i>
                                 <p>Role Permission</p>
                             </a>
                         </li> --}}
                         <li class="nav-item">
                             <a href="{{ route('users.index') }}" class="nav-link {{ request()->is('users*') ? 'active' : '' }}">
-                                <i class="fa fa-circle-o nav-icon"></i>
+                                <i class="fa nav-icon">-</i>
                                 <p>Users</p>
                             </a>
                         </li>
                         <li class="nav-item">
                             <a href="{{ route('users.avatar') }}" class="nav-link {{ request()->is('default-avatar') ? 'active' : '' }}">
-                                <i class="fa fa-circle-o nav-icon"></i>
+                                <i class="fa nav-icon">-</i>
                                 <p>Set Default Avatar</p>
                             </a>
                         </li>

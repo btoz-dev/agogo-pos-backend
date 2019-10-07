@@ -217,8 +217,12 @@ class OrderController extends Controller
 
         }
 
-        $phd_today = Carbon::now()->toDateString();
+        // $phd_today = Carbon::now()->toDateString();
+        $phd_today = Carbon::parse($request->start_date)->format('d/m/Y');
         // 'phd_today' => $phd_today,
+        
+
+
 
         return view('orders.index', [
             'orders' => $orders,
