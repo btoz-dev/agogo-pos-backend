@@ -37,7 +37,7 @@
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             <label for="">Pilih Tanggal</label>
-                                            <input type="date" name="start_date" placeholder="{{$phd_today}}" value="{{$phd_today}}"
+                                            <input type="date" name="start_date" placeholder="{{ date('m/d/Y') }}" value="{{ date('Y-m-d') }}"
                                                 class="form-control {{ $errors->has('start_date') ? 'is-invalid':'' }}"
                                                 id="start_date"
                                                 value="{{ request()->get('start_date') }}"
@@ -238,11 +238,11 @@
                                         <div class="col-md-6">
                                             <div class="form-group">
                                                 <label for="">Pilih Tanggal</label>
-                                                <input type="text" name="start_date" 
-                                                    class="form-control {{ $errors->has('start_date') ? 'is-invalid':'' }}"
-                                                    id="start_date"
-                                                    value="{{ request()->get('start_date') }}"
-                                                    >
+                                                <input type="date" name="start_date" placeholder="{{ date('m/d/Y') }}" value="{{ date('Y-m-d') }}"
+                                                class="form-control {{ $errors->has('start_date') ? 'is-invalid':'' }}"
+                                                id="start_date"
+                                                value="{{ request()->get('start_date') }}"
+                                                >
                                             </div>
                                             <div class="form-group">
                                                 <button class="btn btn-primary btn-sm">Cari</button>
@@ -255,7 +255,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="row">
+                        
                         <div class="col-md-12">
                             <div class="card">
                                 <div class="card-header with-border">
@@ -277,8 +277,7 @@
                                 </div>
                                 </div>
                             </div>
-                        </div>
-                        </div>
+                        </div>                        
                         <div class="col-md-5">
                             <div class="card">
                                 

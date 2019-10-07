@@ -83,7 +83,7 @@
                             <i class="right fa fa-angle-left"></i>
                         </p>
                     </a>
-                    <ul class="nav nav-treeview">
+                    <ul class="nav nav-treeview" style="font-size: 14px;">
                         {{-- <li class="nav-item">
                                     <a href="{{ route('order.paid_order') }}" class="nav-link {{ request()->is('paid_order*') ? 'active' : '' }}">
                                         <i class="fa fa-circle-o nav-icon"></i>
@@ -94,14 +94,14 @@
                             <a href="{{ route('order.index') }}" class="nav-link {{ request()->is('order*') ? 'active' : '' }}">
                                 <i class="fa fa-circle-o nav-icon"></i>
                                 {{-- <p>Penjualan Harian</p> --}}
-                                <p>Laporan Total Penjualan Per Item</p>
+                                <p>Total Penjualan Per Item</p>
                             </a>
                         </li>
                         <li class="nav-item">
                             <a href="{{ route('order.laporan_penjualan') }}" class="nav-link {{ request()->is('laporan_penjualan*') ? 'active' : '' }}">
                                 <i class="fa fa-circle-o nav-icon"></i>
                                 {{-- <p>Penjualan Bulanan</p> --}}
-                                <p>Laporan Total Pendapatan Harian</p>
+                                <p>Total Pendapatan Harian</p>
                             </a>
                         </li>
                         <li class="nav-item">
@@ -120,7 +120,7 @@
                             <a href="{{ route('production.laporan') }}" class="nav-link {{ request()->is('laporan_produksi*') ? 'active' : '' }}">
                                 <i class="fa fa-circle-o nav-icon"></i>
                                 {{-- <p>Stok</p> --}}
-                                <p>Laporan Pergerakan Stok Produksi</p>
+                                <p>Pergerakan Stok Produksi</p>
                             </a>
                         </li>
                     </ul>
