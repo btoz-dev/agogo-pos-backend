@@ -77,7 +77,7 @@
                     {{ request()->is('laporan_kas*') ? 'active' : '' }}
                     {{ request()->is('laporan_produksi*') ? 'active' : '' }}
                     ">
-                        <i class="nav-icon fa fa-shopping-bag"></i>
+                        <i class="nav-icon fa fa-list-alt"></i>
                         <p>
                             Laporan
                             <i class="right fa fa-angle-left"></i>
