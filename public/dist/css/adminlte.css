@@ -9008,7 +9008,7 @@ body,
 
 .sidebar-dark-primary .nav-treeview > .nav-item > .nav-link.active, .sidebar-dark-primary .nav-treeview > .nav-item > .nav-link.active:hover {
   color: #fff;
-  background-color: rgba(255, 255, 255, 0.15);
+  background-color: rgba(255, 255, 255, .15);
 }
 
 .sidebar-light-primary {
