@@ -138,7 +138,7 @@ class KasController extends Controller
     {
         $start_date = Session::get('kas_start_date');
         $end_date = Session::get('kas_end_date');
-        $today = Carbon::today()->toDateString();
+        
         // return $start_date;
         //  
          $kas = Kas::orderBy('created_at', 'DESC')
@@ -155,10 +155,12 @@ class KasController extends Controller
             $kas = $kas->whereBetween('created_at', [$start, $end])
             ->orderBy('created_at', 'DESC')->get();
         
+            $start_date_lap = Carbon::parse($start_date)->format('d/m/Y');
 
         // return $kas->user->name;
 
-        $pdf = PDF::setOptions(['dpi' => 150, 'defaultFont' => 'sans-serif','isRemoteEnabled' => true])->loadView('kas.report.invoice', compact('kas','today'));
+        $pdf = PDF::setOptions(['dpi' => 150, 'defaultFont' => 'sans-serif','isRemoteEnabled' => true])
+        ->loadView('kas.report.invoice', compact('kas','start_date_lap'));
 
         
         return $pdf->stream();

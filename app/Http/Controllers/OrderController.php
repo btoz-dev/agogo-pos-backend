@@ -443,9 +443,11 @@ class OrderController extends Controller
         
         $total_harga = $this->countTotal_harga($orders);
         
+        $start_date_lap = Carbon::parse($start_date)->format('d/m/Y');        
+        
 
         $pdf = PDF::setOptions(['dpi' => 150, 'defaultFont' => 'sans-serif','isRemoteEnabled' => true])
-            ->loadView('orders.report.invoice', compact('orders','today','total_harga'));
+            ->loadView('orders.report.invoice', compact('orders','start_date_lap','total_harga'));
         return $pdf->stream();
     }
 
@@ -471,12 +473,15 @@ class OrderController extends Controller
             $total_harga = $this->countTotal_transaksi($orders);
             $total_subtotal = $this->countSubTotal_transaksi($orders);
             $total_discount = $this->countDiscount_transaksi($orders); 
+
+            $start_date_lap = Carbon::parse($start_date)->format('d/m/Y');
+            $end_date_lap = Carbon::parse($end_date)->format('d/m/Y');
        
         
         // return $order;
         $pdf = PDF::setOptions(['dpi' => 150, 'defaultFont' => 'sans-serif','isRemoteEnabled' => true]
         )->loadView('orders.report.invoiceBulanan', 
-        compact('orders','total_harga','total_subtotal','total_discount','today'));
+        compact('orders','total_harga','total_subtotal','total_discount','today','start_date_lap','end_date_lap'));
 
         
         return $pdf->stream();

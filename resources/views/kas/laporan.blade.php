@@ -37,11 +37,10 @@
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             <label for="">Pilih Tanggal</label>
-                                            <input type="date" name="start_date" placeholder="{{ date('m/d/Y') }}" value="{{ date('Y-m-d') }}"
+                                            <input type="date" name="start_date" 
                                                 class="form-control {{ $errors->has('start_date') ? 'is-invalid':'' }}"
                                                 id="start_date"
-                                                value="{{ request()->get('start_date') }}"
-                                                >
+                                                value="{{ request()->get('start_date') == null ? date('Y-m-d')   : request()->get('start_date') }}">                                                
                                         </div>
                                         <div class="form-group">
                                             <button class="btn btn-primary btn-sm">Cari</button>
@@ -238,11 +237,11 @@
                                         <div class="col-md-6">
                                             <div class="form-group">
                                                 <label for="">Pilih Tanggal</label>
-                                                <input type="date" name="start_date" placeholder="{{ date('m/d/Y') }}" value="{{ date('Y-m-d') }}"
+                                                <input type="date" name="start_date"
                                                 class="form-control {{ $errors->has('start_date') ? 'is-invalid':'' }}"
                                                 id="start_date"
-                                                value="{{ request()->get('start_date') }}"
-                                                >
+                                                value="{{ request()->get('start_date') == null ? date('m/d/Y')  : request()->get('start_date') }}">
+                                                
                                             </div>
                                             <div class="form-group">
                                                 <button class="btn btn-primary btn-sm">Cari</button>
@@ -374,11 +373,13 @@
 @section('js')
     <script>
         $('#start_date').datepicker({
+            todayHighlight: true,
             autoclose: true,
             format: 'yyyy-mm-dd'
         });
 
         $('#end_date').datepicker({
+            todayHighlight: true,
             autoclose: true,
             format: 'yyyy-mm-dd'
         });

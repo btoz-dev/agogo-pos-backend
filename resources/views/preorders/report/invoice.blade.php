@@ -71,7 +71,7 @@
                 <img src="http://101.255.125.227:82/uploads/profile/agogo.png" alt="Image" height="100px"/>        
                 <div style="float:right;margin-top:-30px">
                     <h3 style="margin-left:220px">LAPORAN PEMESANAN</h3>
-                    <p style="margin-left:260px">Tanggal Cetak : {{ date('d M Y', strtotime($today)) }}</p>
+                    <p style="margin-left:175px;font-size:20px">Tanggal Transaksi : {{$start_date_lap}} - {{$end_date_lap}} </p>
                 </div>            
                 <br>
         {{-- <h4 style="line-height: 0px;">Invoice: #{{ $kas->id }}</h4>
@@ -103,8 +103,8 @@
                                         <tr>
                                             <td style="text-align:center;border-bottom:0px">{{$loop->iteration}}</td>
                                             <td style="text-align:center;border-bottom:0px">{{ $row->invoice }}</td>                                            
-                                            <td style="text-align:center;border-bottom:0px">{{ Carbon\Carbon::parse($row->created_at)->format('d-m-Y') }}</td>  
-                                            <td style="text-align:center;border-bottom:0px">{{ Carbon\Carbon::parse($row->tgl_selesai)->format('d-m-Y') }}</td>  
+                                            <td style="text-align:center;border-bottom:0px">{{ Carbon\Carbon::parse($row->created_at)->format('d/m/Y') }}</td>  
+                                            <td style="text-align:center;border-bottom:0px">{{ Carbon\Carbon::parse($row->tgl_selesai)->format('d/m/Y') }}</td>  
                                             <td style="text-align:center;border-bottom:0px">{{ $row->waktu_selesai }}</td>
                                             <td style="text-align:center;border-bottom:0px">{{ $row->status }}</td>
                                             <td style="text-align:center;border-bottom:0px">{{ $row->user->name }}</td>

@@ -512,12 +512,9 @@ class ProductionController extends Controller
     {
         Session::put('lap_start_date', null);
         Session::put('lap_end_date', null);
-        $stock = Production::orderBy('created_at', 'DESC')
-                ->orWhere('produksi1','<>','0')
-                ->orWhere('produksi2','<>','0')
-                ->orWhere('produksi3','<>','0')
-                // ->groupBy('products.id')
-                ->with('product');
+        
+
+        
 
         if (!empty($request->start_date) && !empty($request->end_date)) {
             $this->validate($request, [
@@ -527,13 +524,38 @@ class ProductionController extends Controller
             $start_date = Carbon::parse($request->start_date)->format('Y-m-d') . ' 00:00:01';
             $end_date = Carbon::parse($request->end_date)->format('Y-m-d') . ' 23:59:59';
 
-            $stock = $stock->whereBetween('created_at', [$start_date, $end_date])->get();
+            
+            $stock = Production::orderBy('created_at', 'DESC')
+            ->whereBetween('created_at', [$start_date, $end_date])                                
+            ->with('product');
+
+            $stock = $stock
+                ->where(function($query) use ($start_date, $end_date) {
+                 $query->orWhere('produksi1','<>','0')
+                ->orWhere('produksi2','<>','0')
+                ->orWhere('produksi3','<>','0');                
+            })->get();
+        
+            // return $stock;
+            
             Session::put('lap_start_date', $start_date);
             Session::put('lap_end_date', $end_date);
         } else {
             $start_date = Carbon::now()->toDateString() . ' 00:00:01';
             $end_date = Carbon::now()->toDateString() . ' 23:59:59';
-            $stock = $stock->whereBetween('created_at', [$start_date, $end_date])->get();     
+
+
+            $stock = Production::orderBy('created_at', 'DESC')
+            ->whereBetween('created_at', [$start_date, $end_date])                                
+            ->with('product');
+
+            $stock = $stock
+                ->where(function($query) use ($start_date, $end_date) {
+                 $query->orWhere('produksi1','<>','0')
+                ->orWhere('produksi2','<>','0')
+                ->orWhere('produksi3','<>','0');                
+            })->get();
+            
             Session::put('lap_start_date', $start_date);
             Session::put('lap_end_date', $end_date);                   
         }
@@ -701,21 +723,30 @@ class ProductionController extends Controller
             $end_date = Session::get('lap_end_date');
             $today = Carbon::today()->toDateString();
             
-            $stock = Production::orderBy('created_at', 'DESC')  
-                ->orWhere('produksi1','<>','0')
-                ->orWhere('produksi2','<>','0')
-                ->orWhere('produksi3','<>','0')          
-            ->with('product');                   
+                             
             
             $start = Carbon::parse($start_date)->format('Y-m-d') . ' 00:00:01';
             $end = Carbon::parse($end_date)->format('Y-m-d') . ' 23:59:59';
 
-            $stock = $stock->whereBetween('created_at', [$start, $end])->get();
+            
 
+            $stock = Production::orderBy('created_at', 'DESC')
+            ->whereBetween('created_at', [$start_date, $end_date])                                
+            ->with('product');
+
+            $stock = $stock
+                ->where(function($query) use ($start_date, $end_date) {
+                 $query->orWhere('produksi1','<>','0')
+                ->orWhere('produksi2','<>','0')
+                ->orWhere('produksi3','<>','0');                
+            })->get();
+
+            $start_date_lap = Carbon::parse($start_date)->format('d/m/Y');
+            $end_date_lap = Carbon::parse($end_date)->format('d/m/Y');
             // return $stock;
     
             $pdf = PDF::setOptions(['dpi' => 150, 'defaultFont' => 'sans-serif','isRemoteEnabled' => true])
-            ->loadView('productions.report.invoice', compact('stock','today'));
+            ->loadView('productions.report.invoice', compact('stock','today','start_date_lap','end_date_lap'));
     
             
             return $pdf->stream();

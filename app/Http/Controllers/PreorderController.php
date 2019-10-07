@@ -540,10 +540,15 @@ class PreorderController extends Controller
                 // 'customers' => $customers,
             $total_harga_cancel = $this->countTotal_harga($cancel_preorders);
             $total_uang_muka_cancel = $this->countUangMuka_transaksi($cancel_preorders);
+
+            $start_date_lap = Carbon::parse($start_date)->format('d/m/Y');
+            $end_date_lap = Carbon::parse($end_date)->format('d/m/Y');
        
         
         // return $order;
-        $pdf = PDF::setOptions(['dpi' => 150, 'defaultFont' => 'sans-serif','isRemoteEnabled' => true])->loadView('preorders.report.invoice', compact('preorders','total_harga','total_uang_muka','total_harus_bayar','total_harga_cancel','total_uang_muka_cancel','today'));
+        $pdf = PDF::setOptions(['dpi' => 150, 'defaultFont' => 'sans-serif','isRemoteEnabled' => true])
+        ->loadView('preorders.report.invoice', 
+        compact('preorders','total_harga','total_uang_muka','total_harus_bayar','total_harga_cancel','total_uang_muka_cancel','today','start_date_lap','end_date_lap'));
 
         
         return $pdf->stream();

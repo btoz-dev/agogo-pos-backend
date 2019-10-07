@@ -71,7 +71,7 @@
                 <img src="http://101.255.125.227:82/uploads/profile/agogo.png" alt="Image" height="100px"/>        
                 <div style="float:right;margin-top:-30px">
                     <h3 style="margin-left:20px">LAPORAN PERGERAKAN STOK</h3>
-                    <p style="margin-left:180px">Tanggal Cetak : {{ date('d M Y', strtotime($today)) }}</p>
+                    <p style="margin-left:100px;font-size:20px">Tanggal Transaksi : {{$start_date_lap}} - {{$end_date_lap}} </p>
                 </div>            
                 <br>
         {{-- <h4 style="line-height: 0px;">Invoice: #{{ $kas->id }}</h4>
@@ -85,6 +85,7 @@
                                     <thead>
                                         <tr>
                                             <th>No.</th>
+                                            <th>Tgl Produksi</th>
                                             <th>Kode Menu</th>
                                             <th>Nama Menu</th>
                                             <th>Produksi 1</th>
@@ -103,6 +104,7 @@
                                         @forelse ($stock as $row)
                                         <tr>
                                             <td style="text-align:center;border-bottom:0px">{{$loop->iteration}}</td>
+                                            <td style="text-align:center;border-bottom:0px">{{ Carbon\Carbon::parse($row->created_at)->format('d/m/Y') }}</td>
                                             <td style="text-align:center;border-bottom:0px">{{ $row->product->code }}</td>
                                             <td style="text-align:center;border-bottom:0px">{{ $row->product->name }}</td>
                                             <td style="text-align:center;border-bottom:0px">{{ $row->produksi1 }}</td>

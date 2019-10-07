@@ -36,11 +36,12 @@
                                 <div class="row">
                                     <div class="col-md-6">
                                         <div class="form-group">
-                                            <label for="">Pilih Tanggal</label>
-                                            <input type="date" name="start_date" placeholder="{{date('m/d/Y') }}" 
+                                            <label for="">Pilih Tanggal</label>                                            
+                                            <input type="date" name="start_date"
                                                 class="form-control {{ $errors->has('start_date') ? 'is-invalid':'' }}"
                                                 id="start_date"
-                                                value="{{ request()->get('start_date') }}"
+                                                {{-- value="{{ request()->get('start_date') }}" --}}
+                                                value="{{ request()->get('start_date') == null ? date('Y-m-d')  : request()->get('start_date') }}"
                                                 >
                                         </div>
                                         <div class="form-group">
@@ -139,7 +140,9 @@
     <script>
         $('#start_date').datepicker({
             autoclose: true,
-            format: 'yyyy-mm-dd'
+            format: 'yyyy-mm-dd',
+            todayHighlight:true,   
+            userCurrent:true               
         });
 
         $('#end_date').datepicker({
@@ -147,6 +150,7 @@
             format: 'yyyy-mm-dd'
             
         });
+        
     </script>
     <script>
   $(function () {

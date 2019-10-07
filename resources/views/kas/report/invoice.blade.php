@@ -70,7 +70,7 @@
                 <img src="http://101.255.125.227:82/uploads/profile/agogo.png" alt="Image" height="100px"/>        
                 <div style="float:right;margin-top:-30px">
                     <h3>LAPORAN PENDAPATAN KASIR</h3>
-                    <p style="margin-left:160px">Tanggal Cetak : {{ date('d M Y', strtotime($today)) }}</p>
+                    <p style="margin-left:120px">Tanggal Transaksi : {{$start_date_lap}}</p>
                 </div>            
                 <br>
                 {{-- <hr> --}}
@@ -120,7 +120,7 @@
                             {{-- <td>{{ $row->trx_date }}</td> --}}
                             <td>{{ $loop->iteration}}</td>
                             <td>{{ $row->user->name }}</td>                                            
-                            <td>{{ Carbon\Carbon::parse($row->created_at)->format('d M Y') }}</td>  
+                            <td>{{ Carbon\Carbon::parse($row->created_at)->format('d/m/Y') }}</td>  
                             <td style="text-align:right;border-bottom:0px">{{ number_format($row->saldo_awal) }}</td>
                             <td style="text-align:right;border-bottom:0px">{{ number_format($row->transaksi) }}</td>
                             <td style="text-align:right;border-bottom:0px">{{ number_format($row->total_refund) }}</td>

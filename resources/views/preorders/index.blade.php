@@ -36,11 +36,11 @@
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             <label for="">Mulai Tanggal</label>
-                                            <input type="date" name="start_date" placeholder="{{$phd_today}}" value="{{$phd_today}}"
+                                            <input type="date" name="start_date"
                                                 class="form-control {{ $errors->has('start_date') ? 'is-invalid':'' }}"
                                                 id="start_date"
-                                                value="{{ request()->get('start_date') }}"
-                                                >
+                                                value="{{ request()->get('start_date') == null ? $phd_today  : request()->get('start_date') }}">
+                                                
                                         </div>
                                         <div class="form-group">
                                             <button class="btn btn-primary btn-sm">Cari</button>
@@ -49,10 +49,10 @@
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             <label for="">Sampai Tanggal</label>
-                                            <input type="date" name="end_date" placeholder="{{$phd_today}}" value="{{$phd_today}}"
+                                            <input type="date" name="end_date" 
                                                 class="form-control {{ $errors->has('end_date') ? 'is-invalid':'' }}"
                                                 id="end_date"
-                                                value="{{ request()->get('end_date') }}">
+                                                value="{{ request()->get('end_date') == null ? $phd_today  : request()->get('end_date') }}">
                                         </div>
                                     </div>
                                 </div>
@@ -148,11 +148,13 @@
 @section('js')
     <script>
         $('#start_date').datepicker({
+            todayHighlight: true,
             autoclose: true,
             format: 'yyyy-mm-dd'
         });
 
         $('#end_date').datepicker({
+            todayHighlight: true,
             autoclose: true,
             format: 'yyyy-mm-dd'
         });

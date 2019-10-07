@@ -66,7 +66,7 @@
         <img src="http://101.255.125.227:82/uploads/profile/agogo.png" alt="Image" height="100px"/>        
         <div style="float:right;margin-top:-30px">
             <h3>LAPORAN TOTAL PENDAPATAN HARIAN</h3>
-            <p style="margin-left:300px">Tanggal Cetak : {{ date('d M Y', strtotime($today)) }}</p>
+            <p style="margin-left:200px;font-size:20px">Tanggal Transaksi : {{$start_date_lap}} - {{$end_date_lap}} </p>
         </div>            
         <br>
         {{-- <hr> --}}
@@ -92,7 +92,7 @@
                                 <tr>
                                     {{-- <td>{{ $row->trx_date }}</td> --}}
                                     <td style="text-align:center;border-bottom:0px">{{$loop->iteration}}</td>
-                                    <td style="text-align:center;border-bottom:0px">{{ Carbon\Carbon::parse($row->trx_date)->format('d M Y') }}</td>                                            
+                                    <td style="text-align:center;border-bottom:0px">{{ Carbon\Carbon::parse($row->trx_date)->format('d/m/Y') }}</td>                                            
                                     <td style="text-align:right;border-bottom:0px"> {{ number_format($row->subtotal) }}</td>
                                     {{-- <td>{{ $row->customer->name }}</td> --}}
                                     <td style="text-align:right;border-bottom:0px">{{ number_format($row->discount) }}</td>
