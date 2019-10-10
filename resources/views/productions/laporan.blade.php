@@ -38,7 +38,7 @@
                                 <div class="row">
                                     <div class="col-md-6">
                                         <div class="form-group">
-                                            <label for="">Mulai Tanggal</label>
+                                            <label for="">Pilih Tanggal</label>
                                             <input type="date" name="start_date" 
                                                 class="form-control {{ $errors->has('start_date') ? 'is-invalid':'' }}"
                                                 id="start_date"
@@ -49,7 +49,7 @@
                                             <button class="btn btn-primary btn-sm">Cari</button>
                                         </div>
                                     </div>
-                                    <div class="col-md-6">
+                                    {{-- <div class="col-md-6">
                                         <div class="form-group">
                                             <label for="">Sampai Tanggal</label>
                                             <input type="date" name="end_date"
@@ -57,7 +57,7 @@
                                                 id="end_date"
                                                 value="{{ request()->get('end_date') == null ? $phd_today  : request()->get('end_date') }}">
                                         </div>
-                                    </div>
+                                    </div> --}}
                                 </div>
                             </form>
 
@@ -83,6 +83,7 @@
                                         <tr>
                                             <th>Kode Menu</th>
                                             <th>Nama Menu</th>
+                                            <th>Tgl Produksi</th>
                                             <th>Produksi 1</th>
                                             <th>Produksi 2</th>
                                             <th>Produksi 3</th>
@@ -99,6 +100,7 @@
                                         <tr>
                                             <td>{{ $row->product->code }}</td>
                                             <td>{{ $row->product->name }}</td>
+                                            <td >{{ Carbon\Carbon::parse($row->created_at)->format('d/m/Y') }}</td>
                                             <td>{{ $row->produksi1 }}</td>
                                             <td>{{ $row->produksi2 }}</td>
                                             <td>{{ $row->produksi3 }}</td>

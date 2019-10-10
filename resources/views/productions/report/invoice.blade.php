@@ -71,7 +71,7 @@
                 <img src="http://101.255.125.227:82/uploads/profile/agogo.png" alt="Image" height="100px"/>        
                 <div style="float:right;margin-top:-30px">
                     <h3 style="margin-left:20px">LAPORAN PERGERAKAN STOK</h3>
-                    <p style="margin-left:100px;font-size:20px">Tanggal Transaksi : {{$start_date_lap}} - {{$end_date_lap}} </p>
+                    <p style="margin-left:100px;font-size:20px">Tanggal Transaksi : {{$start_date_lap}}</p>
                 </div>            
                 <br>
         {{-- <h4 style="line-height: 0px;">Invoice: #{{ $kas->id }}</h4>

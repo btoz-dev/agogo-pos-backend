@@ -516,25 +516,32 @@ class ProductionController extends Controller
 
         
 
-        if (!empty($request->start_date) && !empty($request->end_date)) {
+        if (!empty($request->start_date)) {
             $this->validate($request, [
                 'start_date' => 'nullable|date',
                 'end_date' => 'nullable|date'
             ]);
             $start_date = Carbon::parse($request->start_date)->format('Y-m-d') . ' 00:00:01';
-            $end_date = Carbon::parse($request->end_date)->format('Y-m-d') . ' 23:59:59';
+            $end_date = Carbon::parse($request->start_date)->format('Y-m-d') . ' 23:59:59';
 
             
-            $stock = Production::orderBy('created_at', 'DESC')
-            ->whereBetween('created_at', [$start_date, $end_date])                                
-            ->with('product');
+            // $stock = Production::orderBy('created_at', 'DESC')
+            // ->whereBetween('created_at', [$start_date, $end_date])                                
+            // ->with('product');
 
-            $stock = $stock
-                ->where(function($query) use ($start_date, $end_date) {
-                 $query->orWhere('produksi1','<>','0')
-                ->orWhere('produksi2','<>','0')
-                ->orWhere('produksi3','<>','0');                
-            })->get();
+            // $stock = $stock
+            //     ->where(function($query) use ($start_date, $end_date) {
+            //      $query->orWhere('produksi1','<>','0')
+            //     ->orWhere('produksi2','<>','0')
+            //     ->orWhere('produksi3','<>','0');                
+            // })->get();
+
+            $stock = Production::whereRaw("created_at in (
+                SELECT MAX(created_at)
+                FROM productions 
+                WHERE created_at between '$start_date' and '$end_date'
+                and (produksi1 <> 0 or produksi2 <> 0 or produksi3 <> 0) 
+                group by product_id)")->get();   
         
             // return $stock;
             
@@ -545,16 +552,22 @@ class ProductionController extends Controller
             $end_date = Carbon::now()->toDateString() . ' 23:59:59';
 
 
-            $stock = Production::orderBy('created_at', 'DESC')
-            ->whereBetween('created_at', [$start_date, $end_date])                                
-            ->with('product');
+            // $stock = Production::orderBy('created_at', 'DESC')
+            // ->whereBetween('created_at', [$start_date, $end_date])                                
+            // ->with('product');
 
-            $stock = $stock
-                ->where(function($query) use ($start_date, $end_date) {
-                 $query->orWhere('produksi1','<>','0')
-                ->orWhere('produksi2','<>','0')
-                ->orWhere('produksi3','<>','0');                
-            })->get();
+            // $stock = $stock
+            //     ->where(function($query) use ($start_date, $end_date) {
+            //      $query->orWhere('produksi1','<>','0')
+            //     ->orWhere('produksi2','<>','0')
+            //     ->orWhere('produksi3','<>','0');                
+            // })->get();
+            $stock = Production::whereRaw("created_at in (
+                SELECT MAX(created_at)
+                FROM productions 
+                WHERE created_at between '$start_date' and '$end_date'
+                and (produksi1 <> 0 or produksi2 <> 0 or produksi3 <> 0) 
+                group by product_id)")->get();  
             
             Session::put('lap_start_date', $start_date);
             Session::put('lap_end_date', $end_date);                   
@@ -726,20 +739,47 @@ class ProductionController extends Controller
                              
             
             $start = Carbon::parse($start_date)->format('Y-m-d') . ' 00:00:01';
-            $end = Carbon::parse($end_date)->format('Y-m-d') . ' 23:59:59';
+            $end = Carbon::parse($start_date)->format('Y-m-d') . ' 23:59:59';
 
             
 
-            $stock = Production::orderBy('created_at', 'DESC')
-            ->whereBetween('created_at', [$start_date, $end_date])                                
-            ->with('product');
+            // $stock = Production::orderBy('created_at', 'DESC')
+            // ->whereBetween('created_at', [$start_date, $end_date])                                
+            // ->with('product');
 
-            $stock = $stock
-                ->where(function($query) use ($start_date, $end_date) {
-                 $query->orWhere('produksi1','<>','0')
-                ->orWhere('produksi2','<>','0')
-                ->orWhere('produksi3','<>','0');                
-            })->get();
+            // $stock = $stock
+            //     ->where(function($query) use ($start_date, $end_date) {
+            //      $query->orWhere('produksi1','<>','0')
+            //     ->orWhere('produksi2','<>','0')
+            //     ->orWhere('produksi3','<>','0');                
+            // })->toSql;
+
+            $stock = Production::whereRaw("created_at in (
+                SELECT MAX(created_at)
+                FROM productions 
+                WHERE created_at between '$start_date' and '$end_date'
+                and (produksi1 <> 0 or produksi2 <> 0 or produksi3 <> 0) 
+                group by product_id)")->get();                             
+            // ->with('product');
+
+            // return $stock;
+
+            // // $stock = Production::select('*')
+            // // ->from(DB::raw("SELECT MAX(created_at)
+            // // FROM productions 
+            // // WHERE created_at between '2019-10-10 00:00:01' and '2019-10-10 23:59:59' 
+            // // and (produksi1 <> 0 or produksi2 <> 0 or produksi3 <> 0) 
+            // // group by product_id"))
+            // // ->whereIn('created_at')
+            // // ->get();
+
+            // $stock = DB::raw("SELECT * FROM productions WHERE created_at in (
+            //     SELECT MAX(created_at)
+            //     FROM productions 
+            //     WHERE created_at between '2019-10-10 00:00:01' and '2019-10-10 23:59:59' 
+            //     and (produksi1 <> 0 or produksi2 <> 0 or produksi3 <> 0) 
+            //     group by product_id)");
+            
 
             $start_date_lap = Carbon::parse($start_date)->format('d/m/Y');
             $end_date_lap = Carbon::parse($end_date)->format('d/m/Y');
