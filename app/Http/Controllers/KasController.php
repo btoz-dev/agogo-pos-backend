@@ -20,18 +20,21 @@ class KasController extends Controller
     {
         // $cek_kas = Kas::where('created_at', '>', Carbon::today())->count();
         $cek_kas = DB::table('kas')->orderBy('id', 'desc')->take(1)->get();
+        // return $cek_kas[0]->id;
         
 
         if ($cek_kas[0]->saldo_akhir > 0) {
             return response()->json([
                 'status' => 'counted',
-                'message' => 'Kas Sudah dihitung'
+                'message' => 'Kas Sudah dihitung',
+                'id_kas' => $cek_kas[0]->id,
             ], 200);
         }
         else {
             return response()->json([
                 'status' => 'notcounted',
-                'message' => 'Kas Belum dihitung'
+                'message' => 'Kas Belum dihitung',
+                'id_kas' => $cek_kas[0]->id,
             ], 200);            
         }
     }
@@ -79,12 +82,54 @@ class KasController extends Controller
         
     }
 
+    public function updateKas(Request $request,$id)
+    {
+
+        //Check apakah user punya role 
+        $get_role = User::role(['admin', 'manager'])
+            ->where('username', $request[0]['username_approval'])->count();
+
+        //Jika user sudah punya role admin / approver selanjutnya di cek password nya
+        if (auth()->attempt(['username' => $request[0]['username_approval'], 'password' => $request[0]['pin_approval'], 'status' => 1]) && $get_role > 0) {
+            
+        
+            
+            $transaksi = $request[0]['transaksi'];
+            $saldo_akhir = $request[0]['saldo_akhir'];
+
+            // return $saldo_akhir;
+
+            $kas = DB::table('kas')->where('id', $id)->update(
+                [
+                'transaksi'   => $transaksi,
+                'saldo_akhir' => $saldo_akhir
+                ]
+            );
+
+            
+
+            return response()->json([
+                'status' => 'success',
+                'message' => $kas,
+            ]);        
+        }
+        else {
+            return response()->json([
+                'status' => 'failed',
+                'message' => 'Invalid Username / PIN'
+            ], 400);
+        }
+        // return $users;
+        
+        
+    }
+
     public function laporan(Request $request)
     {
         
         Session::put('kas_start_date', null);
         Session::put('kas_end_date', null);
-        $kas = Kas::orderBy('created_at', 'DESC')
+        $kas = Kas::orderBy('created_at', 'ASC')
                 // ->where('created_at', '>', Carbon::today())
                 ->with('user');
 
@@ -106,7 +151,7 @@ class KasController extends Controller
             $kas = $kas->whereBetween('created_at', [$start_date, $end_date])->get();
         } else {
             // $kas = $kas->take(1)->skip(0)->get();
-            $kas = $kas->where('created_at', '>', Carbon::today())->take(100)->get();
+            $kas = $kas->where('created_at', '>', Carbon::today())->take(100)->orderBy('created_at', 'ASC')->get();
         }
 
         $phd_today = Carbon::now()->toDateString();
@@ -141,7 +186,7 @@ class KasController extends Controller
         
         // return $start_date;
         //  
-         $kas = Kas::orderBy('created_at', 'DESC')
+         $kas = Kas::orderBy('created_at', 'ASC')
                 // ->where('created_at', '>', Carbon::today())
                 ->with('user');
 

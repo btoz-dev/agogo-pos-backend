@@ -119,6 +119,7 @@ Route::get('/GetLastDate', 'ProductionController@GetLastDate');
 
 //Kas API
 Route::post('/postKas', 'KasController@postKas');
+Route::put('/updateKas/{id}', 'KasController@updateKas');
 Route::get('/getTrx', 'KasController@getTrx');
 Route::get('/cekKas', 'KasController@cekKas');
 

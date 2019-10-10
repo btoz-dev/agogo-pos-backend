@@ -11,7 +11,7 @@
             margin: 0;
         }
         .page{
-            font-size: 24px !important; 
+            font-size: 20px !important; 
             max-width: 80em;
             margin: 0 auto;
         }
@@ -223,8 +223,8 @@
             </table>
             <div>
                 <h4 style="margin-top: 60%;float:right;margin-right:25%">Keterangan</h4>
-                <h4 style="margin-top: 20%;float:right;margin-right:-7%">KASIR</h4>
-                <h4 style="margin-top: 20%;float:right;margin-right:-35%">MANAGER</h4>
+                <h4 style="margin-top: 40%;float:right;margin-right:-7%">KASIR</h4>
+                <h4 style="margin-top: 40%;float:right;margin-right:-35%">MANAGER</h4>
                 {{-- <h4 style="line-height: 0px;">Invoice: #{{ $kas->id }}</h4>
                 <p><small style="opacity: 0.5;">{{ $kas->created_at->format('d-m-Y H:i:s') }}</small></p> --}}
             </div>

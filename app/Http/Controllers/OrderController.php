@@ -9,6 +9,7 @@ use App\User;
 use App\Order;
 use App\Refund;
 use App\Product;
+use App\Preorder;
 use App\Customer;
 use Carbon\Carbon;
 use App\Order_detail;
@@ -309,6 +310,16 @@ class OrderController extends Controller
                         ->groupBy(DB::raw("DATE(created_at)"))
                         ->get();
 
+        $preorders = Preorder::select(DB::raw("DATE(created_at) as trx_date"),
+                DB::raw('sum(subtotal) as subtotal'),
+                DB::raw('sum(total) as total'),
+                DB::raw('sum(discount) as discount'))
+                ->where('status', 'PAID')
+                ->whereMonth('created_at', Carbon::now()->month)
+                ->groupBy(DB::raw("DATE(created_at)"))
+                ->get();
+
+
         if (!empty($request->user_id)) {
             $orders = $orders->where('user_id', $request->user_id);
         }
@@ -332,10 +343,23 @@ class OrderController extends Controller
                         ->where('created_at', '<', $end_date)
                         ->groupBy(DB::raw("DATE(created_at)"))
                         ->get();
+
+            $preorders = Preorder::select(DB::raw("DATE(created_at) as trx_date"),
+                                DB::raw('sum(subtotal) as subtotal'),
+                                DB::raw('sum(total) as total'),
+                                DB::raw('sum(discount) as discount'))
+                        ->where('status', 'PAID')
+                        ->where('created_at', '>=', $start_date)
+                        ->where('created_at', '<', $end_date)
+                        ->groupBy(DB::raw("DATE(created_at)"))
+                        ->get();
             // $orders     = $orders->where('created_at', '>=', $start_date)->where('created_at', '<', $end_date)->get();
             Session::put('lap_bulanan_sd', $start_date);
             Session::put('lap_bulanan_ed', $end_date);
         } 
+
+        $data = $orders[0]->created_at + $preorders[0]->created_at;
+        return $preorders[0]->trx_date;
 
         // $phd_today = Carbon::now()->toDateString();
         $firstDayofcurMonth = Carbon::now()->startOfMonth()->toDateString();
@@ -343,14 +367,17 @@ class OrderController extends Controller
         // return $lastDayofPreviousMonth;
         // 'phd_today' => $phd_today,
         
+        // return $this->countTotal_transaksi($preorders) +  $this->countTotal_transaksi($orders);
+        
 
         return view('orders.laporan_bulanan', [
             'orders' => $orders,
+            'preorders' => $preorders,
             'firstDayofcurMonth'=> $firstDayofcurMonth,
             'lastDayofCurMonth' => $lastDayofCurMonth,
-            'total_harga'       => $this->countTotal_transaksi($orders),
-            'total_subtotal'    => $this->countSubTotal_transaksi($orders),
-            'total_discount'    => $this->countDiscount_transaksi($orders),            
+            'total_harga'       => $this->countTotal_transaksi($orders) + $this->countTotal_transaksi($preorders),
+            'total_subtotal'    => $this->countSubTotal_transaksi($orders) + $this->countSubTotal_transaksi($preorders),
+            'total_discount'    => $this->countDiscount_transaksi($orders) + $this->countDiscount_transaksi($preorders),            
             'users' => $users
         ]);
     }
@@ -380,6 +407,36 @@ class OrderController extends Controller
         $total = 0;
         if ($orders->count() > 0) {
             $sub_total = $orders->pluck('discount')->all();
+            $total = array_sum($sub_total);
+        }
+        return $total;
+    }
+
+    private function countTotal_pemesanan($preorders)
+    {
+        $total = 0;
+        if ($preorders->count() > 0) {
+            $sub_total = $preorders->pluck('total')->all();
+            $total = array_sum($sub_total);
+        }
+        return $total;
+    }
+
+    private function countSubTotal_pemesanan($preorders)
+    {
+        $total = 0;
+        if ($preorders->count() > 0) {
+            $sub_total = $preorders->pluck('subtotal')->all();
+            $total = array_sum($sub_total);
+        }
+        return $total;
+    }
+
+    private function countDiscount_pemesanan($preorders)
+    {
+        $total = 0;
+        if ($preorders->count() > 0) {
+            $sub_total = $preorders->pluck('discount')->all();
             $total = array_sum($sub_total);
         }
         return $total;

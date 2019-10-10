@@ -88,7 +88,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @forelse ($orders as $row)
+                                @forelse ($preorders as $row)
                                 <tr>
                                     {{-- <td>{{ $row->trx_date }}</td> --}}
                                     <td style="text-align:center;border-bottom:0px">{{$loop->iteration}}</td>
