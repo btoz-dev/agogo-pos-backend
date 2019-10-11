@@ -88,15 +88,15 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @forelse ($preorders as $row)
+                                @forelse ($orders as $row)
                                 <tr>
                                     {{-- <td>{{ $row->trx_date }}</td> --}}
                                     <td style="text-align:center;border-bottom:0px">{{$loop->iteration}}</td>
                                     <td style="text-align:center;border-bottom:0px">{{ Carbon\Carbon::parse($row->trx_date)->format('d/m/Y') }}</td>                                            
-                                    <td style="text-align:right;border-bottom:0px"> {{ number_format($row->subtotal) }}</td>
+                                    <td style="text-align:right;border-bottom:0px"> {{ number_format($row->total_transaksi + $row->diskon) }}</td>
                                     {{-- <td>{{ $row->customer->name }}</td> --}}
-                                    <td style="text-align:right;border-bottom:0px">{{ number_format($row->discount) }}</td>
-                                    <td style="text-align:right;border-bottom:0px">{{ number_format($row->total) }}</td>
+                                    <td style="text-align:right;border-bottom:0px">{{ number_format($row->diskon) }}</td>
+                                    <td style="text-align:right;border-bottom:0px">{{ number_format($row->total_transaksi) }}</td>
 
                                 </tr>
                                 @empty

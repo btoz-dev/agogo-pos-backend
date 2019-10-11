@@ -82,7 +82,7 @@
                                         <tr>
                                             <th>Tanggal Transaksi</th>
                                             <th>Transaksi</th>
-                                            <th>Discount</th>
+                                            <th>Diskon</th>
                                             <th>Total Transaksi</th>
                                         </tr>
                                     </thead>
@@ -91,10 +91,10 @@
                                         <tr>
                                             {{-- <td>{{ $row->trx_date }}</td> --}}
                                             <td>{{ Carbon\Carbon::parse($row->trx_date)->format('d/m/Y') }}</td>                                            
-                                            <td>Rp {{ number_format($row->subtotal) }}</td>
+                                            <td>Rp {{ number_format($row->total_transaksi + $row->diskon) }}</td>
                                             {{-- <td>{{ $row->customer->name }}</td> --}}
-                                            <td>Rp {{ number_format($row->discount) }}</td>
-                                            <td>Rp {{ number_format($row->total) }}</td>
+                                            <td>Rp {{ number_format($row->diskon) }}</td>
+                                            <td>Rp {{ number_format($row->total_transaksi) }}</td>
                             
                                         </tr>
                                         @empty

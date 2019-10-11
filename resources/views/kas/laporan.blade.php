@@ -37,10 +37,12 @@
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             <label for="">Pilih Tanggal</label>
-                                            <input type="date" name="start_date" 
+                                            <input type="date" name="start_date"
                                                 class="form-control {{ $errors->has('start_date') ? 'is-invalid':'' }}"
                                                 id="start_date"
-                                                value="{{ request()->get('start_date') == null ? date('Y-m-d')   : request()->get('start_date') }}">                                                
+                                                {{-- value="{{ request()->get('start_date') }}" --}}
+                                                value="{{ request()->get('start_date') == null ? date('Y-m-d')  : request()->get('start_date') }}"
+                                                >                                               
                                         </div>
                                         <div class="form-group">
                                             <button class="btn btn-primary btn-sm">Cari</button>
@@ -240,8 +242,9 @@
                                                 <input type="date" name="start_date"
                                                 class="form-control {{ $errors->has('start_date') ? 'is-invalid':'' }}"
                                                 id="start_date"
-                                                value="{{ request()->get('start_date') == null ? date('m/d/Y')  : request()->get('start_date') }}">
-                                                
+                                                {{-- value="{{ request()->get('start_date') }}" --}}
+                                                value="{{ request()->get('start_date') == null ? date('Y-m-d')  : request()->get('start_date') }}"
+                                                >
                                             </div>
                                             <div class="form-group">
                                                 <button class="btn btn-primary btn-sm">Cari</button>

@@ -10,6 +10,7 @@ use App\Order;
 use App\Refund;
 use App\Product;
 use App\Preorder;
+use App\Kas;
 use App\Customer;
 use Carbon\Carbon;
 use App\Order_detail;
@@ -301,23 +302,26 @@ class OrderController extends Controller
         Session::put('lap_bulanan_ed', null);
         
         $users = User::role('kasir')->orderBy('name', 'ASC')->get();
-        $orders = Order::select(DB::raw("DATE(created_at) as trx_date"),
-                                DB::raw('sum(subtotal) as subtotal'),
-                                DB::raw('sum(total) as total'),
-                                DB::raw('sum(discount) as discount'))
-                        ->where('status', 'PAID')
+        $orders = Kas::select(DB::raw("DATE(created_at) as trx_date"),
+                                // DB::raw('sum(subtotal) as subtotal'),
+                                DB::raw('sum(transaksi) as total_transaksi'),
+                                DB::raw('sum(diskon) as diskon'))
+                        // ->where('status', 'PAID')
+                        // ->where('created_at', '>=', $start_date)
+                        // ->where('created_at', '<', $end_date)
                         ->whereMonth('created_at', Carbon::now()->month)
                         ->groupBy(DB::raw("DATE(created_at)"))
                         ->get();
 
-        $preorders = Preorder::select(DB::raw("DATE(created_at) as trx_date"),
-                DB::raw('sum(subtotal) as subtotal'),
-                DB::raw('sum(total) as total'),
-                DB::raw('sum(discount) as discount'))
-                ->where('status', 'PAID')
-                ->whereMonth('created_at', Carbon::now()->month)
-                ->groupBy(DB::raw("DATE(created_at)"))
-                ->get();
+        // return $orders;
+        // $firstDayofcurMonth = Carbon::now()->startOfMonth()->toDateString();
+        // $lastDayofCurMonth = Carbon::now()->endOfMonth()->toDateString();
+
+        $start_date = Carbon::now()->startOfMonth()->format('Y-m-d') . ' 00:00:01';
+        $end_date   = Carbon::now()->endOfMonth()->format('Y-m-d') . ' 23:59:59';
+
+        Session::put('lap_bulanan_sd', $start_date);
+        Session::put('lap_bulanan_ed', $end_date);
 
 
         if (!empty($request->user_id)) {
@@ -332,52 +336,36 @@ class OrderController extends Controller
             ]);
             $start_date = Carbon::parse($request->start_date)->format('Y-m-d') . ' 00:00:01';
             $end_date   = Carbon::parse($request->end_date)->format('Y-m-d') . ' 23:59:59';
-            // $orders     = $orders->whereBetween('created_at', [$start_date, $end_date])->get();
-            // $orders = $orders->where('created_at', '>=', $start_date)->where('created_at', '<', $end_date);
-            $orders = Order::select(DB::raw("DATE(created_at) as trx_date"),
-                                DB::raw('sum(subtotal) as subtotal'),
-                                DB::raw('sum(total) as total'),
-                                DB::raw('sum(discount) as discount'))
-                        ->where('status', 'PAID')
-                        ->where('created_at', '>=', $start_date)
-                        ->where('created_at', '<', $end_date)
-                        ->groupBy(DB::raw("DATE(created_at)"))
-                        ->get();
+            $orders = Kas::select(DB::raw("DATE(created_at) as trx_date"),
+                                DB::raw('sum(transaksi) as total_transaksi'),
+                                DB::raw('sum(diskon) as diskon'))
+                                ->where('created_at', '>=', $start_date)
+                                ->where('created_at', '<', $end_date)
+                                ->groupBy(DB::raw("DATE(created_at)"))
+                                ->get();
 
-            $preorders = Preorder::select(DB::raw("DATE(created_at) as trx_date"),
-                                DB::raw('sum(subtotal) as subtotal'),
-                                DB::raw('sum(total) as total'),
-                                DB::raw('sum(discount) as discount'))
-                        ->where('status', 'PAID')
-                        ->where('created_at', '>=', $start_date)
-                        ->where('created_at', '<', $end_date)
-                        ->groupBy(DB::raw("DATE(created_at)"))
-                        ->get();
+            // return $orders;
+
+          
             // $orders     = $orders->where('created_at', '>=', $start_date)->where('created_at', '<', $end_date)->get();
             Session::put('lap_bulanan_sd', $start_date);
             Session::put('lap_bulanan_ed', $end_date);
         } 
 
-        $data = $orders[0]->created_at + $preorders[0]->created_at;
-        return $preorders[0]->trx_date;
-
-        // $phd_today = Carbon::now()->toDateString();
+        // $data = $orders[0]->created_at + $preorders[0]->created_at;
+        
         $firstDayofcurMonth = Carbon::now()->startOfMonth()->toDateString();
         $lastDayofCurMonth = Carbon::now()->endOfMonth()->toDateString();
-        // return $lastDayofPreviousMonth;
-        // 'phd_today' => $phd_today,
         
-        // return $this->countTotal_transaksi($preorders) +  $this->countTotal_transaksi($orders);
         
 
         return view('orders.laporan_bulanan', [
-            'orders' => $orders,
-            'preorders' => $preorders,
+            'orders' => $orders,            
             'firstDayofcurMonth'=> $firstDayofcurMonth,
             'lastDayofCurMonth' => $lastDayofCurMonth,
-            'total_harga'       => $this->countTotal_transaksi($orders) + $this->countTotal_transaksi($preorders),
-            'total_subtotal'    => $this->countSubTotal_transaksi($orders) + $this->countSubTotal_transaksi($preorders),
-            'total_discount'    => $this->countDiscount_transaksi($orders) + $this->countDiscount_transaksi($preorders),            
+            'total_harga'       => $this->countTotal_transaksi($orders),
+            'total_subtotal'    => $this->countSubTotal_transaksi($orders),
+            'total_discount'    => $this->countDiscount_transaksi($orders),            
             'users' => $users
         ]);
     }
@@ -386,7 +374,7 @@ class OrderController extends Controller
     {
         $total = 0;
         if ($orders->count() > 0) {
-            $sub_total = $orders->pluck('total')->all();
+            $sub_total = $orders->pluck('total_transaksi')->all();
             $total = array_sum($sub_total);
         }
         return $total;
@@ -396,8 +384,9 @@ class OrderController extends Controller
     {
         $total = 0;
         if ($orders->count() > 0) {
-            $sub_total = $orders->pluck('subtotal')->all();
-            $total = array_sum($sub_total);
+            $total_transaksi = $orders->pluck('total_transaksi')->all();
+            $diskon = $orders->pluck('diskon')->all();
+            $total = array_sum($total_transaksi) + array_sum($diskon);
         }
         return $total;
     }
@@ -406,37 +395,7 @@ class OrderController extends Controller
     {
         $total = 0;
         if ($orders->count() > 0) {
-            $sub_total = $orders->pluck('discount')->all();
-            $total = array_sum($sub_total);
-        }
-        return $total;
-    }
-
-    private function countTotal_pemesanan($preorders)
-    {
-        $total = 0;
-        if ($preorders->count() > 0) {
-            $sub_total = $preorders->pluck('total')->all();
-            $total = array_sum($sub_total);
-        }
-        return $total;
-    }
-
-    private function countSubTotal_pemesanan($preorders)
-    {
-        $total = 0;
-        if ($preorders->count() > 0) {
-            $sub_total = $preorders->pluck('subtotal')->all();
-            $total = array_sum($sub_total);
-        }
-        return $total;
-    }
-
-    private function countDiscount_pemesanan($preorders)
-    {
-        $total = 0;
-        if ($preorders->count() > 0) {
-            $sub_total = $preorders->pluck('discount')->all();
+            $sub_total = $orders->pluck('diskon')->all();
             $total = array_sum($sub_total);
         }
         return $total;
@@ -513,19 +472,40 @@ class OrderController extends Controller
         $start_date = Session::get('lap_bulanan_sd');
         $end_date = Session::get('lap_bulanan_ed');
         $today = Carbon::today()->toDateString();
-              
-        $start = Carbon::parse($start_date)->format('Y-m-d') . ' 00:00:01';
-        $end = Carbon::parse($end_date)->format('Y-m-d') . ' 23:59:59';
 
-            $orders = Order::select(DB::raw("DATE(created_at) as trx_date"),
-            DB::raw('sum(subtotal) as subtotal'),
-            DB::raw('sum(total) as total'),
-            DB::raw('sum(discount) as discount'))
-            ->where('status', 'PAID')
-            ->where('created_at', '>=', $start)
-            ->where('created_at', '<', $end)
-            ->groupBy(DB::raw("DATE(created_at)"))
-            ->get();
+        // return $start_date;
+              
+        // $start = Carbon::parse($start_date)->format('Y-m-d') . ' 00:00:01';
+        // $end = Carbon::parse($end_date)->format('Y-m-d') . ' 23:59:59';
+
+            // $orders = Order::select(DB::raw("DATE(created_at) as trx_date"),
+            // DB::raw('sum(subtotal) as subtotal'),
+            // DB::raw('sum(total) as total'),
+            // DB::raw('sum(discount) as discount'))
+            // ->where('status', 'PAID')
+            // ->where('created_at', '>=', $start)
+            // ->where('created_at', '<', $end)
+            // ->groupBy(DB::raw("DATE(created_at)"))
+            // ->get();
+
+            $orders = Kas::select(DB::raw("DATE(created_at) as trx_date"),
+                                DB::raw('sum(transaksi) as total_transaksi'),
+                                DB::raw('sum(diskon) as diskon'))
+                                ->where('created_at', '>=', $start_date)
+                                ->where('created_at', '<', $end_date)
+                                ->groupBy(DB::raw("DATE(created_at)"))
+                                ->get();
+            
+            // $orders = Kas::select(DB::raw("DATE(created_at) as trx_date"),
+            // // DB::raw('sum(subtotal) as subtotal'),
+            // DB::raw('sum(transaksi) as total_transaksi'),
+            // DB::raw('sum(diskon) as diskon'))
+            // // ->where('status', 'PAID')
+            // // ->where('created_at', '>=', $start_date)
+            // // ->where('created_at', '<', $end_date)
+            // ->whereMonth('created_at', Carbon::now()->month)
+            // ->groupBy(DB::raw("DATE(created_at)"))
+            // ->get();
 
             $total_harga = $this->countTotal_transaksi($orders);
             $total_subtotal = $this->countSubTotal_transaksi($orders);
