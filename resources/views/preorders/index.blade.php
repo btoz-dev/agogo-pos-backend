@@ -99,7 +99,11 @@
                                             <td>{{ Carbon\Carbon::parse($row->created_at)->format('d/m/Y') }}</td>  
                                             <td>{{ Carbon\Carbon::parse($row->tgl_selesai)->format('d/m/Y') }}</td>                                              
                                             <td>{{ $row->waktu_selesai }}</td>
-                                            <td>{{ $row->status }}</td>
+                                            @if( $row->status =='PAID')         
+                                            <td>Diambil</td>
+                                            @else
+                                            <td>Belum Diambil</td>
+                                            @endif
                                             <td>{{ $row->user->name }}</td>
                                             <td>Rp {{ number_format($row->total) }}</td>
                                             <td>Rp {{ number_format($row->uang_muka) }}</td>
