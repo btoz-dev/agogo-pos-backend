@@ -106,7 +106,11 @@
                                             <td style="text-align:center;border-bottom:0px">{{ Carbon\Carbon::parse($row->created_at)->format('d/m/Y') }}</td>  
                                             <td style="text-align:center;border-bottom:0px">{{ Carbon\Carbon::parse($row->tgl_selesai)->format('d/m/Y') }}</td>  
                                             <td style="text-align:center;border-bottom:0px">{{ $row->waktu_selesai }}</td>
-                                            <td style="text-align:center;border-bottom:0px">{{ $row->status }}</td>
+                                            @if( $row->status =='PAID')         
+                                            <td style="text-align:center;border-bottom:0px">Diambil</td>
+                                            @else
+                                            <td style="text-align:center;border-bottom:0px">Belum Diambil</td>
+                                            @endif
                                             <td style="text-align:center;border-bottom:0px">{{ $row->user->name }}</td>
                                             <td style="text-align:center;border-bottom:0px">{{ $row->nama }}</td>
                                             <td style="text-align:right;border-bottom:0px">{{ number_format($row->total) }}</td>

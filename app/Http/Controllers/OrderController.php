@@ -644,19 +644,44 @@ class OrderController extends Controller
 
     public function keepOrder(Request $request)
     {
+       
         DB::beginTransaction();
         try {
-            $order = Order::create(array(
-                'invoice' => $this->generateInvoice(),
-                // 'customer_id' => $customer->id,
-                'user_id'       => $request[0]['user_id'],
-                'subtotal'      => $request[0]['subtotal'],
-                'discount'      => $request[0]['diskon'],
-                'total'         => $request[0]['total'],
-                'uang_dibayar'  => $request[0]['dibayar'],
-                'uang_kembali'  => $request[0]['kembali'],
-                'status'        => $request[0]['status']
-            ));
+            if (!empty($request[0]['order_id'])) {
+                
+                $delOrder = Order::find($request[0]['order_id']);
+                $delOrder-> delete(); 
+
+                $order = Order::create(array(
+                    'id'            => $request[0]['order_id'],
+                    'invoice'       => $request[0]['invoice'],
+                    // 'invoice' => $this->generateInvoice(),
+                    // 'customer_id' => $customer->id,
+                    'user_id'       => $request[0]['user_id'],
+                    'subtotal'      => $request[0]['subtotal'],
+                    'discount'      => $request[0]['diskon'],
+                    'total'         => $request[0]['total'],
+                    'uang_dibayar'  => $request[0]['dibayar'],
+                    'uang_kembali'  => $request[0]['kembali'],
+                    'status'        => $request[0]['status']
+                ));
+            }
+            else {                  
+                $order = Order::create(array(
+                    // 'id'            => $request[0]['order_id'],
+                    // 'invoice'       => $request[0]['invoice'],
+                    'invoice' => $this->generateInvoice(),
+                    // 'customer_id' => $customer->id,
+                    'user_id'       => $request[0]['user_id'],
+                    'subtotal'      => $request[0]['subtotal'],
+                    'discount'      => $request[0]['diskon'],
+                    'total'         => $request[0]['total'],
+                    'uang_dibayar'  => $request[0]['dibayar'],
+                    'uang_kembali'  => $request[0]['kembali'],
+                    'status'        => $request[0]['status']
+                ));
+            }
+            
 
             $result = collect($request)->map(function ($value) {
                 return [
