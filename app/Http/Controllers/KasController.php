@@ -97,6 +97,7 @@ class KasController extends Controller
             $transaksi = $request[0]['transaksi'];
             $saldo_akhir = $request[0]['saldo_akhir'];
             $diskon = $request[0]['diskon'];
+            $refund = $request[0]['refund'];
 
             // return $saldo_akhir;
 
@@ -105,6 +106,7 @@ class KasController extends Controller
                 'transaksi'   => $transaksi,
                 'saldo_akhir' => $saldo_akhir,
                 'diskon' => $diskon,
+                'total_refund' => $refund,
                 ]
             );
 
@@ -230,6 +232,11 @@ class KasController extends Controller
         ->where('status','PAID')
         ->sum('total');
 
+        $sumRefunds = DB::table('refunds')
+        ->where('created_at', '>', $cek_kas[0]->created_at)
+        // ->where('status','PAID')
+        ->sum('total');
+
         $sumDiskonPreorders = DB::table('preorders')
         ->where('created_at', '>', $cek_kas[0]->created_at)
         ->where('status','PAID')
@@ -255,13 +262,14 @@ class KasController extends Controller
             $saldoResult = 0;
         }
 
-        $data = $sumOrders + $sumPreorders;
+        $data = $sumOrders + $sumPreorders;        
         $diskon = $sumDiskonOrders + $sumDiskonPreorders;
 
         return response()->json(array(
             'total_transaksi' => $data,
             'diskon' => $diskon,
             'saldo_awal' => $saldoResult,
+            'total_refund' => $sumRefunds
         ), 200);
 
         

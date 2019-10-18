@@ -771,12 +771,13 @@ class OrderController extends Controller
             foreach ($result as $key => $row) {  
                 // Kurangin Total Amount di Summary Order
                 if ($row['order_id'] != null) {
-                DB::table('orders')->where('id', $row['order_id'])
-                    ->decrement('subtotal', $row['total']);
-                DB::table('orders')->where('id', $row['order_id'])
-                    ->decrement('total', $row['total']);
-                DB::table('preorders')->where('id', $row['preorder_id'])
-                    ->decrement('uang_kembali', $row['total']);
+
+                // DB::table('orders')->where('id', $row['order_id'])
+                //     ->decrement('subtotal', $row['total']);
+                // DB::table('orders')->where('id', $row['order_id'])
+                //     ->decrement('total', $row['total']);
+                // DB::table('orders')->where('id', $row['order_id'])
+                //     ->increment('uang_kembali', $row['total']);
                 // Hapus Produk yg di refun di order_detail
                 DB::table('order_details')
                     ->where('order_id', $row['order_id'])
@@ -784,12 +785,12 @@ class OrderController extends Controller
                 }
                 else {
                 // Kurangin Total Amount di Summary Preorder
-                DB::table('preorders')->where('id', $row['preorder_id'])
-                    ->decrement('total', $row['total']);
-                DB::table('preorders')->where('id', $row['preorder_id'])
-                    ->decrement('subtotal', $row['total']);
-                DB::table('preorders')->where('id', $row['preorder_id'])
-                    ->decrement('uang_kembali', $row['total']);
+                // DB::table('preorders')->where('id', $row['preorder_id'])
+                //     ->decrement('total', $row['total']);
+                // DB::table('preorders')->where('id', $row['preorder_id'])
+                //     ->decrement('subtotal', $row['total']);
+                // DB::table('preorders')->where('id', $row['preorder_id'])
+                //     ->increment('uang_kembali', $row['total']);
                 // Hapus Produk yg di refun di preorder_detail
                 DB::table('preorder_details')
                     ->where('preorder_id', $row['preorder_id'])
