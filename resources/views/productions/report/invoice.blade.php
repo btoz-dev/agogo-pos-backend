@@ -111,7 +111,7 @@
                                             <td style="text-align:center;border-bottom:0px">{{ $row->produksi2 }}</td>
                                             <td style="text-align:center;border-bottom:0px">{{ $row->produksi3 }}</td>
                                             <td style="text-align:center;border-bottom:0px">{{ $row->total_produksi }}</td>
-                                            <td style="text-align:center;border-bottom:0px">{{ $row->penjualan_pesanan }}</td>
+                                            <td style="text-align:center;border-bottom:0px">{{ $row->penjualan_pemesanan }}</td>
                                             <td style="text-align:center;border-bottom:0px">{{ $row->penjualan_toko }}</td>
                                             <td style="text-align:center;border-bottom:0px">{{ $row->ket_rusak }}</td>
                                             <td style="text-align:center;border-bottom:0px">{{ $row->ket_lain }}</td>

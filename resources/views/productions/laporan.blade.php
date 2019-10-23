@@ -105,7 +105,7 @@
                                             <td>{{ $row->produksi2 }}</td>
                                             <td>{{ $row->produksi3 }}</td>
                                             <td>{{ $row->total_produksi }}</td>
-                                            <td>{{ $row->penjualan_pesanan }}</td>
+                                            <td>{{ $row->penjualan_pemesanan }}</td>
                                             <td>{{ $row->penjualan_toko }}</td>
                                             <td>{{ $row->ket_rusak }}</td>
                                             <td>{{ $row->ket_lain }}</td>
