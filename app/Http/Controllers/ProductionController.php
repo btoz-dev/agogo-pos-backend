@@ -562,8 +562,8 @@ class ProductionController extends Controller
             //     ->orWhere('produksi2','<>','0')
             //     ->orWhere('produksi3','<>','0');                
             // })->get();
-            $stock = Production::whereRaw("created_at in (
-                SELECT MAX(created_at)
+            $stock = Production::whereRaw("id in (
+                SELECT MAX(id)
                 FROM productions 
                 WHERE created_at between '$start_date' and '$end_date'
                 and (produksi1 <> 0 or produksi2 <> 0 or produksi3 <> 0) 
