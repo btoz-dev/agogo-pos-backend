@@ -33,7 +33,7 @@ class ProductController extends Controller
             $data['price']         = $items->price;
             $data['category_id']   = $items->category_id;
             $data['category_name'] = $items->category->name;
-            $data['photo']         = 'http://101.255.125.227:82/uploads/product/' . $items->photo;
+            $data['photo']         = 'http://10.254.128.66:82/uploads/product/' . $items->photo;
             return $data;
          });
         
