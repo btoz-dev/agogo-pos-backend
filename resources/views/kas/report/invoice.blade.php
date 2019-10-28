@@ -124,8 +124,8 @@
                             <td style="text-align:right;border-bottom:0px">{{ number_format($row->saldo_awal) }}</td>
                             <td style="text-align:right;border-bottom:0px">{{ number_format($row->transaksi) }}</td>
                             <td style="text-align:right;border-bottom:0px">{{ number_format($row->total_refund) }}</td>
-                            <td style="text-align:right;border-bottom:0px">{{ number_format($row->total_refund + $row->transaksi) }}</td>
-                            <td style="text-align:right;border-bottom:0px">{{ number_format($row->saldo_awal + $row->total_refund + $row->transaksi) }}</td>
+                            <td style="text-align:right;border-bottom:0px">{{ number_format($row->transaksi - $row->total_refund) }}</td>
+                            <td style="text-align:right;border-bottom:0px">{{ number_format($row->saldo_awal + $row->transaksi - $row->total_refund) }}</td>
 
                         </tr>
                         @empty

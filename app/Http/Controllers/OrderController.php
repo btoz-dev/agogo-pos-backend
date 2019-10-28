@@ -591,7 +591,12 @@ class OrderController extends Controller
                         'qty' => $row['qty'],
                         'price' => $row['price']
                     ]);
-                        DB::table('products')->where('id', $row['product_id'])->decrement('stock', $row['qty']); 
+                        DB::table('products')->where('id', $row['product_id'])->decrement('stock', $row['qty']);
+                        DB::table('productions')->where('product_id', $row['product_id'])->orderBy('id','DESC')->take(1)->increment('penjualan_toko', $row['qty']);
+                        DB::table('productions')->where('product_id', $row['product_id'])->orderBy('id','DESC')->take(1)->increment('total_penjualan', $row['qty']);
+                        DB::table('productions')->where('product_id', $row['product_id'])->orderBy('id','DESC')->take(1)->decrement('sisa_stock', $row['qty']);
+                            // ->increment('total_penjualan', $row['qty']); 
+                            
                 }
                 else {
                     throw new \Exception('Stock ' . $getCount[0]['name'] . ' Tidak Mencukupi');

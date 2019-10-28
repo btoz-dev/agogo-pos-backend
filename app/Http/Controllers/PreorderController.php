@@ -390,6 +390,10 @@ class PreorderController extends Controller
                     ]);                
 
                     DB::table('products')->where('id', $row['product_id'])->decrement('stock', $row['qty']); 
+                    DB::table('productions')->where('product_id', $row['product_id'])->orderBy('id','DESC')->take(1)->increment('penjualan_pemesanan', $row['qty']);
+                    DB::table('productions')->where('product_id', $row['product_id'])->orderBy('id','DESC')->take(1)->increment('total_penjualan', $row['qty']);
+                    DB::table('productions')->where('product_id', $row['product_id'])->orderBy('id','DESC')->take(1)->decrement('sisa_stock', $row['qty']);
+                        
                 }
                 else {
                     throw new \Exception('Stock ' . $getCount[0]['name'] . ' Tidak Mencukupi');
@@ -479,6 +483,11 @@ class PreorderController extends Controller
                     ]);                
 
                     DB::table('products')->where('id', $row['product_id'])->decrement('stock', $row['qty']); 
+                    DB::table('productions')->where('product_id', $row['product_id'])->orderBy('id','DESC')->take(1)->increment('penjualan_pemesanan', $row['qty']);
+                    DB::table('productions')->where('product_id', $row['product_id'])->orderBy('id','DESC')->take(1)->increment('total_penjualan', $row['qty']);
+                    DB::table('productions')->where('product_id', $row['product_id'])->orderBy('id','DESC')->take(1)->decrement('sisa_stock', $row['qty']);
+                    
+                        
                 }
                 else {
                     throw new \Exception('Stock ' . $getCount[0]['name'] . ' Tidak Mencukupi');

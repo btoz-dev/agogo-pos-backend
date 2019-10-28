@@ -34,7 +34,7 @@ class Product extends Resource
             'stock'         => $this->stock,
             'price'         => $this->price,
             'category_id'   => $this->category_id,
-            'photo'         => 'http://101.255.125.227:82/uploads/product/' . $this->photo,
+            'photo'         => 'http://10.254.128.66:82/uploads/product/' . $this->photo,
             // 'cat_name'      => $role
         ];
     }

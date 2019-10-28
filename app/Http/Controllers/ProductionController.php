@@ -536,11 +536,18 @@ class ProductionController extends Controller
             //     ->orWhere('produksi3','<>','0');                
             // })->get();
 
+            // $stock = Production::whereRaw("id in (
+            //     SELECT MAX(id)
+            //     FROM productions 
+            //     WHERE created_at between '$start_date' and '$end_date'
+            //     and (produksi1 <> 0 or produksi2 <> 0 or produksi3 <> 0) 
+            //     group by product_id)")->get();   
+
             $stock = Production::whereRaw("id in (
                 SELECT MAX(id)
                 FROM productions 
                 WHERE created_at between '$start_date' and '$end_date'
-                and (produksi1 <> 0 or produksi2 <> 0 or produksi3 <> 0) 
+                
                 group by product_id)")->get();   
         
             // return $stock;
@@ -566,7 +573,7 @@ class ProductionController extends Controller
                 SELECT MAX(id)
                 FROM productions 
                 WHERE created_at between '$start_date' and '$end_date'
-                and (produksi1 <> 0 or produksi2 <> 0 or produksi3 <> 0) 
+                
                 group by product_id)")->get();  
             
             Session::put('lap_start_date', $start_date);
@@ -758,7 +765,7 @@ class ProductionController extends Controller
                 SELECT MAX(id)
                 FROM productions 
                 WHERE created_at between '$start_date' and '$end_date'
-                and (produksi1 <> 0 or produksi2 <> 0 or produksi3 <> 0) 
+                
                 group by product_id)")->get();                             
             // ->with('product');
 
