@@ -183,6 +183,7 @@ class PreorderController extends Controller
                 'invoice' => $this->generateInvoice(),
                 // 'customer_id' => $customer->id,
                 'nama'          => $request[0]['nama'],
+                'tgl_pesan'     => $request[0]['tgl_pesan'],
                 'tgl_selesai'   => $request[0]['tgl_selesai'],
                 'waktu_selesai' => $request[0]['waktu_selesai'],
                 'alamat'        => $request[0]['alamat'],
@@ -350,6 +351,7 @@ class PreorderController extends Controller
                 'id'            => $request[0]['preorder_id'],
                 'invoice'       => $request[0]['invoice'],
                 'nama'          => $request[0]['nama'],
+                'tgl_pesan'     => $request[0]['tgl_pesan'],
                 'tgl_selesai'   => $request[0]['tgl_selesai'],
                 'waktu_selesai' => $request[0]['waktu_selesai'],
                 'alamat'        => $request[0]['alamat'],
@@ -443,6 +445,7 @@ class PreorderController extends Controller
                 'id'            => $request[0]['preorder_id'],
                 'invoice'       => $request[0]['invoice'],
                 'nama'          => $request[0]['nama'],
+                'tgl_pesan'     => $request[0]['tgl_pesan'],
                 'tgl_selesai'   => $request[0]['tgl_selesai'],
                 'waktu_selesai' => $request[0]['waktu_selesai'],
                 'alamat'        => $request[0]['alamat'],
@@ -457,7 +460,8 @@ class PreorderController extends Controller
                 'sisa_harus_bayar'  => $request[0]['sisa_harus_bayar'],
                 'uang_dibayar'  => $request[0]['uang_dibayar'],
                 'uang_kembali'  => $request[0]['uang_kembali'],
-                'status'        => $request[0]['status']
+                'status'        => $request[0]['status'],
+                'hari_pelunasan' => $request[0]['hari_pelunasan']
             ));
 
 

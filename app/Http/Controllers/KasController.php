@@ -227,10 +227,29 @@ class KasController extends Controller
         ->where('status','PAID')
         ->sum('total');
 
-        $sumPreorders = DB::table('preorders')
+        $sumPreordersDP = DB::table('preorders')
+        ->where('created_at', '>', $cek_kas[0]->created_at)
+        ->where('status','UNPAID')
+        // ->where('hari_pelunasan','notsameday')
+        ->sum('uang_muka');
+
+        $sumPreordersBayarSame = DB::table('preorders')
         ->where('created_at', '>', $cek_kas[0]->created_at)
         ->where('status','PAID')
+        ->where('hari_pelunasan','sameday')
         ->sum('total');
+
+        $sumPreordersBayarNotSame = DB::table('preorders')
+        ->where('created_at', '>', $cek_kas[0]->created_at)
+        ->where('status','PAID')
+        ->where('hari_pelunasan','notsameday')
+        ->sum('uang_dibayar');
+
+        $sumPreordersKembali = DB::table('preorders')
+        ->where('created_at', '>', $cek_kas[0]->created_at)
+        ->where('status','PAID')
+        ->where('hari_pelunasan','notsameday')
+        ->sum('uang_kembali');
 
         $sumRefunds = DB::table('refunds')
         ->where('created_at', '>', $cek_kas[0]->created_at)
@@ -262,11 +281,15 @@ class KasController extends Controller
             $saldoResult = 0;
         }
 
-        $data = $sumOrders + $sumPreorders;        
+        $data = $sumOrders + $sumPreordersDP + $sumPreordersBayarSame + $sumPreordersBayarNotSame - $sumPreordersKembali;        
         $diskon = $sumDiskonOrders + $sumDiskonPreorders;
+
 
         return response()->json(array(
             'total_transaksi' => $data,
+            'total_orders' => $sumOrders,
+            'total_dp_preorders' => $sumPreordersDP,
+            'total_pelunasan_preorders' => $sumPreordersBayarSame + $sumPreordersBayarNotSame - $sumPreordersKembali,
             'diskon' => $diskon,
             'saldo_awal' => $saldoResult,
             'total_refund' => $sumRefunds

@@ -205,9 +205,39 @@ class ProductionController extends Controller
          
 
             //Cek apakah ada initial produksi / tidak
-            if ($date_produksi == null) {            
+            if ($date_produksi == null) {  
+                
+                $order = DB::table('order_details')
+                ->join('orders','order_details.order_id', '=', 'orders.id')
+                ->where('order_details.product_id', $id)
+                // ->whereBetween('order_details.created_at', [$start_date, $end_date])
+                ->where('orders.status','PAID')
+                // ->get();
+                ->sum('qty');
+
+                $preorder = DB::table('preorder_details')
+                ->join('preorders','preorder_details.preorder_id', '=', 'preorders.id')
+                ->where('product_id', $id)
+                // ->whereBetween('preorder_details.created_at', [$start_date, $end_date])
+                ->where('preorders.status','PAID')            
+                // ->where('status','PAID')
+                ->sum('qty');
+
+                $getStock = DB::table('products')
+                ->select('stock')            
+                ->where('id', $id) 
+                ->orderBy('created_at', 'DESC')
+                ->first();
+                $stock_awal = $getStock->stock + $preorder + $order;
+                
+                                     
+                
                 return response()->json(array(
-                'status'        => 'failed',
+                // 'status'        => 'failed',
+                'count_order'   => $order,
+                'count_preorder'=> $preorder,
+                'stok_awal'     => $stock_awal,
+                'sisa_stock'    => $getStock->stock,
                 'message'       => 'production : null',
                 'production'    => $production,
                 ),200);
