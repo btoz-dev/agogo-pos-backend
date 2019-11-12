@@ -97,6 +97,7 @@ class KasController extends Controller
             $transaksi = $request[0]['transaksi'];
             $saldo_akhir = $request[0]['saldo_akhir'];
             $diskon = $request[0]['diskon'];
+            $tgl_hitung = $request[0]['tgl_hitung'];
             $refund = $request[0]['refund'];
 
             // return $saldo_akhir;
@@ -106,6 +107,7 @@ class KasController extends Controller
                 'transaksi'   => $transaksi,
                 'saldo_akhir' => $saldo_akhir,
                 'diskon' => $diskon,
+                'tgl_hitung' => $tgl_hitung,
                 'total_refund' => $refund,
                 ]
             );
@@ -218,7 +220,7 @@ class KasController extends Controller
     public function getTrx()
     {
 
-        $cek_kas = DB::table('kas')->orderBy('id', 'desc')->take(1)->get();
+        $cek_kas = DB::table('kas')->orderBy('id', 'desc')->take(2)->get();
         $cek_kas[0]->created_at;
 
 
@@ -233,11 +235,53 @@ class KasController extends Controller
         // ->where('hari_pelunasan','notsameday')
         ->sum('uang_muka');
 
+        // $sumPreordersBayarSame = DB::table('preorders')
+        // ->where('tgl_pesan', '>', $cek_kas[1]->created_at)
+        // ->where('tgl_pesan', '<', $cek_kas[1]->tgl_hitung)        
+        // ->where('status','PAID')
+        // ->where('hari_pelunasan','sameday')
+        // ->sum('uang_dibayar');
+
+        // $sumPreordersKembaliSame = DB::table('preorders')
+        // ->where('tgl_pesan', '>', $cek_kas[1]->created_at)
+        // ->where('tgl_pesan', '<', $cek_kas[1]->tgl_hitung)        
+        // ->where('status','PAID')
+        // ->where('hari_pelunasan','sameday')
+        // ->sum('uang_kembali');
+
         $sumPreordersBayarSame = DB::table('preorders')
-        ->where('created_at', '>', $cek_kas[0]->created_at)
+        ->where('tgl_pesan', '<', $cek_kas[0]->created_at)
+        ->where('tgl_pesan', '>', $cek_kas[1]->created_at)        
+        ->where('status','PAID')
+        ->where('hari_pelunasan','sameday')
+        ->sum('uang_dibayar');
+
+        $sumPreordersKembaliSame = DB::table('preorders')
+        ->where('tgl_pesan', '<', $cek_kas[0]->created_at)
+        ->where('tgl_pesan', '>', $cek_kas[1]->created_at)        
+        ->where('status','PAID')
+        ->where('hari_pelunasan','sameday')
+        ->sum('uang_kembali');
+
+        //Untuk menangani ketika DP dan pelunanasn di beda kas di hari yg sama
+        $pelunasanSamaHari = $sumPreordersBayarSame - $sumPreordersKembaliSame;
+
+        // return $sumPreordersBayarSame;
+
+        //Untuk menangani ketika DP dan pelunanasn di satu kas bersamaan di hari yg sama
+        $sumSamedayTotal = DB::table('preorders')
+        ->where('tgl_pesan', '>', $cek_kas[0]->created_at)
         ->where('status','PAID')
         ->where('hari_pelunasan','sameday')
         ->sum('total');
+
+        // return $sumPreordersKembaliSame;
+
+        // return $cek_kas[0]->created_at;
+
+        
+
+        
 
         $sumPreordersBayarNotSame = DB::table('preorders')
         ->where('created_at', '>', $cek_kas[0]->created_at)
@@ -250,6 +294,9 @@ class KasController extends Controller
         ->where('status','PAID')
         ->where('hari_pelunasan','notsameday')
         ->sum('uang_kembali');
+        
+        //Untuk menangani ketika DP dan pelunanasn di beda kas di hari yg beda
+        $pelunasanBedaHari = $sumPreordersBayarNotSame - $sumPreordersKembali;
 
         $sumRefunds = DB::table('refunds')
         ->where('created_at', '>', $cek_kas[0]->created_at)
@@ -281,7 +328,7 @@ class KasController extends Controller
             $saldoResult = 0;
         }
 
-        $data = $sumOrders + $sumPreordersDP + $sumPreordersBayarSame + $sumPreordersBayarNotSame - $sumPreordersKembali;        
+        $data = $sumOrders + $sumPreordersDP + $pelunasanSamaHari + $sumSamedayTotal + $pelunasanBedaHari;        
         $diskon = $sumDiskonOrders + $sumDiskonPreorders;
 
 
@@ -289,7 +336,7 @@ class KasController extends Controller
             'total_transaksi' => $data,
             'total_orders' => $sumOrders,
             'total_dp_preorders' => $sumPreordersDP,
-            'total_pelunasan_preorders' => $sumPreordersBayarSame + $sumPreordersBayarNotSame - $sumPreordersKembali,
+            'total_pelunasan_preorders' => $pelunasanSamaHari + $pelunasanBedaHari + $sumSamedayTotal,
             'diskon' => $diskon,
             'saldo_awal' => $saldoResult,
             'total_refund' => $sumRefunds
