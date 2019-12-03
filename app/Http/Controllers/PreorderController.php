@@ -147,14 +147,16 @@ class PreorderController extends Controller
         $preorders = Preorder::where(['status' => 'UNPAID'])->with(array('user'=>function($query){
             $query->select('id','username');
         }))->get();
-        
 
         return response()->json($preorders, 200);
     }
 
     public function paid_preorder()
     {
-        $preorders = Preorder::where(['status' => 'PAID'])->get();
+        $preorders = Preorder::where(['status' => 'PAID'])->with(array('user'=>function($query){
+            $query->select('id','username');
+        }))->get();        
+        
         return response()->json($preorders, 200);
     }
 

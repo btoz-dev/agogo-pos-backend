@@ -344,4 +344,27 @@ class KasController extends Controller
 
         
     }
+
+    public function CheckApproval(Request $request)
+    {
+        //Check apakah user punya role 
+        $get_role = User::role(['admin', 'manager'])
+        ->where('username', $request[0]['username_approval'])->count();
+
+        //Jika user sudah punya role admin / approver selanjutnya di cek password nya
+        if (auth()->attempt(['username' => $request[0]['username_approval'], 'password' => $request[0]['pin_approval'], 'status' => 1]) && $get_role > 0) {
+
+        return response()->json([
+                'status' => 'success',
+                'message' => 'user approve',
+        ], 200);        
+
+        }
+        else {
+            return response()->json([
+                'status' => 'failed',
+                'message' => 'user not approve'
+            ], 200);
+        }
+    }
 }
