@@ -21,6 +21,13 @@ class KasController extends Controller
         // $cek_kas = Kas::where('created_at', '>', Carbon::today())->count();
         $cek_kas = DB::table('kas')->orderBy('id', 'desc')->take(1)->get();
         // return $cek_kas[0]->id;
+
+        if ($cek_kas->isEmpty()) {
+            return response()->json([
+                'status' => 'counted',
+                'message' => 'Kas Sudah dihitung',
+            ], 200);
+        }
         
 
         if ($cek_kas[0]->saldo_akhir > 0) {
@@ -223,6 +230,12 @@ class KasController extends Controller
         $cek_kas = DB::table('kas')->orderBy('id', 'desc')->take(2)->get();
         $cek_kas[0]->created_at;
 
+        if (empty($cek_kas[1])) {
+            $cek_kas[1] = $cek_kas[0]; 
+        }
+        else {
+            $cek_kas[1] = $cek_kas[1];
+        }
 
         $sumOrders = DB::table('orders')
         ->where('created_at', '>', $cek_kas[0]->created_at)
