@@ -26,16 +26,15 @@
             <div class="container-fluid">
                 <div class="row">
                     <div class="col-md-12">
-                        
-                        {{-- @card --}}
-                            @slot('title')
-                            
-                            @endslot
+                        <div class="card">
+                            <div class="card-header with-border">
+                            </div>
+                            <div class="card-body">
                             
                             @if (session('success'))
-                                @alert(['type' => 'success'])
+                            <div class="alert alert-success alert-dismissible">
                                     {!! session('success') !!}
-                                @endalert
+                            </div>
                             @endif
                             
                             <div class="table-responsive">
@@ -44,6 +43,7 @@
                                         <tr>
                                             <td>#</td>
                                             <td>Nama</td>
+                                            <td>Username</td>
                                             <td>Email</td>
                                             <td>Role</td>
                                             <td>Status</td>
@@ -56,6 +56,7 @@
                                         <tr>
                                             <td>{{ $no++ }}</td>
                                             <td>{{ $row->name }}</td>
+                                            <td>{{ $row->username }}</td>
                                             <td>{{ $row->email }}</td>
                                             <td>
                                                 @foreach ($row->getRoleNames() as $role)
@@ -88,10 +89,7 @@
                                 </table>
                             </div>
                             <a href="{{ route('users.create') }}" class="btn btn-primary btn-sm">Tambah Baru</a>
-                            @slot('footer')
-
-                            @endslot
-                        {{-- @endcard --}}
+                            </div>  
                     </div>
                 </div>
             </div>

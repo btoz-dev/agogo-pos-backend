@@ -27,19 +27,17 @@
             <div class="container-fluid">
                 <div class="row">
                     <div class="col-md-6">
-                        @card
-                            @slot('title')
-                            Edit
-                            @endslot
-                            
-                            @if (session('error'))
-                                @alert(['type' => 'danger'])
-                                    {!! session('error') !!}
-                                @endalert
-                            @endif
-
+                        <div class="card">
+                        <div class="card-header with-border">
+                        </div>
+                        <div class="card-body">
+                                @if (session('error'))
+                                <div class="alert alert-danger alert-dismissible">
+                                        {!! session('error') !!}
+                                </div>
+                                @endif 
                             <form role="form" action="{{ route('kategori.update', $categories->id) }}" method="POST">
-                                @csrf
+                                {{ csrf_field() }}
                                 <input type="hidden" name="_method" value="PUT">
                                 <div class="form-group">
                                     <label for="name">Kategori</label>
@@ -51,14 +49,13 @@
                                 <div class="form-group">
                                     <label for="description">Deskripsi</label>
                                     <textarea name="description" id="description" cols="5" rows="5" class="form-control {{ $errors->has('description') ? 'is-invalid':'' }}">{{ $categories->description }}</textarea>
-                                </div>
-                            @slot('footer')
+                                </div>                            
                                 <div class="card-footer">
                                     <button class="btn btn-info">Update</button>
                                 </div>
-                            </form>
-                            @endslot
-                        @endcard
+                            </form>                            
+                        </div>
+                    </div>
                     </div>
                 </div>
             </div>

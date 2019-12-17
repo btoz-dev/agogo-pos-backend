@@ -1,7 +1,8 @@
 @extends('layouts.master')
 
 @section('title')
-    <title>Manajemen Order</title>
+    {{-- <title>Laporan Penjualan Harian</title> --}}
+    <title>Laporan Total Penjualan Per Item</title>
 @endsection
 
 @section('content')
@@ -11,12 +12,12 @@
                 <div class="row mb-2">
                     <div class="col-sm-6">
                     </div>
-                    <div class="col-sm-6">
+                    {{-- <div class="col-sm-6">
                         <ol class="breadcrumb float-sm-right">
                             <li class="breadcrumb-item"><a href="{{ route('home') }}">Home</a></li>
                             <li class="breadcrumb-item active">Order</li>
                         </ol>
-                    </div>
+                    </div> --}}
                 </div>
             </div>
         </div>
@@ -35,18 +36,19 @@
                                 <div class="row">
                                     <div class="col-md-6">
                                         <div class="form-group">
-                                            <label for="">Mulai Tanggal</label>
-                                            <input type="text" name="start_date" 
+                                            <label for="">Pilih Tanggal</label>                                            
+                                            <input type="date" name="start_date"
                                                 class="form-control {{ $errors->has('start_date') ? 'is-invalid':'' }}"
                                                 id="start_date"
-                                                value="{{ request()->get('start_date') }}"
+                                                {{-- value="{{ request()->get('start_date') }}" --}}
+                                                value="{{ request()->get('start_date') == null ? date('Y-m-d')  : request()->get('start_date') }}"
                                                 >
                                         </div>
                                         <div class="form-group">
                                             <button class="btn btn-primary btn-sm">Cari</button>
                                         </div>
                                     </div>
-                                    <div class="col-md-6">
+                                    {{-- <div class="col-md-6">
                                         <div class="form-group">
                                             <label for="">Sampai Tanggal</label>
                                             <input type="text" name="end_date" 
@@ -54,7 +56,7 @@
                                                 id="end_date"
                                                 value="{{ request()->get('end_date') }}">
                                         </div>
-                                    </div>
+                                    </div> --}}
                                 </div>
                             </form>
 
@@ -64,9 +66,16 @@
                     <div class="col-md-12">
                         <div class="card">
                             <div class="card-header with-border">
-                                <h3 class="card-title">Data Transaksi</h3>
+                                {{-- <h3 class="card-title">Laporan Penjualan Bulanan</h3> --}}
+                                <h3 class="card-title">Laporan Total Penjualan Per Item</h3>
                             </div>
                             <div class="card-body">
+                                <a href="{{ route('order.pdf')}}"
+                                    {{-- <a href="{{ route('order.pdf'}}"  --}}
+                                    target="_blank"
+                                    class="btn btn-primary btn-sm">
+                                    <i class="fa fa-print"></i> Export Data
+                                </a>
                             <div class="table-responsive">
                                 <table id="example2" class="table table-bordered table-hover dataTable">
                                     <thead>
@@ -76,8 +85,8 @@
                                             <th>Nama Menu</th>
                                             <th>Total Quantity</th>
                                             <th>Total Harga</th>
-                                            <th>Tgl Transaksi</th>
-                                            <th>Aksi</th>
+                                            {{-- <th>Tgl Transaksi</th> --}}
+                                            {{-- <th>Aksi</th> --}}
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -89,8 +98,8 @@
                                             <td>{{ number_format($row->qty) }}</td>
                                             <td>Rp {{ number_format($row->price) }}</td>
                                             {{-- <td>{{ $row->user->name }}</td> --}}
-                                            <td>{{ $row->created_at->format('d-m-Y H:i:s') }}</td>
-                                            <td>
+                                            {{-- <td>{{ $row->created_at->format('d-m-Y H:i:s') }}</td> --}}
+                                            {{-- <td>
                                                 <a href="{{ route('order.pdf', $row->invoice) }}" 
                                                     target="_blank"
                                                     class="btn btn-primary btn-sm">
@@ -101,14 +110,21 @@
                                                     class="btn btn-info btn-sm">
                                                     <i class="fa fa-file-excel-o"></i>
                                                 </a>
-                                            </td>
+                                            </td> --}}
                                         </tr>
                                         @empty
                                         <tr>
-                                            <td class="text-center" colspan="7">Tidak ada data transaksi</td>
+                                            <td class="text-center" colspan="7">Tidak ada data transaksi hari ini</td>
                                         </tr>
                                         @endforelse
                                     </tbody>
+                                    <tfoot>
+                                        <tr>
+                                            <th colspan="2" style="text-align:left"></th>
+                                            <th style="text-align:right">Grand Total : </th>
+                                            <th colspan="3" style="text-align:left">Rp.{{number_format($total_harga)}}</th>
+                                        </tr>
+                                    </tfoot>
                                 </table>
                             </div>
                             </div>
@@ -124,13 +140,17 @@
     <script>
         $('#start_date').datepicker({
             autoclose: true,
-            format: 'yyyy-mm-dd'
+            format: 'yyyy-mm-dd',
+            todayHighlight:true,   
+            userCurrent:true               
         });
 
         $('#end_date').datepicker({
             autoclose: true,
             format: 'yyyy-mm-dd'
+            
         });
+        
     </script>
     <script>
   $(function () {
@@ -141,8 +161,20 @@
       "searching": true,
       "ordering": true,
       "info": true,
-      "autoWidth": true
+      "autoWidth": true,
     });
   });
 </script>
+
+<script src="https://code.jquery.com/jquery-3.3.1.js"></script>
+<script src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.10.19/js/dataTables.bootstrap4.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/1.5.6/js/dataTables.buttons.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/1.5.6/js/buttons.bootstrap4.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
+<script src="https://cdn.datatables.net/buttons/1.5.6/js/buttons.html5.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/1.5.6/js/buttons.print.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/1.5.6/js/buttons.colVis.min.js"></script>
 @endsection

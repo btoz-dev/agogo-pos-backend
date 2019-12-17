@@ -37,6 +37,8 @@ Route::group(['middleware' => 'auth'], function() {
     Route::put('roles/{id}', 'UserController@setRole')->name('users.set_role');
     Route::post('permission', 'UserController@addPermission')->name('users.add_permission');
     Route::get('role-permission', 'UserController@rolePermission')->name('users.roles_permission');
+    Route::get('default-avatar', 'UserController@avatar')->name('users.avatar');
+    Route::put('setDefaultAvatar', 'UserController@setDefaultAvatar')->name('users.setDefaultAvatar');
     Route::put('/users/permission/{role}', 'UserController@setRolePermission')->name('users.setRolePermission');
     Route::resource('/kategori', 'CategoryController');
     Route::resource('/produk', 'ProductController');
@@ -57,11 +59,34 @@ Route::group(['middleware' => 'auth'], function() {
 
     // Route::group(['middleware' => ['role:admin,kasir']], function() {
     Route::group(['middleware'], function() {
-
+        Route::get('/paid_order', 'OrderController@paid_order')->name('order.paid_order');
         Route::get('/order', 'OrderController@index')->name('order.index');
-        Route::get('/order/pdf/{invoice}', 'OrderController@invoicePdf')->name('order.pdf');
+        Route::get('/laporan_penjualan', 'OrderController@laporan_penjualan')->name('order.laporan_penjualan');
+        Route::get('/order/orderPDF', 'OrderController@invoicePdf')->name('order.pdf');
+        Route::get('/order/bulanaPDF', 'OrderController@invoiceBulananPdf')->name('order_bulanan.pdf');
         Route::get('/order/excel/{invoice}', 'OrderController@invoiceExcel')->name('order.excel');
     });
 
+    Route::group(['middleware'], function() {
+
+        Route::get('/laporan_kas', 'KasController@laporan')->name('kas.laporan');
+        Route::get('/kas/pdf', 'KasController@invoicePdf')->name('kas.pdf');
+    });
+
+    Route::group(['middleware'], function() {
+
+        Route::get('/laporan_produksi', 'ProductionController@laporan')->name('production.laporan');
+        Route::get('/produkso/produksiPDF', 'ProductionController@invoicePdf')->name('production.pdf');
+    });
+
+    Route::group(['middleware'], function() {
+
+        Route::get('/preorder', 'PreorderController@laporan_pemesanan')->name('preorder.index');
+        Route::get('/preorder/pdf', 'PreorderController@invoicePdf')->name('preorder.pdf');
+        Route::get('/preorder/excel/{invoice}', 'PreorderController@invoiceExcel')->name('preorder.excel');
+    });
+
     Route::get('/home', 'HomeController@index')->name('home');
+
+    Route::get('logout', '\App\Http\Controllers\Auth\LoginController@logout');
 });

@@ -19,15 +19,31 @@ class ProductController extends Controller
 
     public function getAllProduct() {
 
+        $data = [];
+
         $products = Product::with(array('category'=>function($query){
             $query->select('id','name');
         }))->get();
+
+        $map = $products->map(function($items){            
+            $data['id']            = $items->id;
+            $data['code']          = $items->code;
+            $data['name']          = $items->name;
+            $data['stock']         = $items->stock;
+            $data['price']         = $items->price;
+            $data['category_id']   = $items->category_id;
+            $data['category_name'] = $items->category->name;
+            // $data['photo']         = 'http://10.254.128.66:82/uploads/product/' . $items->photo;
+            $data['photo']         = 'http://101.255.125.227:82/uploads/product/' . $items->photo;
+            return $data;
+         });
+        
         // $order_detail = Order_detail::with('product')->where('order_id', $id)->get();
         // $product = Product::where('id',$order_detail[0]['product_id'])->get();
         // $result = compact('order_detail','product');
         // return response($order_detail[0]['product_id']);
 
-        return response()->json($products, 200);
+        return response()->json($map, 200);
     }
 
     public function show(Product $product)

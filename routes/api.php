@@ -35,7 +35,13 @@ Route::get('/chart', 'HomeController@getChart');
 //User API
 Route::resource('user', 'UserController');
 Route::get('/users', function () {
-    return new UserCollection(User::all());
+
+    return new UserCollection(
+        User::whereHas('roles', function ($query) {
+            $query->where('name', '!=', 'admin')->where('name', '!=', 'manager');
+        })->get()
+    );
+
 });
 
 //Auth API
@@ -44,11 +50,14 @@ Route::group([
 ], function () {
     Route::post('login', 'AuthController@login');
     Route::post('signup', 'AuthController@signup');
+    Route::get('logout', 'AuthController@logout');
+    // Route::get('logout', '\App\Http\Controllers\Auth\LoginController@logout');
+
   
     Route::group([
       'middleware' => 'auth:api'
     ], function() {
-        Route::get('logout', 'AuthController@logout');
+        
         Route::get('user', 'AuthController@user');
     });
 });
@@ -79,26 +88,44 @@ Route::get('/categories', function () {
 //Order API
 Route::post('/orders', 'OrderController@postOrder');
 Route::get('/orders', 'OrderController@getUnpaidOrders');
+Route::get('/PaidOrders', 'OrderController@getPaidOrders');
 Route::get('/order/{id}', 'OrderController@getOrderDetail');
 Route::post('/keepOrders', 'OrderController@keepOrder');
 Route::delete('/order/{id}', 'OrderController@deleteOrder');
+Route::get('/cekInvoice', 'OrderController@checkLastInvoice');
+
 //Refund API
 Route::post('/refunds', 'OrderController@postRefunds');
 //Preorder API
 Route::post('/preorders', 'PreorderController@store');
 Route::get('/preorders', 'PreorderController@index');
+Route::get('/paid_preorders', 'PreorderController@paid_preorder');
 Route::get('/preorder/{id}', 'PreorderController@show');
 Route::put('/preorder/{id}', 'PreorderController@payPreorder');
-Route::delete('/preorder/{id}', 'PreorderController@destroy');
+// Route::delete('/preorder/{id}', 'PreorderController@destroy');
+Route::put('/cancelPreorder/{id}', 'PreorderController@cancelPreorder');
 Route::post('/editPreorders', 'PreorderController@editPreorder');
+Route::post('/bayarPreorder', 'PreorderController@bayarPreorder');
+Route::get('/cekPOInvoice', 'PreorderController@checkLastInvoice');
+
 //Productions API
 Route::get('/availProducts', 'ProductionController@getAvailProduct');
 Route::get('/notAvailProducts', 'ProductionController@getNotAvailProduct');
-Route::get('/orderByProduct/{id}', 'ProductionController@getOrderByProduct');
+Route::get('/TrxByProduct/{id}', 'ProductionController@getTrxByProduct');
+Route::get('/AllTrx', 'ProductionController@getAllTrx');
+Route::get('/AllTrxByProduct', 'ProductionController@getAllTrxByProduct');
 Route::get('/preorderByProduct/{id}', 'ProductionController@getPreorderByProduct');
 Route::post('/postProduction', 'ProductionController@postProduction');
+Route::post('/ubahTanggal', 'ProductionController@ubahTanggal');
+Route::put('/updateStock/{id}', 'ProductionController@updateStock');
+Route::get('/GetLastDate', 'ProductionController@GetLastDate');
+
 //Kas API
 Route::post('/postKas', 'KasController@postKas');
+Route::put('/updateKas/{id}', 'KasController@updateKas');
+Route::get('/getTrx', 'KasController@getTrx');
+Route::get('/cekKas', 'KasController@cekKas');
+Route::post('/CheckApproval', 'KasController@CheckApproval');
 
 
 

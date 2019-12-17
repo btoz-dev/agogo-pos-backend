@@ -57,11 +57,21 @@
                                             <th>Role</th>
                                             <td>:</td>
                                             <td>
-                                                @foreach ($roles as $row)
+                                                {{-- @foreach ($roles as $row)
                                                 <input type="radio" name="role" 
                                                     {{ $user->hasRole($row) ? 'checked':'' }}
                                                     value="{{ $row }}"> {{  $row }} <br>
-                                                @endforeach
+                                                @endforeach --}}
+                                                <div class="form-group">
+                                                    {{-- <label for="">Role</label> --}}
+                                                    <select name="role[]" class="form-control {{ $errors->has('role') ? 'is-invalid':'' }} " multiple required>
+                                                        <!-- <option value="">Pilih</option> -->
+                                                        @foreach ($role as $row)
+                                                        <option value="{{ $row->name }}">{{ $row->name }}</option>
+                                                        @endforeach
+                                                    </select>
+                                                    <p class="text-danger">{{ $errors->first('role') }}</p>
+                                                </div>
                                             </td>
                                         </tr>
                                     </thead>
