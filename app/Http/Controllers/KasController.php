@@ -20,9 +20,18 @@ class KasController extends Controller
     {
         // $cek_kas = Kas::where('created_at', '>', Carbon::today())->count();
         $cek_kas = DB::table('kas')->orderBy('id', 'desc')->take(1)->get();
+        $id_user = DB::table('users')->orderBy('id', 'asc')->take(1)->get();
         // return $cek_kas[0]->id;
 
         if ($cek_kas->isEmpty()) {
+
+            $kas = Kas::create(array(
+                'user_id'       => $id_user[0]->id,
+                'saldo_awal'    => 0,
+                'transaksi'     => 0,
+                'saldo_akhir'   => 1
+            ));
+
             return response()->json([
                 'status' => 'counted',
                 'message' => 'Kas Sudah dihitung',
@@ -143,7 +152,7 @@ class KasController extends Controller
         Session::put('kas_start_date', null);
         Session::put('kas_end_date', null);
         $kas = Kas::orderBy('created_at', 'ASC')
-                // ->where('created_at', '>', Carbon::today())
+                ->where('saldo_akhir', '<>', 1)
                 ->with('user');
 
         if (!empty($request->user_id)) {
@@ -230,12 +239,12 @@ class KasController extends Controller
         $cek_kas = DB::table('kas')->orderBy('id', 'desc')->take(2)->get();
         $cek_kas[0]->created_at;
 
-        if (empty($cek_kas[1])) {
-            $cek_kas[1] = $cek_kas[0]; 
-        }
-        else {
-            $cek_kas[1] = $cek_kas[1];
-        }
+        // if (empty($cek_kas[1])) {
+        //     $cek_kas[1] = $cek_kas[0]; 
+        // }
+        // else {
+        //     $cek_kas[1] = $cek_kas[1];
+        // }
 
         $sumOrders = DB::table('orders')
         ->where('created_at', '>', $cek_kas[0]->created_at)
